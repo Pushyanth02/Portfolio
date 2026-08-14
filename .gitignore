@@ -1,0 +1,50 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.*
+
+# next.js build output & cache
+.next/
+out/
+build/
+dist/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# logs
+*.log
+dev.log
+server.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# env files
+.env
+.env*.local
+.env.production
+
+# editor / os
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+*.swo
+
+# sandbox-only artifacts (never part of the portfolio)
+.zscripts/
+Caddyfile
+db/
+mini-services/
+examples/
+tests/
+download/
+tool-results/
+skills/
+upload/
+worklog.md
+
+# vercel
+.vercel
