@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 
 /**
  * Clock — live IST (Asia/Kolkata) time, hydration-safe.
+ *
+ * A single module-level interval drives every <Clock /> instance on the page
+ * (hero + footer), so there is exactly one timer instead of one per mount.
  * Renders a stable placeholder on SSR + first paint, then ticks client-side.
- * Renders into a <span class="clk clock"> so source CSS (.loc-pill .clk) applies.
  */
 const istFormatter = new Intl.DateTimeFormat("en-GB", {
   timeZone: "Asia/Kolkata",
@@ -21,18 +23,44 @@ function formatIST(d: Date): string {
 
 const PLACEHOLDER = "--:--:--";
 
+// --- shared ticker (module scope) ---
+let current = PLACEHOLDER;
+let started = false;
+const listeners = new Set<() => void>();
+
+function startTicker() {
+  if (started) return;
+  started = true;
+  current = formatIST(new Date());
+  window.setInterval(() => {
+    current = formatIST(new Date());
+    listeners.forEach((l) => l());
+  }, 1000);
+}
+
+function subscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
 export function Clock({ className = "" }: { className?: string }) {
-  const [time, setTime] = useState(PLACEHOLDER);
+  const time = useSyncExternalStore(
+    subscribe,
+    () => current,
+    () => PLACEHOLDER,
+  );
 
   useEffect(() => {
-    const tick = () => setTime(formatIST(new Date()));
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
+    startTicker();
   }, []);
 
   return (
-    <span className={`clk clock ${className}`} aria-label="Current local time (IST)">
+    <span
+      className={`clk clock ${className}`}
+      aria-label="Current local time (IST)"
+    >
       {time}
     </span>
   );

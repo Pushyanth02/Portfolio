@@ -14,10 +14,11 @@ const BELIEFS: Belief[] = [
     title: "Deterministic core. AI at the steering wheel.",
     body: (
       <>
-        I hammer frontier models daily — Claude, Gemini, GPT, local weights. But intelligence
-        without inspectability is just gambling. Every AI pipeline I architect must be{" "}
-        <strong>deterministic at its core:</strong> bit-for-bit replayable, auditable down to
-        the token, and toggleable on command. Never outsource taste, logic, or truth to a black box.
+        I hammer frontier models daily — Claude, Gemini, GPT, local weights. But
+        intelligence without inspectability is just gambling. Every AI pipeline
+        I architect must be <strong>deterministic at its core:</strong>{" "}
+        bit-for-bit replayable, auditable down to the token, and toggleable on
+        command. Never outsource taste, logic, or truth to a black box.
       </>
     ),
     img: "/art/belief-ai.webp",
@@ -29,9 +30,11 @@ const BELIEFS: Belief[] = [
     title: "Your data stays on your metal.",
     body: (
       <>
-        If software dies when the WiFi drops, or phones home every keystroke to an ad broker,
-        it&apos;s not a tool — it&apos;s a leash. I build <strong>self-hosted, offline-first architectures</strong> powered
-        by SQLite, Prisma, and ironclad boundaries. Zero telemetry, zero cloud hostages, and a locked front door.
+        If software dies when the WiFi drops, or phones home every keystroke to
+        an ad broker, it&apos;s not a tool — it&apos;s a leash. I build{" "}
+        <strong>self-hosted, offline-first architectures</strong> powered by
+        SQLite, Prisma, and ironclad boundaries. Zero telemetry, zero cloud
+        hostages, and a locked front door.
       </>
     ),
     img: "/art/belief-data.webp",
@@ -43,9 +46,11 @@ const BELIEFS: Belief[] = [
     title: "Compound in public. Fork without permission.",
     body: (
       <>
-        Good code dies in private repos; great systems <strong>compound under the sunlight</strong> of
-        the open web. I chase bleeding-edge tech hands-first, break things in public, ship raw, and build
-        tools the community can inspect, fork, and push forward. Zero gatekeeping, zero fluff.
+        Good code dies in private repos; great systems{" "}
+        <strong>compound under the sunlight</strong> of the open web. I chase
+        bleeding-edge tech hands-first, break things in public, ship raw, and
+        build tools the community can inspect, fork, and push forward. Zero
+        gatekeeping, zero fluff.
       </>
     ),
     img: "/art/belief-open.webp",
@@ -62,7 +67,9 @@ export function Beliefs() {
         <p className="kicker reveal">my operating system</p>
         <h2 className="h2">
           <span className="lm">
-            <span className="lm-in">3 engineering laws I refuse to compromise on.</span>
+            <span className="lm-in">
+              3 engineering laws I refuse to compromise on.
+            </span>
           </span>
         </h2>
 
@@ -76,15 +83,19 @@ export function Beliefs() {
               <h3>{b.title}</h3>
               <p>{b.body}</p>
             </div>
-            <div className="belief-img reveal" style={{ "--d": ".15s" } as React.CSSProperties}>
+            <div
+              className="belief-img reveal"
+              style={{ "--d": ".15s" } as React.CSSProperties}
+            >
               <div className="kb">
                 <img
                   src={assetUrl(b.img)}
                   alt={b.alt}
-                  width={1200}
-                  height={896}
+                  width={1080}
+                  height={806}
                   loading="lazy"
                   decoding="async"
+                  sizes="(max-width: 960px) 100vw, 50vw"
                 />
               </div>
             </div>

@@ -20,17 +20,58 @@ import { useEffect, useRef } from "react";
  * and a speech bubble with a playful greeting.
  *
  * Disabled entirely under prefers-reduced-motion (CSS hides #rover).
+ *
+ * Performance notes:
+ * - Dock geometry is cached and refreshed on scroll/resize (rAF-throttled) plus
+ *   a slow fallback tick — never inside the animation loop. This avoids forcing
+ *   layout reads (`getBoundingClientRect`) every frame.
+ * - Collision checks use 3 sample points instead of 5 to cut `elementsFromPoint`
+ *   layout reads.
+ * - Trail dots are pooled and reused instead of allocating + GC-ing every tick.
  */
 
 const TEXT_TAGS = new Set([
-  "P", "H1", "H2", "H3", "H4", "H5", "H6", "LI", "A", "BUTTON", "LABEL",
-  "BLOCKQUOTE", "TD", "TH", "CODE", "PRE", "B", "STRONG", "EM", "SMALL",
-  "TIME", "FIGCAPTION", "SPAN", "INPUT", "TEXTAREA", "SELECT",
+  "P",
+  "H1",
+  "H2",
+  "H3",
+  "H4",
+  "H5",
+  "H6",
+  "LI",
+  "A",
+  "BUTTON",
+  "LABEL",
+  "BLOCKQUOTE",
+  "TD",
+  "TH",
+  "CODE",
+  "PRE",
+  "B",
+  "STRONG",
+  "EM",
+  "SMALL",
+  "TIME",
+  "FIGCAPTION",
+  "SPAN",
+  "INPUT",
+  "TEXTAREA",
+  "SELECT",
 ]);
 
 const GLYPHS = ["♥", "★", "✦", "∞", "✨", "💬"];
 const COLORS = ["#E8603C", "#F2B33D", "#3E7C4F", "#FBF6EC", "#FFFFFF"];
-const BUBBLES = ["let's chat!", "let's build!", "hi!", "hello!", "∞", "yay!", "ping!", "hey!", "👋"];
+const BUBBLES = [
+  "let's chat!",
+  "let's build!",
+  "hi!",
+  "hello!",
+  "∞",
+  "yay!",
+  "ping!",
+  "hey!",
+  "👋",
+];
 
 export function Rover() {
   const ref = useRef<HTMLDivElement>(null);
@@ -57,26 +98,43 @@ export function Rover() {
     };
 
     // Does a 40px box around (x,y) overlap any readable text element?
+    // 3 sample points (center + two corners) — fewer `elementsFromPoint` reads.
     const isBlocked = (x: number, y: number): boolean => {
       const samples = [
         [x, y],
         [x - 22, y - 22],
-        [x + 22, y - 22],
-        [x - 22, y + 22],
         [x + 22, y + 22],
       ];
       for (const [px, py] of samples) {
-        if (px < 0 || py < 0 || px > window.innerWidth || py > window.innerHeight) continue;
+        if (
+          px < 0 ||
+          py < 0 ||
+          px > window.innerWidth ||
+          py > window.innerHeight
+        )
+          continue;
         const els = document.elementsFromPoint(px, py);
         for (const el of els) {
           const id = el.id;
-          if (id === "rover" || id === "progress" || id === "top" || id === "connect-rover-dock") continue;
+          if (
+            id === "rover" ||
+            id === "progress" ||
+            id === "top" ||
+            id === "connect-rover-dock"
+          )
+            continue;
           const cn = typeof el.className === "string" ? el.className : "";
           if (
-            cn.includes("trail-dot") || cn.includes("spark") || cn.includes("pop") ||
-            cn.includes("bub") || cn.includes("noise") || cn.includes("skip") ||
-            cn.includes("rover") || cn.includes("dock")
-          ) continue;
+            cn.includes("trail-dot") ||
+            cn.includes("spark") ||
+            cn.includes("pop") ||
+            cn.includes("bub") ||
+            cn.includes("noise") ||
+            cn.includes("skip") ||
+            cn.includes("rover") ||
+            cn.includes("dock")
+          )
+            continue;
           if (TEXT_TAGS.has(el.tagName)) return true;
         }
       }
@@ -88,9 +146,9 @@ export function Rover() {
       const m = 80;
       const top = 100;
       const bottom = window.innerHeight - 120;
-      for (let i = 0; i < 24; i++) {
+      for (let i = 0; i < 16; i++) {
         const ang = Math.random() * Math.PI * 2;
-        const dist = 140 + Math.random() * 300;
+        const dist = 120 + Math.random() * 240;
         let cx = state.x + Math.cos(ang) * dist;
         let cy = state.y + Math.sin(ang) * dist;
         cx = Math.max(m, Math.min(window.innerWidth - m, cx));
@@ -107,38 +165,82 @@ export function Rover() {
     };
 
     pick();
-    state.next = performance.now() + 3500;
+    state.next = performance.now() + 7000;
 
     let raf = 0;
     let isHidden = false;
     let lastT = performance.now();
 
-    // Check if Connect section is in viewport and get exact docking coordinates
-    const checkDocking = (): {
+    // Resolve dock targets and rover size once — per-frame getElementById +
+    // offsetWidth reads force layout recalcs every tick.
+    const dockEl = document.getElementById("connect-rover-dock");
+    const connectEl = document.getElementById("connect");
+    const roverW = rover.offsetWidth || 36;
+    const roverH = rover.offsetHeight || 36;
+
+    type DockInfo = {
       inConnect: boolean;
       dockX: number;
       dockY: number;
       centerX: number;
       centerY: number;
-    } => {
-      const dockEl = document.getElementById("connect-rover-dock");
-      const connectEl = document.getElementById("connect");
-      if (!dockEl || !connectEl) {
-        return { inConnect: false, dockX: 0, dockY: 0, centerX: 0, centerY: 0 };
-      }
+    };
+    const NO_DOCK: DockInfo = {
+      inConnect: false,
+      dockX: 0,
+      dockY: 0,
+      centerX: 0,
+      centerY: 0,
+    };
 
+    // Cached dock geometry: recomputed on scroll/resize (rAF-throttled) or a
+    // slow fallback tick — never every frame. This keeps docked tracking smooth
+    // without forcing layout reads inside the animation loop.
+    let dockInfo: DockInfo = NO_DOCK;
+    let dockDirty = true;
+    let lastDockCheck = 0;
+
+    const refreshDock = () => {
+      if (!dockEl || !connectEl) {
+        dockInfo = NO_DOCK;
+        return;
+      }
       const cRect = connectEl.getBoundingClientRect();
       const dRect = dockEl.getBoundingClientRect();
-      const inView = cRect.top < window.innerHeight * 0.82 && cRect.bottom > 64 && dRect.bottom > 64;
+      const inView =
+        cRect.top < window.innerHeight * 0.88 &&
+        cRect.bottom > 64 &&
+        dRect.bottom > 64;
+      dockInfo = {
+        inConnect: inView,
+        dockX: dRect.left + (dRect.width - roverW) / 2,
+        dockY: dRect.top + (dRect.height - roverH) / 2,
+        centerX: dRect.left + dRect.width / 2,
+        centerY: dRect.top + dRect.height / 2,
+      };
+    };
 
-      const roverW = rover.offsetWidth || 36;
-      const roverH = rover.offsetHeight || 36;
-      const dockX = dRect.left + (dRect.width - roverW) / 2;
-      const dockY = dRect.top + (dRect.height - roverH) / 2;
-      const centerX = dRect.left + dRect.width / 2;
-      const centerY = dRect.top + dRect.height / 2;
+    let dockRaf = 0;
+    const scheduleDockRefresh = () => {
+      if (dockRaf) return;
+      dockRaf = requestAnimationFrame(() => {
+        dockRaf = 0;
+        refreshDock();
+      });
+    };
 
-      return { inConnect: inView, dockX, dockY, centerX, centerY };
+    // Trail-dot pool — reuse spans instead of allocating + GC-ing every tick.
+    const trailPool: HTMLSpanElement[] = [];
+    const spawnTrail = () => {
+      const td = trailPool.pop() ?? document.createElement("span");
+      td.className = "trail-dot";
+      td.style.left = `${state.x + 14}px`;
+      td.style.top = `${state.y + 14}px`;
+      document.body.appendChild(td);
+      window.setTimeout(() => {
+        td.remove();
+        trailPool.push(td);
+      }, 950);
     };
 
     const loop = (t: number) => {
@@ -147,8 +249,15 @@ export function Rover() {
       const dt = Math.min(Math.max((t - lastT) / 1000, 0.001), 0.1);
       lastT = t;
 
-      const { inConnect, dockX, dockY, centerX, centerY } = checkDocking();
-      const dockEl = document.getElementById("connect-rover-dock");
+      // Refresh cached dock geometry on a slow fallback tick while roaming;
+      // while docking/docked, scroll/resize events keep it fresh.
+      if (dockDirty || t - lastDockCheck > 500) {
+        refreshDock();
+        dockDirty = false;
+        lastDockCheck = t;
+      }
+
+      const { inConnect, dockX, dockY, centerX, centerY } = dockInfo;
 
       if (inConnect) {
         // --- DOCKING / DOCKED MODE ---
@@ -160,15 +269,15 @@ export function Rover() {
           state.tx = dockX;
           state.ty = dockY;
 
-          // Smooth exponential magnetic convergence into dock
-          const k = 7.2;
+          // Gentle exponential magnetic convergence into dock (half the old rate)
+          const k = 3.8;
           const factor = 1 - Math.exp(-k * dt);
           state.x += (dockX - state.x) * factor;
           state.y += (dockY - state.y) * factor;
 
           const dist = Math.hypot(dockX - state.x, dockY - state.y);
-          const targetRot = Math.sin(t / 750) * 3.5;
-          state.rot += (targetRot - state.rot) * (1 - Math.exp(-6 * dt));
+          const targetRot = Math.sin(t / 900) * 3;
+          state.rot += (targetRot - state.rot) * (1 - Math.exp(-4 * dt));
 
           rover.style.transform = `translate3d(${state.x.toFixed(2)}px, ${state.y.toFixed(2)}px, 0) rotate(${state.rot.toFixed(2)}deg)`;
 
@@ -186,52 +295,61 @@ export function Rover() {
             rip.style.top = `${centerY}px`;
             document.body.appendChild(rip);
             window.setTimeout(() => rip.remove(), 700);
+
+            // Soft landing settle bounce
+            rover.classList.remove("settle");
+            void rover.offsetWidth;
+            rover.classList.add("settle");
+            window.setTimeout(() => rover.classList.remove("settle"), 550);
           }
         } else if (state.mode === "docked") {
           // Zero-lag tracking of dock position on scroll + gentle organic breathing
-          const breathY = Math.sin(t / 800) * 1.5;
+          const breathY = Math.sin(t / 1000) * 1.2;
           state.x = dockX;
           state.y = dockY + breathY;
 
-          const idleRot = Math.sin(t / 750) * 3.5;
-          state.rot += (idleRot - state.rot) * (1 - Math.exp(-8 * dt));
+          const idleRot = Math.sin(t / 900) * 3;
+          state.rot += (idleRot - state.rot) * (1 - Math.exp(-5 * dt));
 
           rover.style.transform = `translate3d(${state.x.toFixed(2)}px, ${state.y.toFixed(2)}px, 0) rotate(${state.rot.toFixed(2)}deg)`;
 
-          if (!rover.classList.contains("docked")) rover.classList.add("docked");
-          if (dockEl && !dockEl.classList.contains("rover-settled")) dockEl.classList.add("rover-settled");
+          if (!rover.classList.contains("docked"))
+            rover.classList.add("docked");
+          if (dockEl && !dockEl.classList.contains("rover-settled"))
+            dockEl.classList.add("rover-settled");
         }
       } else {
         // --- UNDOCKED / WANDERING / LIFTOFF MODE ---
         if (state.mode === "docked" || state.mode === "docking") {
           // Just left Connect: initiate graceful buoyant liftoff
           state.mode = "liftoff";
-          state.liftoffUntil = t + 700;
+          state.liftoffUntil = t + 1100;
           rover.classList.remove("docked");
           if (dockEl) dockEl.classList.remove("rover-settled");
 
-          // Initial liftoff impulse upward and away
+          // Initial liftoff impulse upward and away (half the old speed)
           const dir = state.x > window.innerWidth * 0.5 ? -1 : 1;
-          state.vx = dir * (100 + Math.random() * 60);
-          state.vy = -180 - Math.random() * 60;
+          state.vx = dir * (50 + Math.random() * 30);
+          state.vy = -90 - Math.random() * 30;
           pick();
-          state.next = t + 3200 + Math.random() * 2500;
+          state.next = t + 6400 + Math.random() * 5000;
         }
 
         if (state.mode === "liftoff") {
           // Smooth liftoff physics transitioning into wandering
-          state.vx *= Math.exp(-3.5 * dt);
-          state.vy *= Math.exp(-3.5 * dt);
+          state.vx *= Math.exp(-2 * dt);
+          state.vy *= Math.exp(-2 * dt);
           state.x += state.vx * dt;
           state.y += state.vy * dt;
 
-          const blend = 1 - Math.exp(-2.2 * dt);
+          const blend = 1 - Math.exp(-1.1 * dt);
           state.x += (state.tx - state.x) * blend;
           state.y += (state.ty - state.y) * blend;
 
           const dx = state.tx - state.x;
-          const waveRot = Math.sin(t / 650) * 18 + Math.max(-18, Math.min(18, dx * 0.12));
-          state.rot += (waveRot - state.rot) * (1 - Math.exp(-5 * dt));
+          const waveRot =
+            Math.sin(t / 800) * 14 + Math.max(-14, Math.min(14, dx * 0.08));
+          state.rot += (waveRot - state.rot) * (1 - Math.exp(-3 * dt));
 
           rover.style.transform = `translate3d(${state.x.toFixed(2)}px, ${state.y.toFixed(2)}px, 0) rotate(${state.rot.toFixed(2)}deg)`;
 
@@ -239,8 +357,8 @@ export function Rover() {
             state.mode = "wander";
           }
         } else {
-          // Free wandering mode
-          const wanderRate = 1 - Math.exp(-1.8 * dt);
+          // Free wandering mode — half the old speed
+          const wanderRate = 1 - Math.exp(-0.9 * dt);
           state.x += (state.tx - state.x) * wanderRate;
           state.y += (state.ty - state.y) * wanderRate;
 
@@ -248,26 +366,21 @@ export function Rover() {
           const dy = state.ty - state.y;
           const dist = Math.hypot(dx, dy);
 
-          const targetTilt = Math.max(-18, Math.min(18, dx * 0.12));
-          const waveRot = Math.sin(t / 650) * 18 + targetTilt;
-          state.rot += (waveRot - state.rot) * (1 - Math.exp(-5 * dt));
+          const targetTilt = Math.max(-14, Math.min(14, dx * 0.08));
+          const waveRot = Math.sin(t / 800) * 14 + targetTilt;
+          state.rot += (waveRot - state.rot) * (1 - Math.exp(-3 * dt));
 
           rover.style.transform = `translate3d(${state.x.toFixed(2)}px, ${state.y.toFixed(2)}px, 0) rotate(${state.rot.toFixed(2)}deg)`;
 
           if (dist < 40 || t > state.next) {
             pick();
-            state.next = t + 3400 + Math.random() * 4000;
+            state.next = t + 6800 + Math.random() * 8000;
           }
 
           // Fading coral trail (only when moving in wandering mode)
-          if (dist > 6 && t - state.lt > 200) {
+          if (dist > 6 && t - state.lt > 260) {
             state.lt = t;
-            const td = document.createElement("span");
-            td.className = "trail-dot";
-            td.style.left = `${state.x + 14}px`;
-            td.style.top = `${state.y + 14}px`;
-            document.body.appendChild(td);
-            window.setTimeout(() => td.remove(), 950);
+            spawnTrail();
           }
         }
       }
@@ -284,7 +397,7 @@ export function Rover() {
       } else {
         isHidden = false;
         lastT = performance.now();
-        state.next = performance.now() + 2000;
+        state.next = performance.now() + 4000;
         cancelAnimationFrame(raf);
         raf = requestAnimationFrame(loop);
       }
@@ -295,6 +408,8 @@ export function Rover() {
       const m = 80;
       state.x = Math.max(m, Math.min(window.innerWidth - m, state.x));
       state.y = Math.max(100, Math.min(window.innerHeight - 120, state.y));
+      dockDirty = true;
+      scheduleDockRefresh();
       if (state.mode === "wander") pick();
     };
     window.addEventListener("resize", onResize);
@@ -302,6 +417,7 @@ export function Rover() {
     // Re-pick on scroll when roaming if blocked
     let scrollTimer = 0;
     const onScroll = () => {
+      scheduleDockRefresh();
       window.clearTimeout(scrollTimer);
       scrollTimer = window.setTimeout(() => {
         if (state.mode === "wander" && isBlocked(state.x, state.y)) {
@@ -357,19 +473,31 @@ export function Rover() {
     rover.addEventListener("click", onClick);
 
     // Also bind click on dock element so clicking the pad triggers the reaction
-    const dockEl = document.getElementById("connect-rover-dock");
+    // (and Enter/Space now that the dock is keyboard-focusable).
+    const onDockKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onClick();
+      }
+    };
     if (dockEl) {
       dockEl.addEventListener("click", onClick);
+      dockEl.addEventListener("keydown", onDockKey);
     }
 
     return () => {
       cancelAnimationFrame(raf);
+      if (dockRaf) cancelAnimationFrame(dockRaf);
       document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("scroll", onScroll);
       rover.removeEventListener("click", onClick);
-      if (dockEl) dockEl.removeEventListener("click", onClick);
+      if (dockEl) {
+        dockEl.removeEventListener("click", onClick);
+        dockEl.removeEventListener("keydown", onDockKey);
+      }
       window.clearTimeout(scrollTimer);
+      trailPool.forEach((td) => td.remove());
     };
   }, []);
 

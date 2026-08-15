@@ -17,18 +17,33 @@ const WORK: WorkItem[] = [
     liveUrl: "https://lemniscate2.vercel.app",
     desc: (
       <>
-        A self-hosted platform that turns <strong>PDFs, DOCX &amp; TXT into structured, cinematic narratives</strong> —
-        a deterministic classical-NLP core with opt-in AI enrichment layers you can toggle, audit and replay.
+        A self-hosted platform that turns{" "}
+        <strong>
+          PDFs, DOCX &amp; TXT into structured, cinematic narratives
+        </strong>{" "}
+        — a deterministic classical-NLP core with opt-in AI enrichment layers
+        you can toggle, audit and replay.
       </>
     ),
     learnt:
       "AI accelerates the build; determinism protects the user. The best AI features are the ones you can switch off and replay bit-for-bit.",
-    tags: ["Next.js 16", "TypeScript", "Prisma + SQLite", "Socket.IO", "Docker"],
+    tags: [
+      "Next.js 16",
+      "TypeScript",
+      "Prisma + SQLite",
+      "Socket.IO",
+      "Docker",
+    ],
     img: "/art/lemniscate.webp",
     alt: "Illustration of an infinity-loop film reel track where manuscript pages transform into luminous cinematic scenes, directed by a cute robot with a clapperboard",
     stats: [
       { value: "225", num: 225, label: "commits" },
-      { value: "100%", num: 100, suffix: "%", label: "auditable pipeline decisions" },
+      {
+        value: "100%",
+        num: 100,
+        suffix: "%",
+        label: "auditable pipeline decisions",
+      },
       { value: "1", num: 1, label: "live self-hosted deploy" },
     ],
   },
@@ -38,9 +53,10 @@ const WORK: WorkItem[] = [
     liveUrl: "https://infinityfg.vercel.app",
     desc: (
       <>
-        A <strong>farming-automation / story-progression game</strong> where the economy is balanced by a
-        seeded, replayable simulation — AI-assisted tooling in the loop, deterministic core underneath,
-        and every balance change CI-gated before merge.
+        A <strong>farming-automation / story-progression game</strong> where the
+        economy is balanced by a seeded, replayable simulation — AI-assisted
+        tooling in the loop, deterministic core underneath, and every balance
+        change CI-gated before merge.
       </>
     ),
     learnt:
@@ -49,7 +65,12 @@ const WORK: WorkItem[] = [
     img: "/art/infinityfg.webp",
     alt: "Illustration of an infinity-loop automated farm with glowing hydroponic crop plots, robotic watering arms, seed packets, and floating dice beside a friendly gardener robot",
     stats: [
-      { value: "100%", num: 100, suffix: "%", label: "seeded, replayable sessions" },
+      {
+        value: "100%",
+        num: 100,
+        suffix: "%",
+        label: "seeded, replayable sessions",
+      },
       { value: "CI", label: "gated economy merges" },
       { value: "live", label: "demo on vercel" },
     ],
@@ -60,14 +81,22 @@ const WORK: WorkItem[] = [
     liveUrl: "https://pushyanth02.github.io/Dungeoncore-Necromancer/",
     desc: (
       <>
-        A serialized-novel reading platform — <strong>63 chapters across 7 arcs</strong>, a World Codex,
-        ⌘K fuzzy search, generative Web Audio soundscapes, and four hidden easter eggs. One tuned dark
-        theme; no database, no server runtime, fully static.
+        A serialized-novel reading platform —{" "}
+        <strong>63 chapters across 7 arcs</strong>, a World Codex, ⌘K fuzzy
+        search, generative Web Audio soundscapes, and four hidden easter eggs.
+        One tuned dark theme; no database, no server runtime, fully static.
       </>
     ),
     learnt:
       "a site doesn't need a server to feel alive. Generative audio, persistent local state and a carefully tuned dark theme can carry an entire reading experience with zero runtime cost.",
-    tags: ["Next.js 16", "TypeScript", "Tailwind 4", "shadcn/ui", "Zustand", "Web Audio"],
+    tags: [
+      "Next.js 16",
+      "TypeScript",
+      "Tailwind 4",
+      "shadcn/ui",
+      "Zustand",
+      "Web Audio",
+    ],
     img: "/art/dungeoncore.webp",
     alt: "Illustration of an open ancient book glowing by candlelight with a small friendly ghost reading it, stone dungeon arches, floating infinity symbols and musical notes",
     stats: [
@@ -86,7 +115,9 @@ export function Work() {
       <div className="wrap">
         <p className="kicker reveal">the highlight reel</p>
         <h2 className="h2" style={{ marginBottom: "clamp(36px, 5vw, 64px)" }}>
-          <span className="lm"><span className="lm-in">Work that actually shipped.</span></span>
+          <span className="lm">
+            <span className="lm-in">Work that actually shipped.</span>
+          </span>
         </h2>
 
         {WORK.map((w) => (
@@ -94,7 +125,12 @@ export function Work() {
             <div className="wb-top">
               <h3>{w.name}</h3>
               <span className="wb-kick">{w.kick}</span>
-              <a className="wb-link" href={w.liveUrl} target="_blank" rel="noopener noreferrer">
+              <a
+                className="wb-link"
+                href={w.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 live ↗
               </a>
             </div>
@@ -116,17 +152,20 @@ export function Work() {
               <img
                 src={assetUrl(w.img)}
                 alt={w.alt}
-                width={1376}
-                height={768}
+                width={1280}
+                height={714}
                 loading="lazy"
                 decoding="async"
+                sizes="(max-width: 960px) 100vw, 75vw"
               />
             </div>
             <div className="impact">
               {w.stats.map((s) => (
                 <div key={s.label}>
                   {s.num !== undefined ? (
-                    <b data-num={s.num} data-suffix={s.suffix ?? ""}>{s.value}</b>
+                    <b data-num={s.num} data-suffix={s.suffix ?? ""}>
+                      {s.value}
+                    </b>
                   ) : (
                     <b>{s.value}</b>
                   )}

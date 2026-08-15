@@ -78,7 +78,10 @@ export function Connect() {
       }
       ta.remove();
     }
-    toast.success("Email copied to clipboard", { description: addr, duration: 2200 });
+    toast.success("Email copied to clipboard", {
+      description: addr,
+      duration: 2200,
+    });
     const card = cardRef.current;
     if (card) {
       card.classList.add("copied");
@@ -90,17 +93,35 @@ export function Connect() {
     <section className="connect" id="connect">
       <div className="wrap">
         <div className="connect-head">
-          <div id="connect-rover-dock" className="rover-dock" aria-label="Rover landing pad" title="Rover dock">
-            <span className="dock-ghost" aria-hidden="true"><Icon name="inf" /></span>
+          <div
+            id="connect-rover-dock"
+            className="rover-dock"
+            aria-label="Rover landing pad"
+            title="Rover dock"
+            role="button"
+            tabIndex={0}
+          >
+            <span className="dock-ghost" aria-hidden="true">
+              <Icon name="inf" />
+            </span>
           </div>
-          <h2><span className="lm"><span className="lm-in">let&apos;s <em>chat!</em></span></span></h2>
+          <h2>
+            <span className="lm">
+              <span className="lm-in">
+                let&apos;s <em>chat!</em>
+              </span>
+            </span>
+          </h2>
           <p className="connect-intro reveal">
-            Got a project, a problem, or a beautifully weird idea? No forms, no funnels — just pick a
-            line and I&apos;ll answer.
+            Got a project, a problem, or a beautifully weird idea? No forms, no
+            funnels — just pick a line and I&apos;ll answer.
           </p>
         </div>
 
-        <div className="connect-grid reveal" style={{ "--d": ".12s" } as React.CSSProperties}>
+        <div
+          className="connect-grid reveal"
+          style={{ "--d": ".12s" } as React.CSSProperties}
+        >
           {CHANNELS.map((c) =>
             c.copy ? (
               <button
@@ -111,10 +132,18 @@ export function Connect() {
                 aria-label="Copy email address to clipboard"
                 onClick={onCopy}
               >
-                <span className="ccard-ic"><Icon name={c.icon} /></span>
+                <span className="ccard-ic">
+                  <Icon name={c.icon} />
+                </span>
                 <span className="ccard-label">{c.label}</span>
-                <span className="ccard-handle"><span ref={mailValRef} className="handle-text">{c.handle}</span></span>
-                <span className="ccard-action">{c.action} <span className="arr">↗</span></span>
+                <span className="ccard-handle">
+                  <span ref={mailValRef} className="handle-text">
+                    {c.handle}
+                  </span>
+                </span>
+                <span className="ccard-action">
+                  {c.action} <span className="arr">↗</span>
+                </span>
               </button>
             ) : (
               <a
@@ -125,16 +154,25 @@ export function Connect() {
                 rel="noopener noreferrer"
                 aria-label={`${c.label}: ${c.handle}`}
               >
-                <span className="ccard-ic"><Icon name={c.icon} fill /></span>
+                <span className="ccard-ic">
+                  <Icon name={c.icon} fill />
+                </span>
                 <span className="ccard-label">{c.label}</span>
-                <span className="ccard-handle"><span className="handle-text">{c.handle}</span></span>
-                <span className="ccard-action">{c.action} <span className="arr">↗</span></span>
+                <span className="ccard-handle">
+                  <span className="handle-text">{c.handle}</span>
+                </span>
+                <span className="ccard-action">
+                  {c.action} <span className="arr">↗</span>
+                </span>
               </a>
-            )
+            ),
           )}
         </div>
 
-        <p className="cta-note reveal" style={{ "--d": ".25s" } as React.CSSProperties}>
+        <p
+          className="cta-note reveal"
+          style={{ "--d": ".25s" } as React.CSSProperties}
+        >
           Replies usually ship faster than features.
         </p>
       </div>
