@@ -26,7 +26,7 @@ const CHANNELS: Channel[] = [
     key: "email",
     icon: "mail",
     label: "Email",
-    handle: "pushyanth2008 [at] gmail [dot] com",
+    handle: "pushyanth2008@gmail.com",
     action: "click to copy",
     copy: true,
   },
@@ -90,7 +90,9 @@ export function Connect() {
     <section className="connect" id="connect">
       <div className="wrap">
         <div className="connect-head">
-          <span className="wave" aria-hidden="true"><Icon name="inf" /></span>
+          <div id="connect-rover-dock" className="rover-dock" aria-label="Rover landing pad" title="Rover dock">
+            <span className="dock-ghost" aria-hidden="true"><Icon name="inf" /></span>
+          </div>
           <h2><span className="lm"><span className="lm-in">let&apos;s <em>chat!</em></span></span></h2>
           <p className="connect-intro reveal">
             Got a project, a problem, or a beautifully weird idea? No forms, no funnels — just pick a
@@ -111,7 +113,7 @@ export function Connect() {
               >
                 <span className="ccard-ic"><Icon name={c.icon} /></span>
                 <span className="ccard-label">{c.label}</span>
-                <span className="ccard-handle"><span ref={mailValRef}>{c.handle}</span></span>
+                <span className="ccard-handle"><span ref={mailValRef} className="handle-text">{c.handle}</span></span>
                 <span className="ccard-action">{c.action} <span className="arr">↗</span></span>
               </button>
             ) : (
@@ -125,7 +127,7 @@ export function Connect() {
               >
                 <span className="ccard-ic"><Icon name={c.icon} fill /></span>
                 <span className="ccard-label">{c.label}</span>
-                <span className="ccard-handle">{c.handle}</span>
+                <span className="ccard-handle"><span className="handle-text">{c.handle}</span></span>
                 <span className="ccard-action">{c.action} <span className="arr">↗</span></span>
               </a>
             )
