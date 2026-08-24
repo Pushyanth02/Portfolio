@@ -44,10 +44,9 @@ export function Hero() {
           </span>
         </h1>
         <p className="hero-sub">
-          CS/DSA student building for the open web. I integrate Claude, Codex,
-          Gemini &amp; friends deep into my workflows — shipping AI-powered
-          features while keeping every outcome deterministic, self-hosted and
-          auditable.
+          CS student building for the open web. I integrate Claude, Gemini &amp;
+          friends deep into my workflows — shipping AI-powered features while
+          keeping every outcome deterministic, self-hosted and auditable.
         </p>
       </div>
 

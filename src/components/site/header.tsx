@@ -7,22 +7,28 @@ type NavLink = {
   href: string;
   label: string;
   hot?: boolean;
+  isResume?: boolean;
 };
 
 const NAV_LINKS: NavLink[] = [
   { href: "#stack", label: "stack" },
   { href: "#work", label: "work" },
   { href: "#about", label: "about" },
+  { href: "#resume", label: "resume", isResume: true },
   { href: "#connect", label: "connect", hot: true },
 ];
 
-export function Header() {
+interface HeaderProps {
+  onOpenResume?: () => void;
+}
+
+export function Header({ onOpenResume }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState<string>("");
 
   // Scrollspy: mark the nav link whose section is in view.
   useEffect(() => {
-    const ids = NAV_LINKS.map((l) => l.href.slice(1));
+    const ids = NAV_LINKS.filter((l) => !l.isResume).map((l) => l.href.slice(1));
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((en) => {
@@ -56,6 +62,32 @@ export function Header() {
     };
   }, [open]);
 
+
+  // Smooth-scroll nav: guarantees consistent section navigation across
+  // browsers/states (native hash jumps can misbehave with fixed headers).
+  const handleAnchor = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setOpen(false);
+    const el = document.getElementById(href.slice(1));
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.pushState(null, "", href);
+      el.setAttribute("tabindex", "-1");
+      el.focus({ preventScroll: true });
+    } else {
+      history.pushState(null, "", href);
+    }
+  };
+
+  const handleResumeClick = () => {
+    setOpen(false);
+    if (onOpenResume) {
+      onOpenResume();
+    } else {
+      window.dispatchEvent(new CustomEvent("open-resume"));
+    }
+  };
+
   return (
     <header className="site-head">
       <div className="wrap head-in">
@@ -72,17 +104,29 @@ export function Header() {
           <Icon name="menu" style={{ width: 20, height: 20 }} />
         </button>
         <nav className={`nav${open ? " open" : ""}`} id="siteNav" aria-label="Primary">
-          {NAV_LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className={`${l.hot ? "hot" : ""} ${active === l.href.slice(1) ? "active" : ""}`}
-              aria-current={active === l.href.slice(1) ? "page" : undefined}
-              onClick={() => setOpen(false)}
-            >
-              {l.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((l) =>
+            l.isResume ? (
+              <button
+                key={l.label}
+                type="button"
+                className="nav-resume-btn"
+                onClick={handleResumeClick}
+                aria-label="Open Vulavala Pushyanth Reddy Resume"
+              >
+                {l.label} <span className="nav-resume-badge"><Icon name="inf" /></span>
+              </button>
+            ) : (
+              <a
+                key={l.href}
+                href={l.href}
+                className={`${l.hot ? "hot" : ""} ${active === l.href.slice(1) ? "active" : ""}`}
+                aria-current={active === l.href.slice(1) ? "page" : undefined}
+                onClick={(e) => handleAnchor(e, l.href)}
+              >
+                {l.label}
+              </a>
+            )
+          )}
         </nav>
       </div>
     </header>

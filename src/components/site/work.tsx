@@ -1,7 +1,11 @@
+import { Icon } from "./icons";
+import { assetUrl } from "@/lib/utils";
+
 type WorkItem = {
   name: string;
   kick: string;
-  liveUrl: string;
+  liveUrl?: string;
+  githubUrl?: string;
   desc: React.ReactNode;
   learnt: string;
   tags: string[];
@@ -13,85 +17,94 @@ type WorkItem = {
 const WORK: WorkItem[] = [
   {
     name: "Lemniscate ∞",
-    kick: "flagship · self-hosted platform",
+    kick: "flagship · local-first ai reading room",
     liveUrl: "https://lemniscate2.vercel.app",
+    githubUrl: "https://github.com/Pushyanth02/Lemniscate",
     desc: (
       <>
-        A self-hosted platform that turns{" "}
-        <strong>
-          PDFs, DOCX &amp; TXT into structured, cinematic narratives
-        </strong>{" "}
-        — a deterministic classical-NLP core with opt-in AI enrichment layers
-        you can toggle, audit and replay.
+        A sovereign, <strong>local-first AI reading room</strong> that turns
+        PDFs, EPUBs, DOCX, and stories into chapter-aware interactive spaces.
+        Zero cloud databases (IndexedDB vault), zero proxy servers (direct
+        OpenRouter BYOK), 3 dedicated margin companions, and an offline Anchor
+        extractive NLP engine.
       </>
     ),
     learnt:
-      "AI accelerates the build; determinism protects the user. The best AI features are the ones you can switch off and replay bit-for-bit.",
+      "local-first architecture protects user sovereignty. When persistence stays in browser memory and AI degrades gracefully to extractive NLP offline, software becomes a permanent tool rather than a subscription leash.",
     tags: [
       "Next.js 16",
-      "TypeScript",
-      "Prisma + SQLite",
-      "Socket.IO",
-      "Docker",
+      "TypeScript Strict",
+      "Tailwind 4",
+      "IndexedDB",
+      "OpenRouter BYOK",
+      "pdf.js + JSZip",
     ],
     img: "/art/lemniscate.webp",
     alt: "Illustration of an infinity-loop film reel track where manuscript pages transform into luminous cinematic scenes, directed by a cute robot with a clapperboard",
     stats: [
-      { value: "225", num: 225, label: "commits" },
       {
         value: "100%",
         num: 100,
         suffix: "%",
-        label: "auditable pipeline decisions",
+        label: "local-first · zero telemetry",
       },
-      { value: "1", num: 1, label: "live self-hosted deploy" },
+      { value: "3", num: 3, label: "dedicated ai companions" },
+      { value: "0", num: 0, label: "server proxy · sovereign client" },
     ],
   },
   {
-    name: "InfinityFG 🌱",
-    kick: "game · deterministic sim",
-    liveUrl: "https://infinityfg.vercel.app",
+    name: "Luck-O-Matic 9000 🎰",
+    kick: "luck tycoon · narrative idle incremental",
+    liveUrl: "https://Pushyanth02.github.io/LuckOMatic-9000/",
+    githubUrl: "https://github.com/Pushyanth02/LuckOMatic-9000",
     desc: (
       <>
-        A <strong>farming-automation / story-progression game</strong> where the
-        economy is balanced by a seeded, replayable simulation — AI-assisted
-        tooling in the loop, deterministic core underneath, and every balance
-        change CI-gated before merge.
+        An atmospheric, <strong>narrative-driven luck tycoon &amp; idle-incremental game</strong>.
+        Inherit Grandpa Otto&apos;s mysterious 1962 charm-printing machine, pull the brass lever
+        with procedural reel physics, automate the shop floor, unearth buried relics beneath floorboards,
+        and decipher a 5-act story etched into vintage cassette tapes.
       </>
     ),
     learnt:
-      "seeded randomness is a superpower. When every session replays exactly, balancing stops being vibes and becomes a test suite.",
-    tags: ["React 19", "TypeScript", "Vite", "Zustand", "simulate:qa:strict"],
-    img: "/art/infinityfg.webp",
-    alt: "Illustration of an infinity-loop automated farm with glowing hydroponic crop plots, robotic watering arms, seed packets, and floating dice beside a friendly gardener robot",
+      "a great idle game is worldbuilding in disguise. Procedural Web Audio synthesis, seeded reel physics, and responsive tactile animations turn simple RNG numbers into an emotional narrative arc.",
+    tags: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript 5",
+      "Tailwind 4",
+      "Web Audio API",
+      "Zustand",
+    ],
+    img: "/art/luckomatic.webp",
+    alt: "Illustration of Grandpa Otto's vintage 1962 Luck-O-Matic charm-printing machine with three glowing reels and a brass lever, printing lucky charms in a cozy warm workshop with a cute robot helper, cassette tapes, and glowing relics",
     stats: [
       {
-        value: "100%",
-        num: 100,
-        suffix: "%",
-        label: "seeded, replayable sessions",
+        value: "30",
+        num: 30,
+        label: "collectible charms · 6 tiers",
       },
-      { value: "CI", label: "gated economy merges" },
-      { value: "live", label: "demo on vercel" },
+      { value: "15", num: 15, label: "buried relics · 5 strata" },
+      { value: "5-Act", label: "story · full client audio synth" },
     ],
   },
   {
     name: "Dungeoncore Necromancer 🕯️",
-    kick: "reading platform · static export",
+    kick: "reading platform · serialized narrative world",
     liveUrl: "https://pushyanth02.github.io/Dungeoncore-Necromancer/",
+    githubUrl: "https://github.com/Pushyanth02/Dungeoncore-Necromancer",
     desc: (
       <>
-        A serialized-novel reading platform —{" "}
-        <strong>63 chapters across 7 arcs</strong>, a World Codex, ⌘K fuzzy
-        search, generative Web Audio soundscapes, and four hidden easter eggs.
-        One tuned dark theme; no database, no server runtime, fully static.
+        A serialized-novel reading platform and cosmic narrative world engine —{" "}
+        <strong>63 chapters across 7 arcs</strong>, an interactive World Codex with
+        8 factions, ⌘K fuzzy search, 6 generative real-time Web Audio soundscapes,
+        and hidden easter egg terminal layers. Zero database, zero server runtime, 100% static export.
       </>
     ),
     learnt:
-      "a site doesn't need a server to feel alive. Generative audio, persistent local state and a carefully tuned dark theme can carry an entire reading experience with zero runtime cost.",
+      "a site doesn't need a server to feel alive. Real-time synthesized audio harmonic chords, persistent local state, and a meticulously calibrated void dark theme can carry an entire universe with zero runtime cost.",
     tags: [
       "Next.js 16",
-      "TypeScript",
+      "TypeScript 5",
       "Tailwind 4",
       "shadcn/ui",
       "Zustand",
@@ -102,12 +115,15 @@ const WORK: WorkItem[] = [
     stats: [
       { value: "63", num: 63, label: "chapters · 7 arcs" },
       { value: "6", num: 6, label: "generative soundscapes" },
-      { value: "static", label: "export · no backend" },
+      {
+        value: "100%",
+        num: 100,
+        suffix: "%",
+        label: "static export · zero server cost",
+      },
     ],
   },
 ];
-
-import { assetUrl } from "@/lib/utils";
 
 export function Work() {
   return (
@@ -123,16 +139,34 @@ export function Work() {
         {WORK.map((w) => (
           <article className="work-block tilt reveal" key={w.name}>
             <div className="wb-top">
-              <h3>{w.name}</h3>
-              <span className="wb-kick">{w.kick}</span>
-              <a
-                className="wb-link"
-                href={w.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                live ↗
-              </a>
+              <div>
+                <h3>{w.name}</h3>
+                <span className="wb-kick">{w.kick}</span>
+              </div>
+              <div className="wb-actions">
+                {w.githubUrl && (
+                  <a
+                    className="wb-link wb-code"
+                    href={w.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${w.name} GitHub repository`}
+                  >
+                    <Icon name="gh" /> code ↗
+                  </a>
+                )}
+                {w.liveUrl && (
+                  <a
+                    className="wb-link wb-live"
+                    href={w.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${w.name} live deployment`}
+                  >
+                    live ↗
+                  </a>
+                )}
+              </div>
             </div>
             <p className="wb-desc">{w.desc}</p>
             <div className="wb-mid">

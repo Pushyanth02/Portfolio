@@ -122,8 +122,10 @@
     content-visibility: auto;
     contain-intrinsic-size: auto 600px;
   }
+  /* NOTE: no `paint` here — paint containment clips the boing/settle scale
+     animations to the 36px box, which visually beheads the ∞ on click. */
   #rover {
-    contain: layout paint;
+    contain: layout;
   }
   ::selection {
     background: var(--sun);
@@ -165,6 +167,7 @@ section {
   pointer-events: none;
   opacity: 0.05;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Crect width='140' height='140' fill='%23201A14'/%3E%3C/svg%3E");
+  will-change: auto;
 }
 
 /* ============ icons ============ */
@@ -202,7 +205,6 @@ section {
 }
 
 /* ============ roaming infinity ============ */
-/* ============ roaming infinity ============ */
 #rover {
   position: fixed;
   left: 0;
@@ -212,17 +214,20 @@ section {
   z-index: 900;
   cursor: pointer;
   will-change: transform;
-  transform: translate(-120px, -120px);
+  transform: translate3d(-120px, -120px, 0);
   filter: drop-shadow(0 4px 10px rgba(232, 96, 60, 0.35));
-  transition: filter 0.3s var(--ease);
+  transition: filter 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   pointer-events: auto;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 #rover svg {
   width: 100%;
   height: 100%;
-  transition: transform 0.35s var(--ease);
+  transition: transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
 }
 #rover:hover svg {
   transform: scale(1.22);
@@ -262,12 +267,14 @@ section {
   opacity: 0.45;
   z-index: 890;
   pointer-events: none;
-  animation: trailFade 0.9s ease forwards;
+  animation: trailFade 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 @keyframes trailFade {
   to {
     opacity: 0;
-    transform: scale(0.15);
+    transform: scale3d(0.15, 0.15, 1);
   }
 }
 .spark {
@@ -278,10 +285,12 @@ section {
   z-index: 910;
   pointer-events: none;
   animation: sparkFly 0.8s var(--ease) forwards;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 @keyframes sparkFly {
   to {
-    transform: translate(var(--dx), var(--dy)) rotate(var(--rr)) scale(0.15);
+    transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rr)) scale3d(0.15, 0.15, 1);
     opacity: 0;
   }
 }
@@ -324,14 +333,14 @@ section {
 /* ============ rover cute-click effects ============ */
 /* boing: the infinity does a happy bounce+spin on click */
 #rover.boing svg {
-  animation: boing 0.7s var(--ease);
+  animation: boing 0.55s var(--ease);
 }
 @keyframes boing {
   0% {
     transform: scale(1) rotate(0);
   }
   25% {
-    transform: scale(1.5) rotate(200deg);
+    transform: scale(1.35) rotate(200deg);
   }
   55% {
     transform: scale(0.85) rotate(340deg);
@@ -351,10 +360,12 @@ section {
   height: 20px;
   font: 700 15px/1 var(--mono);
   animation: popFly 0.95s var(--ease) forwards;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 @keyframes popFly {
   to {
-    transform: translate(var(--dx), var(--dy)) rotate(var(--rr)) scale(0.15);
+    transform: translate3d(var(--dx), var(--dy), 0) rotate(var(--rr)) scale3d(0.15, 0.15, 1);
     opacity: 0;
   }
 }
@@ -372,23 +383,25 @@ section {
   box-shadow: 2px 2px 0 var(--coral);
   white-space: nowrap;
   animation: bubUp 1.5s var(--ease) forwards;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 @keyframes bubUp {
   0% {
     opacity: 0;
-    transform: translate(-50%, -80%) scale(0.7);
+    transform: translate3d(-50%, -80%, 0) scale(0.7);
   }
   18% {
     opacity: 1;
-    transform: translate(-50%, -120%) scale(1);
+    transform: translate3d(-50%, -120%, 0) scale(1);
   }
   78% {
     opacity: 1;
-    transform: translate(-50%, -150%) scale(1);
+    transform: translate3d(-50%, -150%, 0) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -185%) scale(0.9);
+    transform: translate3d(-50%, -185%, 0) scale(0.9);
   }
 }
 
@@ -465,6 +478,36 @@ section {
   transform: translate(-1px, -2px);
   box-shadow: 4px 5px 0 var(--ink);
 }
+.nav-resume-btn {
+  font: 700 0.82rem var(--mono);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  touch-action: manipulation;
+}
+.nav-resume-btn:hover {
+  background: var(--sun-soft);
+  transform: translateY(-2px);
+  box-shadow: 3.5px 4px 0 var(--ink);
+}
+.nav-resume-badge {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  color: var(--coral);
+  transition: transform 0.4s var(--ease);
+}
+.nav-resume-btn:hover .nav-resume-badge {
+  transform: rotate(180deg) scale(1.15);
+}
 .menu-btn {
   display: none;
   width: 44px;
@@ -503,6 +546,8 @@ section {
 .rotator ul {
   list-style: none;
   animation: rotY 16s var(--ease) infinite;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .rotator li {
   height: 100%;
@@ -649,6 +694,8 @@ section {
   display: flex;
   width: max-content;
   animation: mq 30s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .marquee:hover .mq-track {
   animation-play-state: paused;
@@ -668,7 +715,7 @@ section {
 }
 @keyframes mq {
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
@@ -792,13 +839,15 @@ section {
   object-position: center;
   padding: 14px;
   animation: floaty 7s ease-in-out infinite alternate;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 @keyframes floaty {
   from {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateY(-6px);
+    transform: translate3d(0, -6px, 0);
   }
 }
 
@@ -890,11 +939,12 @@ section {
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: 8px 18px;
-  margin-bottom: 8px;
+  gap: 12px 18px;
+  margin-bottom: 12px;
 }
 .wb-top h3 {
   font: 700 clamp(1.5rem, 3vw, 2.5rem) var(--disp);
+  margin-bottom: 2px;
 }
 .wb-kick {
   font: 700 0.68rem var(--mono);
@@ -902,18 +952,46 @@ section {
   text-transform: uppercase;
   color: var(--leaf);
 }
-.wb-link {
-  font: 700 0.74rem var(--mono);
-  color: var(--coral);
+.wb-actions {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  border-radius: 6px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.wb-link {
+  font: 700 0.74rem var(--mono);
+  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--cream);
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+  text-decoration: none;
+  transition: all 0.2s var(--ease);
+}
+.wb-link .ic {
+  width: 14px;
+  height: 14px;
 }
 .wb-link:hover {
-  text-decoration: underline;
-  background: var(--sun-soft);
+  text-decoration: none;
+  background: var(--sun);
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.wb-link.wb-live {
+  background: var(--coral);
+  color: #fff6ec;
+}
+.wb-link.wb-live:hover {
+  background: var(--ink);
+  color: var(--sun-soft);
+}
+.wb-link.wb-code:hover {
+  background: var(--sun);
 }
 .wb-desc {
   font-size: clamp(0.95rem, 1.8vw, 1.05rem);
@@ -1185,6 +1263,8 @@ section {
   padding: clamp(14px, 3vw, 20px);
   background: var(--cream);
   animation: floaty 8s ease-in-out infinite alternate;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 .about-img figcaption {
   border-top: 1.5px solid var(--ink);
@@ -1623,6 +1703,13 @@ section {
   .nav a.hot {
     box-shadow: none;
   }
+  .nav-resume-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 16px;
+    min-height: 44px;
+    border-radius: 14px;
+  }
   .quest-grid {
     grid-template-columns: 1fr;
   }
@@ -1672,6 +1759,615 @@ section {
   }
 }
 
+/* ============ SMALL MOBILE (≤380px) ============ */
+@media (max-width: 380px) {
+  .hero-main {
+    padding: 24px 14px;
+  }
+  .thesis {
+    font: 700 clamp(1.8rem, 9vw, 2.6rem)/1.1 var(--disp);
+  }
+  .hero-sub {
+    font-size: 0.88rem;
+  }
+  .h2 {
+    font: 700 clamp(1.6rem, 6vw, 2.4rem)/1.1 var(--disp);
+  }
+  .sticker {
+    font-size: 0.7rem;
+    padding: 7px 11px;
+  }
+  .work-block {
+    padding: 16px;
+  }
+  .wb-top h3 {
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
+  }
+  .quest h4 {
+    font-size: clamp(1rem, 4vw, 1.15rem);
+  }
+  .ccard {
+    padding: 14px;
+  }
+  .connect h2 {
+    font: 700 clamp(1.8rem, 8vw, 3rem) var(--disp);
+  }
+}
+
+/* ============ RESUME MODAL & INFINITY DRAW-IN CURTAIN ============ */
+
+.infinity-slide-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2600;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Cream panels that split apart like opening a notebook */
+.iso-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 50.5%;
+  background: var(--cream);
+  will-change: transform;
+}
+.iso-top {
+  top: 0;
+  border-bottom: 1.5px solid var(--ink);
+  box-shadow: 0 4px 0 rgba(32, 26, 20, 0.12);
+  animation: isoPanelUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.72s forwards;
+}
+.iso-bottom {
+  bottom: 0;
+  border-top: 1.5px solid var(--ink);
+  box-shadow: 0 -4px 0 rgba(32, 26, 20, 0.12);
+  animation: isoPanelDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.72s forwards;
+}
+@keyframes isoPanelUp {
+  to { transform: translateY(-103%); }
+}
+@keyframes isoPanelDown {
+  to { transform: translateY(103%); }
+}
+
+/* Center stage: glyph draws itself, pops with a glow ring, then fades */
+.iso-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: isoCenterFade 0.28s ease 0.68s forwards;
+}
+.iso-inf {
+  width: clamp(96px, 15vw, 160px);
+  height: auto;
+  color: var(--coral);
+  overflow: visible;
+  filter: drop-shadow(0 6px 18px rgba(232, 96, 60, 0.55));
+  animation: isoPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) 0.46s both;
+}
+.iso-inf-path {
+  stroke-dasharray: 72;
+  stroke-dashoffset: 72;
+  animation: isoDraw 0.44s cubic-bezier(0.65, 0, 0.35, 1) 0.04s forwards;
+}
+.iso-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--sun);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.4);
+  animation: isoRing 0.62s cubic-bezier(0.16, 1, 0.3, 1) 0.34s forwards;
+}
+@keyframes isoDraw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes isoPop {
+  from { transform: scale(0.86); }
+  to { transform: scale(1); }
+}
+@keyframes isoCenterFade {
+  to { opacity: 0; }
+}
+@keyframes isoRing {
+  0% { opacity: 0.9; transform: translate(-50%, -50%) scale(0.4); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(2.6); }
+}
+
+/* ============ RESUME BACKDROP & CARD ============ */
+.resume-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  background: rgba(32, 26, 20, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 3vw, 32px);
+  animation: resumeBackdropFadeIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes resumeBackdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.resume-card {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  height: min(90vh, 960px);
+  max-height: calc(100dvh - 24px);
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: var(--r);
+  box-shadow: 10px 10px 0 var(--ink);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: resumeCardPopIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+  will-change: transform, opacity;
+}
+
+@keyframes resumeCardPopIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Header bar inside modal */
+.resume-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 18px;
+  padding: 14px clamp(16px, 2.5vw, 24px);
+  background: var(--cream);
+  border-bottom: 1.5px solid var(--ink);
+}
+.rh-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.rh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 0.7rem var(--mono);
+  letter-spacing: 0.12em;
+  background: var(--coral);
+  color: #fff6ec;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.rh-inf {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+}
+.rh-inf svg {
+  width: 100%;
+  height: 100%;
+}
+.rh-name {
+  font: 700 clamp(1.05rem, 2vw, 1.25rem) var(--disp);
+  line-height: 1.2;
+}
+.rh-sub {
+  font: 500 0.72rem var(--mono);
+  color: var(--ink50);
+}
+
+/* Tabs in modal */
+.rh-tabs {
+  display: inline-flex;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 3px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.rh-tab {
+  font: 700 0.72rem var(--mono);
+  border: none;
+  background: transparent;
+  padding: 5px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: var(--ink70);
+  transition: all 0.2s var(--ease);
+}
+.rh-tab.active {
+  background: var(--sun-soft);
+  color: var(--ink);
+  box-shadow: 1.5px 1.5px 0 var(--ink);
+}
+
+/* Actions in modal */
+.rh-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rh-btn {
+  font: 700 0.74rem var(--mono);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s var(--ease);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.rh-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 3.5px 3.5px 0 var(--ink);
+}
+.rh-btn-ghost {
+  background: var(--card);
+  color: var(--ink);
+}
+.rh-btn-primary {
+  background: var(--coral);
+  color: #fff6ec;
+}
+.rh-btn-primary:hover {
+  background: var(--ink);
+  color: var(--sun-soft);
+}
+.rh-btn-close {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: var(--sun-soft);
+  color: var(--ink);
+}
+.rh-btn-close:hover {
+  background: var(--coral);
+  color: #fff6ec;
+}
+
+/* Body */
+.resume-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+}
+.resume-pdf-frame {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.pdf-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+  flex: 1;
+}
+.pdf-mobile-fallback {
+  display: none;
+  padding: 16px;
+  text-align: center;
+  background: var(--sun-soft);
+  border-top: 1.5px solid var(--ink);
+}
+.pdf-mobile-fallback p {
+  font: 700 0.8rem var(--mono);
+  margin-bottom: 8px;
+}
+.pmf-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+@media (max-width: 720px) {
+  .pdf-mobile-fallback {
+    display: block;
+  }
+}
+
+/* ============ RESUME MODAL RESPONSIVE ============ */
+@media (max-width: 960px) {
+  .resume-card {
+    max-width: 95vw;
+    height: min(88vh, 900px);
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .resume-header {
+    gap: 8px 12px;
+    padding: 12px 16px;
+  }
+  .rh-tabs {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 720px) {
+  .resume-backdrop {
+    padding: 8px;
+    align-items: flex-end;
+  }
+  .resume-card {
+    max-width: 100%;
+    width: 100%;
+    height: calc(100dvh - 16px);
+    max-height: calc(100dvh - 16px);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -4px 24px rgba(32, 26, 20, 0.2);
+  }
+  .resume-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px 14px;
+  }
+  .rh-left {
+    gap: 10px;
+  }
+  .rh-name {
+    font-size: 1rem;
+  }
+  .rh-actions {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .rh-btn {
+    font-size: 0.68rem;
+    padding: 5px 10px;
+  }
+  .rh-tabs {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+  .resume-clean-view {
+    padding: 16px;
+  }
+  .clean-doc {
+    padding: 16px;
+  }
+  .cd-head h2 {
+    font-size: 1.2rem;
+  }
+  .cd-contacts {
+    gap: 6px 12px;
+    font-size: 0.72rem;
+  }
+  .cd-edu-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .resume-header {
+    padding: 10px 12px;
+  }
+  .rh-badge {
+    font-size: 0.62rem;
+    padding: 3px 8px;
+  }
+  .rh-sub {
+    font-size: 0.66rem;
+  }
+  .rh-btn {
+    font-size: 0.62rem;
+    padding: 4px 8px;
+  }
+  .rh-btn-close {
+    width: 28px;
+    height: 28px;
+  }
+  .rh-tab {
+    font-size: 0.66rem;
+    padding: 4px 10px;
+  }
+  .cd-item-head {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cd-item li {
+    font-size: 0.82rem;
+  }
+}
+
+/* ============ TABLET LANDSCAPE (768-1024) ============ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .wrap {
+    padding-inline: clamp(24px, 4vw, 40px);
+  }
+  .hero {
+    grid-template-columns: auto 1fr;
+  }
+  .hero-side {
+    grid-column: 1/-1;
+    border-left: none;
+    border-top: 1.5px solid var(--ink);
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+    justify-content: space-between;
+    padding: 18px clamp(16px, 4vw, 36px);
+  }
+  .wb-mid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .quest-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Clean text view */
+.resume-clean-view {
+  flex: 1;
+  overflow-y: auto;
+  padding: clamp(20px, 4vw, 40px);
+  background: var(--cream);
+}
+.clean-doc {
+  max-width: 780px;
+  margin: 0 auto;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 16px;
+  padding: clamp(20px, 4vw, 36px);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+.cd-head {
+  border-bottom: 1.5px solid var(--line);
+  padding-bottom: 18px;
+  margin-bottom: 22px;
+}
+.cd-head h2 {
+  font: 700 clamp(1.4rem, 2.5vw, 1.8rem) var(--disp);
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.cd-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font: 500 0.78rem var(--mono);
+  color: var(--ink70);
+}
+.cd-contacts a {
+  color: var(--coral);
+  text-decoration: underline;
+}
+.cd-section {
+  margin-bottom: 24px;
+}
+.cd-section h4 {
+  font: 700 0.76rem var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--coral);
+  background: var(--sun-soft);
+  border: 1px solid var(--ink);
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 12px;
+}
+.cd-skills .cd-row {
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+  color: var(--ink70);
+  line-height: 1.5;
+}
+.cd-skills b {
+  color: var(--ink);
+}
+.cd-item {
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
+}
+.cd-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.cd-item-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px 12px;
+  margin-bottom: 6px;
+}
+.cd-item-head h5 {
+  font: 700 0.95rem var(--disp);
+  color: var(--ink);
+}
+.cd-item-head a {
+  color: var(--coral);
+}
+.cd-tech {
+  font: 500 0.78rem var(--mono);
+  color: var(--ink50);
+}
+.cd-date {
+  font: 700 0.72rem var(--mono);
+  color: var(--leaf);
+}
+.cd-item ul {
+  padding-left: 18px;
+  margin-top: 6px;
+}
+.cd-item li {
+  font-size: 0.86rem;
+  color: var(--ink70);
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+.cd-cert-list {
+  padding-left: 18px;
+}
+.cd-cert-list li {
+  font-size: 0.86rem;
+  color: var(--ink70);
+  margin-bottom: 6px;
+}
+.cd-date-tag {
+  font: 700 0.72rem var(--mono);
+  color: var(--leaf);
+  margin-left: 6px;
+}
+.cd-edu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.cd-edu-card {
+  border: 1px solid var(--ink);
+  background: var(--cream);
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.cd-edu-card p {
+  font-size: 0.8rem;
+  color: var(--ink70);
+  margin: 4px 0 6px;
+}
+.cd-score {
+  font: 700 0.74rem var(--mono);
+  color: var(--coral);
+}
+
 /* ============ reduced motion ============ */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -1702,5 +2398,145 @@ section {
   .trail-dot,
   .spark {
     display: none !important;
+  }
+}
+
+/* ============================================================
+   CONTENT PROTECTION — anti-copy / anti-scrape hardening
+   Text selection & long-press callouts are disabled site-wide;
+   assets can't be dragged out of the page. Elements with
+   [data-allow-copy] (and form fields) stay selectable so the
+   site remains accessible.
+   ============================================================ */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+input,
+textarea,
+[contenteditable="true"],
+[contenteditable=""],
+[data-allow-copy] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+}
+
+img,
+svg {
+  -webkit-user-drag: none;
+}
+
+/* ============================================================
+   CLEAN VIEW ↔ PDF PARITY TUNING
+   Mirrors scripts/generate_resume_pdf.mjs layout cues:
+   full-width shaded section bars, consistent item rhythm,
+   right-aligned dates, underlined title links & linked
+   GitHub / Certificate tags.
+   ============================================================ */
+.cd-section {
+  margin-bottom: 26px;
+}
+.cd-section:last-child {
+  margin-bottom: 0;
+}
+.cd-section h4 {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ink);
+  background: var(--sun-soft);
+  border: 1px solid var(--ink);
+  border-left: 4px solid var(--coral);
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+.cd-head {
+  padding-bottom: 16px;
+  margin-bottom: 24px;
+}
+.cd-item li,
+.cd-cert-list li {
+  line-height: 1.55;
+}
+.cd-item ul {
+  margin-top: 8px;
+}
+.cd-date {
+  white-space: nowrap;
+}
+.cd-edu-card h5 {
+  font: 700 0.9rem var(--disp);
+  color: var(--ink);
+}
+.cd-score {
+  display: block;
+  margin-top: 2px;
+}
+a.cd-git,
+.clean-doc h5 a.cd-git {
+  font: 700 0.78rem var(--mono);
+  color: var(--coral);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.cd-item-head a {
+  text-decoration: none;
+  border-bottom: 1.5px solid currentColor;
+}
+@media (max-width: 640px) {
+  .clean-doc {
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .cd-section h4 {
+    letter-spacing: 0.12em;
+  }
+}
+
+/* ============================================================
+   RESUME VIEWS — SPACING FIXES
+   • Item heads become a 2-col grid: title/tech flows in col 1,
+     the date is pinned top-right in col 2 — mirrors the PDF's
+     single-line name…date layout instead of orphan-wrapping.
+   • Linked GitHub/Certificate tags get breathing room.
+   ============================================================ */
+.cd-item-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
+  row-gap: 3px;
+  align-items: baseline;
+}
+.cd-item-head > h5 {
+  grid-column: 1;
+  min-width: 0;
+}
+.cd-item-head > .cd-date {
+  grid-column: 2;
+  justify-self: end;
+}
+.clean-doc h5 a.cd-git {
+  margin-left: 8px;
+  white-space: nowrap;
+}
+.cd-cert-list a.cd-git {
+  margin: 0 3px;
+}
+.cd-edu-card .cd-item-head {
+  margin-bottom: 2px;
+}
+@media (max-width: 480px) {
+  /* restore stacked layout on phones (grid → flex column) */
+  .cd-item-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .clean-doc h5 a.cd-git {
+    margin-left: 0;
   }
 }

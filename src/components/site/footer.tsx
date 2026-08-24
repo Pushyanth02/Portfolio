@@ -7,7 +7,10 @@ export function Footer() {
         <span>
           © {new Date().getFullYear()} pushyanth · infinity · <Clock /> ist
         </span>
-        <span>set in <b>fraunces</b> · epilogue · space mono</span>
+        <span>
+          all rights reserved · no copying · set in <b>fraunces</b> · epilogue
+          · space mono
+        </span>
       </div>
     </footer>
   );

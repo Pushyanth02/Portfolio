@@ -165,7 +165,7 @@ export function Rover() {
     };
 
     pick();
-    state.next = performance.now() + 7000;
+    state.next = performance.now() + 4500;
 
     let raf = 0;
     let isHidden = false;
@@ -270,7 +270,7 @@ export function Rover() {
           state.ty = dockY;
 
           // Gentle exponential magnetic convergence into dock (half the old rate)
-          const k = 3.8;
+          const k = 4.5;
           const factor = 1 - Math.exp(-k * dt);
           state.x += (dockX - state.x) * factor;
           state.y += (dockY - state.y) * factor;
@@ -332,7 +332,7 @@ export function Rover() {
           state.vx = dir * (50 + Math.random() * 30);
           state.vy = -90 - Math.random() * 30;
           pick();
-          state.next = t + 6400 + Math.random() * 5000;
+          state.next = t + 4200 + Math.random() * 3600;
         }
 
         if (state.mode === "liftoff") {
@@ -358,7 +358,7 @@ export function Rover() {
           }
         } else {
           // Free wandering mode — half the old speed
-          const wanderRate = 1 - Math.exp(-0.9 * dt);
+          const wanderRate = 1 - Math.exp(-1.5 * dt);
           state.x += (state.tx - state.x) * wanderRate;
           state.y += (state.ty - state.y) * wanderRate;
 
@@ -374,11 +374,11 @@ export function Rover() {
 
           if (dist < 40 || t > state.next) {
             pick();
-            state.next = t + 6800 + Math.random() * 8000;
+            state.next = t + 4200 + Math.random() * 3800;
           }
 
           // Fading coral trail (only when moving in wandering mode)
-          if (dist > 6 && t - state.lt > 260) {
+          if (dist > 6 && t - state.lt > 150) {
             state.lt = t;
             spawnTrail();
           }
