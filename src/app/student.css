@@ -1,0 +1,908 @@
+/* ============================================================
+   STUDENT SURFACE — "The Sticker Notebook" (v2)
+   Styles for the redesigned student-mode sections:
+   .about-cover (opening cover) · .connect-field (finale ∞
+   particle band) · .laws-band (compact laws w/ Dot Matrix)
+   · .tech-sec (technologies from the resume)
+   Palette + primitives live in globals.css :root.
+
+   CASCADE NOTE — this file is @import-ed BEFORE globals.css's
+   own rules, so at equal specificity globals would win. Every
+   override of a shared global class (.h2, .kicker…) is
+   therefore scoped one level deeper (e.g. `.laws-band .h2`)
+   so it wins on specificity.
+   All other selectors are brand-new class names — no conflicts.
+   ============================================================ */
+
+/* ============================================================
+   1 · ABOUT COVER — the opening page of the notebook
+   ============================================================ */
+
+/* opening cover: generous rhythm, grid content centered */
+.about-cover {
+  position: relative;
+  min-height: 72vh;
+  display: grid;
+  align-content: center;
+}
+
+/* editorial two-column: copy · polaroid */
+.ac-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: clamp(36px, 5vw, 72px);
+  align-items: center;
+}
+
+.ac-copy > p {
+  margin-top: 16px;
+  max-width: 52ch;
+  color: var(--ink70);
+  font-size: clamp(0.92rem, 1.8vw, 1rem);
+}
+
+/* the cover question — oversized Fraunces display
+   (scoped: must beat the global `.h2` font shorthand) */
+.about-cover .ac-title {
+  font: 700 clamp(2.75rem, 7.5vw, 5.75rem) / 1.08 var(--disp);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  margin: 6px 0 8px;
+  text-wrap: balance;
+}
+
+/* ---- facts strip: one sticker-ish card, cells on hairline rules ---- */
+.ac-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  margin-top: clamp(24px, 3.5vw, 32px);
+  padding: clamp(10px, 1.6vw, 14px) 8px;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 rgba(32, 26, 20, 0.16);
+}
+
+.ac-facts .ac-fact {
+  --rot: -0.6deg;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 6px clamp(14px, 2.2vw, 26px);
+  transform: rotate(var(--rot));
+}
+
+.ac-facts .ac-fact:nth-child(even) {
+  --rot: 0.5deg;
+}
+
+.ac-facts .ac-fact + .ac-fact {
+  border-left: 1px solid var(--line);
+}
+
+.ac-fact dt {
+  font: 700 0.69rem / 1.4 var(--mono);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink50);
+}
+
+.ac-fact dd {
+  margin-top: 4px;
+  font: 700 0.92rem / 1.3 var(--body);
+  color: var(--ink);
+}
+
+/* pop-in stagger — fires when the strip itself gains `.in`
+   (--d comes from the strip's reveal delay; facts carry no --i
+   in the markup, so the stagger is nth-child based) */
+.ac-facts.in .ac-fact {
+  animation: acFactIn 0.5s var(--ease) backwards;
+}
+
+.ac-facts.in .ac-fact:nth-child(1) { animation-delay: calc(var(--d, 0s) + 0.32s); }
+.ac-facts.in .ac-fact:nth-child(2) { animation-delay: calc(var(--d, 0s) + 0.4s); }
+.ac-facts.in .ac-fact:nth-child(3) { animation-delay: calc(var(--d, 0s) + 0.48s); }
+.ac-facts.in .ac-fact:nth-child(4) { animation-delay: calc(var(--d, 0s) + 0.56s); }
+
+/* ---- polaroid portrait, taped to the page ---- */
+.ac-fig {
+  min-width: 0;
+}
+
+.ac-polaroid {
+  position: relative;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 10px;
+  padding: clamp(12px, 1.8vw, 16px);
+  transform: rotate(2deg);
+  box-shadow: 7px 7px 0 var(--ink);
+  transition:
+    transform 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+
+.ac-polaroid img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center;
+  background: var(--cream);
+  border-radius: 6px;
+  animation: floaty 8s ease-in-out infinite alternate;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* washi tape strips across the top corners */
+.ac-polaroid::before,
+.ac-polaroid::after {
+  content: "";
+  position: absolute;
+  top: -13px;
+  width: clamp(78px, 9vw, 104px);
+  height: 26px;
+  z-index: 2;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+
+.ac-polaroid::before {
+  left: -20px;
+  background: rgba(242, 179, 61, 0.55);
+  transform: rotate(-42deg);
+}
+
+.ac-polaroid::after {
+  right: -20px;
+  background: rgba(232, 96, 60, 0.48);
+  transform: rotate(42deg);
+}
+
+.ac-fig figcaption {
+  margin-top: 14px;
+  text-align: center;
+  font: 700 0.66rem / 1.5 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink50);
+}
+
+@media (hover: hover) {
+  .ac-fig:hover .ac-polaroid {
+    transform: rotate(0.4deg) translateY(-3px);
+    box-shadow: 9px 11px 0 var(--ink);
+  }
+}
+
+/* ============================================================
+   2 · CONNECT FIELD — the finale's ∞ particle band.
+   The Originkit SVG Particles field, relocated from the retired
+   thesis band. Deep warm particles drift over the sun ground;
+   the copy layer is pointer-transparent so the ∞ assembles
+   wherever the pointer roams the open ground (cards re-enable
+   themselves). A soft sun haze keeps the centre copy AA over
+   the drifting dots.
+   ============================================================ */
+
+.connect.has-field {
+  position: relative;
+  overflow: hidden;
+}
+
+/* the ∞ glyph region — inset for breathing room at the edges */
+.connect-field {
+  position: absolute;
+  inset: 12% 5%;
+  z-index: 0;
+}
+
+/* sun haze over the field — centre copy stays AA on the drift */
+.connect-field::after {
+  content: "";
+  position: absolute;
+  inset: -8% -14%;
+  pointer-events: none;
+  background: radial-gradient(
+    58% 52% at 50% 50%,
+    rgba(242, 179, 61, 0.55),
+    rgba(242, 179, 61, 0.18) 60%,
+    rgba(242, 179, 61, 0) 82%
+  );
+}
+
+/* the copy rides above the field; pointer falls through to the
+   canvas in the open ground, while cards / dock / links keep
+   their own hit areas */
+.connect.has-field .wrap {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+.connect.has-field .wrap :is(a, button, [role="button"]) {
+  pointer-events: auto;
+}
+
+/* ============================================================
+   3 · LAWS BAND — compact etiquette lines over Dot Matrix.
+   Two themed instances share this structure:
+   .laws-band (student — warm paper, coral/gold accents) and
+   .dv-laws (developer — the dark terminal band, green accents).
+   All colors flow through the --law-* variables below.
+   ============================================================ */
+
+/* ---- the two palettes ---- */
+
+/* student: warm notebook paper — matches the sticker theme */
+.laws-band {
+  --law-bg: #f2e9d8;
+  --law-ink: #201a14;
+  --law-ink-soft: rgba(32, 26, 20, 0.78);
+  --law-ink-strong: rgba(32, 26, 20, 0.96);
+  --law-accent: #e8603c;
+  --law-tag: #96660a; /* deep gold — AA on the paper band */
+  --law-hairline: rgba(32, 26, 20, 0.16);
+  --law-ghost: rgba(32, 26, 20, 0.1);
+  --law-veil-a: rgba(242, 233, 216, 0.6);
+  --law-veil-b: rgba(242, 233, 216, 0.28);
+  --law-veil-c: rgba(242, 233, 216, 0.52);
+  --law-veil-d: rgba(242, 233, 216, 0.36);
+  --law-veil-e: rgba(242, 233, 216, 0.58);
+}
+
+/* developer: the dark band the student surface used to wear,
+   shifted into the terminal universe with green accents */
+.dv-laws {
+  --law-bg: #0b0e11;
+  --law-ink: #f5efe3;
+  --law-ink-soft: rgba(245, 239, 227, 0.78);
+  --law-ink-strong: rgba(245, 239, 227, 0.96);
+  --law-accent: #7ee787;
+  --law-tag: #7ee787;
+  --law-hairline: rgba(245, 239, 227, 0.14);
+  --law-ghost: rgba(126, 231, 135, 0.12);
+  --law-veil-a: rgba(11, 14, 17, 0.66);
+  --law-veil-b: rgba(11, 14, 17, 0.34);
+  --law-veil-c: rgba(11, 14, 17, 0.58);
+  --law-veil-d: rgba(11, 14, 17, 0.42);
+  --law-veil-e: rgba(11, 14, 17, 0.62);
+}
+
+/* ---- the shared band structure ---- */
+
+.laws-band,
+.dv-laws {
+  position: relative;
+  overflow: hidden;
+  background: var(--law-bg);
+  border-block: 1.5px solid var(--ink);
+  padding-block: clamp(64px, 8vw, 110px); /* deliberately tight — no .sec padding */
+}
+
+/* absolute canvas layer — Originkit Dot Matrix */
+.laws-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* readability veil over the dot field (paints above .laws-bg,
+   below .laws-in). Softens the full band — centre included — so the
+   law copy stays AA-legible while the field breathes through. */
+.laws-band::after,
+.dv-laws::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      120% 85% at 50% 42%,
+      var(--law-veil-a),
+      var(--law-veil-b) 72%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--law-veil-c),
+      var(--law-veil-d) 26%,
+      var(--law-veil-d) 74%,
+      var(--law-veil-e)
+    );
+}
+
+.laws-in {
+  position: relative;
+  z-index: 1;
+}
+
+/* compact header — kicker + h2 share a baseline row when space allows */
+.laws-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 22px;
+  margin-bottom: clamp(26px, 4vw, 42px);
+}
+
+.laws-head .kicker {
+  margin-bottom: 0;
+}
+
+.laws-band .h2,
+.dv-laws .h2 {
+  font: 700 clamp(1.75rem, 4vw, 2.75rem) / 1.12 var(--disp);
+  letter-spacing: -0.01em;
+  color: var(--law-ink);
+}
+
+.laws-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(26px, 3vw, 32px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* a law: no card — etiquette lines on the page */
+.law {
+  position: relative;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--law-hairline);
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* accent rule, drawn in from the left when the law reveals */
+.law-rule {
+  display: block;
+  height: 2px;
+  background: var(--law-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s var(--ease);
+  transition-delay: calc(var(--d, 0s) + 0.12s);
+}
+
+.law.in .law-rule {
+  transform: scaleX(1);
+}
+
+.law-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  margin-top: 20px;
+  padding-right: 76px; /* clearance for the ghost numeral */
+}
+
+/* oversized ghost numeral floating top-right */
+.law-no {
+  position: absolute;
+  top: 16px;
+  right: 2px;
+  font: 700 64px / 1 var(--disp);
+  letter-spacing: -0.02em;
+  color: var(--law-ghost);
+  user-select: none;
+}
+
+.law.in .law-no {
+  animation: lawNoIn 0.7s var(--ease) backwards;
+  animation-delay: calc(var(--d, 0s) + 0.15s);
+}
+
+.law-tag {
+  font: 700 11px / 1.5 var(--mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--law-tag);
+}
+
+.law-title {
+  font: 700 22px / 1.3 var(--disp);
+  letter-spacing: -0.01em;
+  color: var(--law-ink);
+  margin: 12px 0;
+  text-wrap: balance;
+}
+
+/* clamped body — ~4 lines, expands on hover/focus */
+.law-body {
+  position: relative;
+  max-height: 7.4em;
+  overflow: hidden;
+  font: 400 15px / 1.75 var(--body);
+  color: var(--law-ink-soft);
+  transition: max-height 0.55s var(--ease);
+}
+
+.law-body strong {
+  color: var(--law-ink-strong);
+  font-weight: 700;
+}
+
+/* truncation fade riding the clamp edge */
+.law-body::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3.6em;
+  background: linear-gradient(to bottom, transparent, var(--law-bg) 88%);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.law-more {
+  display: block;
+  margin-top: 14px;
+  font: 700 11px / 1.4 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--law-ink);
+  opacity: 0.55;
+  transition: opacity 0.35s ease;
+}
+
+/* expand — hover or focus (the law carries tabIndex=0; :focus also
+   covers keyboard :focus-visible and touch taps) */
+.law:hover .law-body,
+.law:focus .law-body {
+  max-height: 44em;
+}
+
+.law:hover .law-body::after,
+.law:focus .law-body::after {
+  opacity: 0;
+}
+
+.law:hover .law-more,
+.law:focus .law-more {
+  opacity: 0.2;
+}
+
+/* ============================================================
+   4 · TECH — the arsenal (id="stack")
+   ============================================================ */
+
+/* the section becomes a stage for the Originkit Prism Grid field */
+.tech-sec {
+  position: relative;
+  background: var(--cream);
+}
+
+/* the tilted prism field — full bleed, clipped, under the content */
+.tech-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* scrim so the copy stays AA over lit cells; the prism glow breathes
+   through at the edges */
+.tech-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      120% 90% at 50% 40%,
+      rgba(245, 239, 227, 0.72),
+      rgba(245, 239, 227, 0.3) 68%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(245, 239, 227, 0.6),
+      rgba(245, 239, 227, 0.28) 30%,
+      rgba(245, 239, 227, 0.28) 72%,
+      rgba(245, 239, 227, 0.62)
+    );
+}
+
+/* content rides above the field; pointer events fall through to the
+   prism grid everywhere except the interactive chips */
+.tech-sec .wrap {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tech-sec .tech-chip,
+.tech-sec .tech-ai-row li {
+  pointer-events: auto;
+}
+
+.tech-sub {
+  margin-top: 16px;
+  max-width: 56ch;
+  color: var(--ink70);
+  font-size: clamp(0.92rem, 1.8vw, 1rem);
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: clamp(28px, 4.5vw, 48px);
+}
+
+/* sticker category cards — hand-set alternating tilt.
+   The tilt uses the independent `rotate` property so it composes
+   with the global `.reveal` transform (translateY) instead of
+   fighting it; the per-property transition list keeps the reveal
+   stagger (--d) while making hover props delay-free. */
+.tech-grid .tech-cat {
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 18px;
+  box-shadow: 5px 5px 0 var(--ink);
+  padding: clamp(20px, 3vw, 28px);
+  rotate: -0.4deg;
+  transition-property: opacity, transform, rotate, translate, box-shadow;
+  transition-duration: 0.7s, 0.85s, 0.3s, 0.3s, 0.35s;
+  transition-timing-function: ease, var(--ease), var(--ease), var(--ease), var(--ease);
+  transition-delay: var(--d, 0s), var(--d, 0s), 0s, 0s, 0s;
+}
+
+.tech-grid .tech-cat:nth-child(even) {
+  rotate: 0.6deg;
+}
+
+@media (hover: hover) {
+  .tech-grid .tech-cat.in:hover {
+    rotate: 0deg;
+    translate: 0 -3px;
+    box-shadow: 7px 9px 0 var(--ink);
+  }
+}
+
+/* head row: h3 · mono hint · drawn-in rule */
+.tech-cat-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+}
+
+.tech-cat-head h3 {
+  font: 700 20px / 1.25 var(--disp);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.tech-cat-hint {
+  margin-left: auto;
+  font: 400 11px / 1.4 var(--mono);
+  color: var(--ink50);
+}
+
+.tech-cat-rule {
+  flex: 1 0 100%;
+  height: 2px;
+  margin-top: 12px;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s var(--ease);
+  transition-delay: calc(var(--d, 0s) + 0.18s);
+}
+
+.tech-cat.in .tech-cat-rule {
+  transform: scaleX(1);
+}
+
+/* chip cloud */
+.tech-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tech-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px; /* touch target promise */
+  padding: 11px 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: var(--card);
+  font: 700 13px / 1.2 var(--mono);
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  white-space: nowrap;
+  cursor: default;
+  box-shadow: 2.5px 2.5px 0 rgba(32, 26, 20, 0.18);
+  transition:
+    transform 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    color 0.25s var(--ease),
+    background 0.25s var(--ease),
+    box-shadow 0.25s var(--ease);
+}
+
+/* THE DELIGHT — staggered pop-in when the parent card reveals
+   (--i per chip from markup; --d inherited from the card's own
+   reveal delay so chips never pop under an invisible card) */
+.tech-cat.in .tech-chip {
+  animation: techChipIn 0.5s var(--ease) backwards;
+  animation-delay: calc(var(--d, 0s) + var(--i, 0) * 60ms + 0.18s);
+}
+
+@media (hover: hover) {
+  .tech-chip:hover {
+    transform: translateY(-3px) rotate(-1deg);
+    border-color: var(--coral);
+    color: var(--coral);
+    background: #fffdf8;
+    box-shadow: 4px 5px 0 rgba(32, 26, 20, 0.3);
+  }
+}
+
+/* ai workbench footnote strip — deliberately quieter */
+.tech-ai {
+  margin-top: clamp(26px, 4vw, 40px);
+  padding-top: clamp(20px, 3vw, 26px);
+  border-top: 1.5px dashed var(--line);
+}
+
+.tech-ai-label {
+  font: 700 11px / 1.5 var(--mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink50);
+}
+
+.tech-ai-label span {
+  color: var(--coral);
+}
+
+.tech-ai-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.tech-ai-row li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  font: 400 12.5px / 1.3 var(--mono);
+  color: var(--ink70);
+  white-space: nowrap;
+  transition:
+    transform 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    color 0.25s var(--ease);
+}
+
+.tech-ai-row .ic {
+  width: 16px;
+  height: 16px;
+  color: inherit; /* icons ride currentColor */
+}
+
+@media (hover: hover) {
+  .tech-ai-row li:hover {
+    transform: translateY(-2px);
+    border-color: var(--ink50);
+    color: var(--ink);
+  }
+}
+
+/* .bench-note is styled globally — nothing to add here */
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+
+@keyframes acFactIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.82) rotate(calc(var(--rot, 0deg) * 2.2));
+  }
+  to {
+    opacity: 1;
+    transform: rotate(var(--rot, 0deg));
+  }
+}
+
+@keyframes lawNoIn {
+  from {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes techChipIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.6) rotate(-4deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* cover collapses to one column */
+@media (max-width: 960px) {
+  .ac-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(30px, 6vw, 48px);
+  }
+
+  .ac-fig {
+    width: 100%;
+    max-width: 400px;
+    margin-inline: auto;
+  }
+}
+
+/* laws go single-column */
+@media (max-width: 900px) {
+  .laws-row {
+    grid-template-columns: 1fr;
+    gap: clamp(28px, 5vw, 36px);
+  }
+}
+
+/* tech grid collapses */
+@media (max-width: 860px) {
+  .tech-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* small mobile */
+@media (max-width: 640px) {
+  /* facts strip: 2×2 on inner rules */
+  .ac-facts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 8px 4px;
+  }
+
+  .ac-facts .ac-fact {
+    padding: 12px 14px;
+  }
+
+  .ac-facts .ac-fact + .ac-fact {
+    border-left: none;
+  }
+
+  .ac-facts .ac-fact:nth-child(even) {
+    border-left: 1px solid var(--line);
+  }
+
+  .ac-facts .ac-fact:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  /* lighter tapes with less overhang inside the narrow wrap */
+  .ac-polaroid::before,
+  .ac-polaroid::after {
+    top: -11px;
+    width: 72px;
+    height: 22px;
+  }
+
+  .ac-polaroid::before {
+    left: -14px;
+  }
+
+  .ac-polaroid::after {
+    right: -14px;
+  }
+
+  .law-head {
+    padding-right: 54px;
+  }
+
+  .law-no {
+    top: 14px;
+    font-size: 48px;
+  }
+
+  .law-title {
+    font-size: 20px;
+  }
+
+  .law-body {
+    font-size: 14.5px;
+  }
+
+  .tech-grid .tech-cat {
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+}
+
+/* tiny phones */
+@media (max-width: 380px) {
+  .ac-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .ac-facts .ac-fact:nth-child(even) {
+    border-left: none;
+  }
+
+  .ac-facts .ac-fact:nth-child(n + 2) {
+    border-top: 1px solid var(--line);
+  }
+
+  .law-no {
+    font-size: 34px;
+    top: 10px;
+    right: 0;
+    color: var(--law-ghost);
+  }
+  .law-head {
+    padding-right: 44px;
+  }
+
+  .tech-grid .tech-cat {
+    padding: 16px;
+  }
+
+  .tech-chip {
+    padding: 10px 11px;
+  }
+
+  .tech-ai-row li {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION — settle everything to its final state
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .ac-polaroid img,
+  .ac-facts.in .ac-fact,
+  .law.in .law-no,
+  .tech-cat.in .tech-chip {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .law-rule,
+  .tech-cat-rule {
+    transform: scaleX(1) !important;
+    transition: none !important;
+  }
+
+  .law-body,
+  .law-body::after,
+  .law-more {
+    transition: none !important;
+  }
+}

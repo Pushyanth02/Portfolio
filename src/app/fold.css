@@ -1,0 +1,367 @@
+/* ============================================================
+   MODE FOLD — "The Infinity Fold"
+   The Lightswind Hamburger Menu Overlay, repurposed as the
+   student ⇄ developer transition:
+
+     open   the destination-themed sheet's clip-path circle opens
+            from the exact toggle point (hamburger mechanics);
+            status lines stagger in from the left.
+     swap   the new universe mounts silently behind the cover.
+     close  the status lines slide out and the sheet folds back
+            into the point it opened from — the new reality is
+            revealed last at the tap point, page-turn style.
+
+   The ∞ slide: a large infinity glyph sweeps through the overlay
+   (t≈0.16–0.88s), banking through centre exactly as the universe
+   swaps behind the cover, two softer echoes trailing.
+
+   MOUNT-SAFE BY CONSTRUCTION — every phase is a keyframe
+   animation, never a transition. The fold element is inserted
+   with `is-open` already applied, and a CSS transition cannot
+   fire on a freshly-inserted element's first style resolution
+   (there is no "before" value to animate from). Animations run
+   from frame one regardless. The close phase swaps the class,
+   which stops the open animations (their fill is discarded) and
+   starts the close ones from the exact state the open ones left.
+
+   Everything animates transform / opacity / clip-path only; the
+   clip-path circle is GPU-interpolated on every current engine.
+
+   Stages are classes on .fold (is-open / is-close), driven by the
+   timer state machine in page.tsx:
+     0ms    fold mounts, iris opens (0.48s)
+     380ms  canvas fields tear down behind the cover
+     520ms  the new universe mounts silently
+     660ms  the fold closes back into its origin (0.42s)
+     1120ms fold unmounts — total 1.12s, ~28% faster than the
+            retired ripple-led fold
+   Accent keys off data-target (the DESTINATION): terminal green
+   when folding into the dev surface, warm coral when folding
+   back into the student one.
+   ============================================================ */
+
+.fold {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  /* the fold owns the pointer while folding — no clicks leak through */
+  pointer-events: auto;
+  cursor: progress;
+  background: var(--fold-bg);
+  color: var(--fold-ink);
+  /* hamburger-overlay mechanics: a circle clipped from the origin */
+  clip-path: circle(0px at var(--fx, 50vw) var(--fy, 50vh));
+  will-change: clip-path;
+}
+
+body.folding {
+  overflow: hidden;
+}
+
+/* destination theme — the universe being folded into */
+.fold[data-target="dev"] {
+  --fold-bg: #05080a;
+  --fold-ink: #f5efe3;
+  --fold-ink-dim: rgba(245, 239, 227, 0.62);
+  --fold-accent: #7ee787;
+  --fold-accent-2: #2ea043;
+}
+.fold[data-target="student"] {
+  --fold-bg: #f5efe3;
+  --fold-ink: #201a14;
+  --fold-ink-dim: rgba(32, 26, 20, 0.66);
+  --fold-accent: #e8603c;
+  --fold-accent-2: #f2b33d;
+}
+
+.fold.is-open {
+  animation: fold-iris-open 0.48s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+.fold.is-close {
+  animation: fold-iris-close 0.42s cubic-bezier(0.4, 0, 0.55, 1) both;
+  /* the reveal is nearly done — let late pointer events through */
+  pointer-events: none;
+}
+
+@keyframes fold-iris-open {
+  from {
+    clip-path: circle(0px at var(--fx, 50vw) var(--fy, 50vh));
+  }
+  to {
+    clip-path: circle(150% at var(--fx, 50vw) var(--fy, 50vh));
+  }
+}
+
+@keyframes fold-iris-close {
+  from {
+    clip-path: circle(150% at var(--fx, 50vw) var(--fy, 50vh));
+  }
+  to {
+    clip-path: circle(0px at var(--fx, 50vw) var(--fy, 50vh));
+  }
+}
+
+/* ---------- 1 · GRAIN — faint static scanlines ---------- */
+
+.fold-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    var(--fold-accent-028, rgba(126, 231, 135, 0.03)) 0 1px,
+    transparent 1px 5px
+  );
+  opacity: 0.7;
+}
+.fold[data-target="student"] .fold-grain {
+  --fold-accent-028: rgba(232, 96, 60, 0.035);
+}
+
+/* ---------- 2 · STATUS LINES — the hamburger's staggered menu ---------- */
+
+.fold-items {
+  position: absolute;
+  z-index: 3;
+  left: clamp(24px, 12vw, 180px);
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fold-item {
+  font: 700 clamp(13px, 2vw, 17px) / 1.4 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fold-ink-dim);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.fold-item:nth-child(2) {
+  color: var(--fold-ink);
+}
+
+/* the final line carries the destination accent — it names the
+   universe being opened */
+.fold-item:nth-child(3) {
+  color: var(--fold-accent);
+}
+
+/* mount-safe staggered slide-in, 70ms apart */
+.fold.is-open .fold-item {
+  animation: fold-item-in 0.34s cubic-bezier(0.22, 1, 0.36, 1)
+    calc(0.05s + var(--i, 0) * 0.07s) both;
+}
+
+.fold.is-close .fold-item {
+  animation: fold-item-out 0.2s ease both;
+}
+
+@keyframes fold-item-in {
+  from {
+    transform: translateX(-120px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fold-item-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(60px);
+    opacity: 0;
+  }
+}
+
+/* ---------- 3 · THE INFINITY FOLD — the glyph slides through ---------- */
+
+.fold-inf-track {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.fold-inf {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  display: block;
+  width: clamp(150px, 27vw, 330px);
+  aspect-ratio: 1;
+  margin-top: calc(clamp(150px, 27vw, 330px) / -2);
+  opacity: 0;
+  will-change: transform, opacity;
+  /* a soft accent glow that reads as motion blur at speed */
+  filter: drop-shadow(0 0 18px var(--fold-accent));
+}
+
+.fold-inf svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Keyed to .fold (not the stage classes): the sweep keeps gliding
+   uninterrupted while the iris closes around it — the class swap
+   never restarts the animation. */
+.fold .fold-inf-main {
+  animation: fold-inf-slide 0.72s cubic-bezier(0.65, 0, 0.35, 1) 0.16s both;
+}
+
+.fold .fold-inf-echo-1 {
+  animation: fold-inf-slide-echo 0.72s cubic-bezier(0.65, 0, 0.35, 1) 0.24s
+    both;
+}
+
+.fold .fold-inf-echo-2 {
+  animation: fold-inf-slide-echo 0.72s cubic-bezier(0.65, 0, 0.35, 1) 0.32s
+    both;
+}
+
+@keyframes fold-inf-slide {
+  0% {
+    transform: translate3d(-42vw, 0, 0) rotate(-10deg) scale(0.86);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    /* banks through centre — straight through where the ripple
+       core used to breathe — as the universe swaps behind */
+    transform: translate3d(46vw, -5vh, 0) rotate(4deg) scale(1.06);
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(136vw, 2vh, 0) rotate(11deg) scale(0.92);
+    opacity: 0;
+  }
+}
+
+@keyframes fold-inf-slide-echo {
+  0% {
+    transform: translate3d(-42vw, 0, 0) rotate(-10deg) scale(0.7);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.34;
+  }
+  50% {
+    transform: translate3d(46vw, -5vh, 0) rotate(4deg) scale(0.82);
+  }
+  86% {
+    opacity: 0.22;
+  }
+  100% {
+    transform: translate3d(136vw, 2vh, 0) rotate(11deg) scale(0.66);
+    opacity: 0;
+  }
+}
+
+/* ---------- shared: lazy-mounted canvas fields fade in ---------- */
+
+.lazy-mount {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.55s ease;
+}
+.lazy-mount[data-ready="true"] {
+  opacity: 1;
+}
+
+/* ---------- the page beneath the fold ----------
+   The new universe mounts at swap-time behind the cover; when the
+   reveal starts it settles in with a short scale+opacity breathe
+   (transform/opacity only — main has no fixed-position descendants;
+   the dev dock is rendered outside main). */
+
+body.folding main {
+  animation: fold-arrive 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.14s both;
+}
+
+@keyframes fold-arrive {
+  0% {
+    opacity: 0.5;
+    transform: scale(1.012);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ---------- small screens: the same fold, natively cheap ---------- */
+
+@media (max-width: 640px) {
+  .fold-items {
+    left: 24px;
+    gap: 10px;
+  }
+
+  .fold-item {
+    letter-spacing: 0.1em;
+  }
+
+  .fold-inf {
+    width: clamp(120px, 42vw, 200px);
+    margin-top: calc(clamp(120px, 42vw, 200px) / -2);
+  }
+}
+
+/* ---------- reduced motion: a calm crossfade ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .fold {
+    cursor: wait;
+    clip-path: none;
+  }
+
+  .fold.is-open {
+    animation: none;
+  }
+
+  .fold.is-close {
+    animation: fold-fade 0.4s ease both;
+    pointer-events: none;
+  }
+
+  /* no theatrics — no status lines, no glyph slide */
+  .fold-items,
+  .fold-inf-track,
+  .fold-grain {
+    display: none;
+  }
+
+  body.folding main {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fold-fade {
+  to {
+    opacity: 0;
+  }
+}

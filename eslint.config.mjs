@@ -1,50 +1,84 @@
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+/**
+ * ESLint flat config.
+ *
+ * Built on top of the Next.js core-web-vitals + TypeScript presets, with a
+ * small set of project-specific relaxations. We keep the defaults that catch
+ * real bugs (no-unused-vars, react-hooks rules, etc.) and only relax rules
+ * that conflict with this codebase's deliberate patterns.
+ */
+const eslintConfig = [
+  ...nextCoreWebVitals,
+  ...nextTypescript,
+  {
+    rules: {
+      // This portfolio uses plain <img> everywhere (static export, no
+      // next/image server). Silence the rule rather than litter disables.
+      "@next/next/no-img-element": "off",
 
-const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
-  rules: {
-    // TypeScript rules
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-unused-vars": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/prefer-as-const": "off",
-    "@typescript-eslint/no-unused-disable-directive": "off",
-    
-    // React rules
-    "react-hooks/exhaustive-deps": "off",
-    "react-hooks/purity": "off",
-    "react/no-unescaped-entities": "off",
-    "react/display-name": "off",
-    "react/prop-types": "off",
-    "react-compiler/react-compiler": "off",
-    
-    // Next.js rules
-    "@next/next/no-img-element": "off",
-    "@next/next/no-html-link-for-pages": "off",
-    
-    // General JavaScript rules
-    "prefer-const": "off",
-    "no-unused-vars": "off",
-    "no-console": "off",
-    "no-debugger": "off",
-    "no-empty": "off",
-    "no-irregular-whitespace": "off",
-    "no-case-declarations": "off",
-    "no-fallthrough": "off",
-    "no-mixed-spaces-and-tabs": "off",
-    "no-redeclare": "off",
-    "no-undef": "off",
-    "no-unreachable": "off",
-    "no-useless-escape": "off",
+      // Apostrophes in prose ("let's", "I'm") are common here; the rule is
+      // noisy for content-heavy components.
+      "react/no-unescaped-entities": "off",
+
+      // Allow `any` sparingly for DOM experiments / third-party shims.
+      "@typescript-eslint/no-explicit-any": "off",
+
+      // React 19 + Next 16 handle most hook deps automatically; the
+      // exhaustive-deps rule is overly strict for effect cleanups here.
+      "react-hooks/exhaustive-deps": "warn",
+
+      // Sandbox boilerplate (stock shadcn sidebar.tsx skeleton uses
+      // Math.random in a useMemo; use-toast.ts has a type-only const).
+      // Not portfolio source — relax rather than editing vendor code.
+      "react-hooks/purity": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { varsIgnorePattern: "^actionTypes$" },
+      ],
+    },
   },
-}, {
-  ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "examples/**", "skills"]
-}];
+  {
+    // Vendored Originkit components (Text Morph, Glass Icon) are wired in
+    // exactly as the registry delivers them — byte-for-byte, not rewritten.
+    // Their internals intentionally use hook-calling render fns with
+    // underscore-prefixed names and ref-based effect deps; relax the rules
+    // that flag those patterns rather than editing the vendor source.
+    files: ["src/components/originkit/**"],
+    rules: {
+      "react-hooks/rules-of-hooks": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  {
+    ignores: [
+      "node_modules/**",
+      ".next/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts",
+      "dev.log",
+      // Sandbox-only artifacts — mirrored from .gitignore so `eslint .`
+      // stays clean in the dev sandbox without affecting CI on GitHub,
+      // where these paths do not exist.
+      ".zscripts/**",
+      "db/**",
+      "mini-services/**",
+      "examples/**",
+      "tests/**",
+      "download/**",
+      "tool-results/**",
+      "skills/**",
+      "upload/**",
+      // Agent tooling installed into the repo (impeccable + taste-skill):
+      // third-party skill scripts, not portfolio source.
+      ".github/skills/**",
+      ".agents/**",
+      ".claude/**",
+    ],
+  },
+];
 
 export default eslintConfig;
