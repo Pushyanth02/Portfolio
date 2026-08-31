@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { assetUrl } from "@/lib/utils";
+import { PortraitCard } from "./portrait-card";
 import { SectionBadge } from "./section-icons";
 
 const LOOK_FOR = [
@@ -17,7 +17,9 @@ const FACTS = [
 
 /**
  * About — the opening cover of the notebook. The page now starts with the
- * human: editorial cover grid, polaroid avatar, quick facts strip.
+ * human: editorial cover grid, polaroid portrait, quick facts strip. The
+ * polaroid holds the flippable PortraitCard — the portrait photo on the
+ * front, the resident infinity doodle on the back (tap to flip).
  */
 export const About = memo(function About() {
   return (
@@ -78,18 +80,11 @@ export const About = memo(function About() {
           style={{ "--d": ".15s" } as React.CSSProperties}
         >
           <div className="ac-polaroid">
-            <img
-              src={assetUrl("/art/doodle.webp")}
-              alt="Illustrated doodle avatar: an infinity symbol with eyes, a graduation cap and a laptop"
-              width={720}
-              height={720}
-              loading="eager"
-              decoding="async"
-              fetchPriority="high"
-              sizes="(max-width: 960px) min(440px, 100vw), 33vw"
-            />
+            <PortraitCard variant="student" />
           </div>
-          <figcaption>the resident infinity · drawn in-house</figcaption>
+          <figcaption>
+            the human ⇄ the resident infinity · tap to flip
+          </figcaption>
         </figure>
       </div>
     </section>

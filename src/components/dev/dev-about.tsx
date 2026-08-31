@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { assetUrl } from "@/lib/utils";
+import { PortraitCard } from "@/components/site/portrait-card";
 import { SectionBadge } from "@/components/site/section-icons";
 import { DevWindow } from "./dev-window";
 
@@ -18,17 +18,13 @@ const WHOAMI = [
   ["uptime", "shipping daily"],
 ];
 
-const BOOT = [
-  "[ ok ] mounting /dev/creativity",
-  "[ ok ] sourcing core.config.ts: 3 laws loaded",
-  "[ ok ] linking 78 resonances · 5 tyrants",
-  "$ whoami",
-];
-
 /**
- * DevAbout — the terminal boots here. `whoami` + about.md in a window,
- * preceded by a quick boot log so the section reads like a power-on
- * sequence. First section of the dev surface (about first in both modes).
+ * DevAbout — the terminal boots here. `whoami` + about.md in a window.
+ * (The dmesg-style boot-log strip was removed with the other lore lines —
+ * the surface opens straight on the prompt.) The figure beside the window
+ * is the flippable PortraitCard: the portrait on the front, the resident
+ * infinity on the back, turning on a top hinge under a phosphor flash.
+ * First section of the dev surface (about first in both modes).
  */
 export const DevAbout = memo(function DevAbout() {
   return (
@@ -43,18 +39,6 @@ export const DevAbout = memo(function DevAbout() {
             <span className="lm-in">What&apos;s his deal?</span>
           </span>
         </h1>
-
-        <div className="dv-boot reveal" aria-hidden="true">
-          {BOOT.map((l, i) => (
-            <p
-              className="dv-boot-line"
-              key={l}
-              style={{ "--d": `${i * 0.09}s` } as React.CSSProperties}
-            >
-              {l}
-            </p>
-          ))}
-        </div>
 
         <div className="dv-about-grid">
           <DevWindow title="pushyanth — 120×32" prompt="whoami && cat about.md">
@@ -96,19 +80,11 @@ export const DevAbout = memo(function DevAbout() {
 
           <figure className="dv-about-fig reveal" style={{ "--d": ".15s" } as React.CSSProperties}>
             <div className="dv-about-frame">
-              <img
-                src={assetUrl("/art/doodle.webp")}
-                alt="Illustrated doodle avatar: an infinity symbol with eyes, a graduation cap and a laptop"
-                width={720}
-                height={720}
-                loading="lazy"
-                decoding="async"
-                sizes="(max-width: 960px) min(320px, 80vw), 300px"
-              />
+              <PortraitCard variant="dev" />
             </div>
             <figcaption>
-              <span className="dv-dim">$</span> cat avatar.png{" "}
-              <span className="dv-dim">· the resident infinity</span>
+              <span className="dv-dim">$</span> cat me.png ⇄ infinity.webp
+              <span className="dv-dim"> · the resident infinity · click to flip</span>
             </figcaption>
           </figure>
         </div>

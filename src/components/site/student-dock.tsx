@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Dock, { type DockItemDef } from "@/components/lightswind/dock";
+import { useVisualLift } from "@/components/lightswind/use-visual-lift";
 import { Icon } from "@/components/site/icons";
 import { sectionGlyphFor, type SectionKey } from "@/components/site/section-icons";
 import { toggleModeFromEvent } from "@/lib/store";
@@ -44,6 +45,10 @@ const SECTIONS: { id: string; label: string; sec: SectionKey }[] = [
 
 export function StudentDock() {
   const [active, setActive] = useState("");
+  // Touch-safe placement, shared with the DevDock: lifts the fixed frame
+  // out from behind collapsing mobile browser chrome so every sticker
+  // stays tappable on every device. (No-op on desktop.)
+  const lift = useVisualLift();
 
   // Scrollspy: same observer band as the sections + DevDock, so the
   // badge chips, the dot under the dock tile and the URL always agree.
@@ -94,7 +99,11 @@ export function StudentDock() {
   );
 
   return (
-    <div className="st-dock" data-active={active || undefined}>
+    <div
+      className="st-dock"
+      data-active={active || undefined}
+      style={{ "--vv-lift": `${lift}px` } as React.CSSProperties}
+    >
       <Dock
         items={items}
         className="st-dock-panel"

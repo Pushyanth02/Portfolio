@@ -9,8 +9,9 @@ import { LazyMount } from "@/components/site/lazy-mount";
 /**
  * DevTech — the technologies from the resume, developer presentation:
  * an Originkit Liquid Grid field breathing behind a stack.json terminal
- * window and a compact chip cloud. The 13 AI copilots ride along as a
- * `ls ~/ai-workbench` row.
+ * window. The 13 AI copilots ride along as a `ls ~/ai-workbench` row.
+ * (The chip-cloud column that repeated the same categories beside the
+ * window was removed — the JSON file IS the stack, exactly once.)
  */
 export const DevTech = memo(function DevTech() {
   return (
@@ -47,8 +48,8 @@ export const DevTech = memo(function DevTech() {
           style={{ "--d": ".1s" } as React.CSSProperties}
         >
           Languages, frameworks, backend &amp; platform tooling: every entry
-          below is project-proven. The grid behind this window reacts to your
-          clicks; try it.
+          in the file below is project-proven. The grid behind this window
+          reacts to your clicks; try it.
         </p>
 
         <div className="dv-tech-grid">
@@ -82,27 +83,6 @@ export const DevTech = memo(function DevTech() {
               </p>
             </div>
           </DevWindow>
-
-          <div
-            className="dv-tech-cloud reveal"
-            style={{ "--d": ".12s" } as React.CSSProperties}
-          >
-            {TECHNOLOGIES.map((c) => (
-              <div className="dv-tech-cat" key={c.id}>
-                <p className="dv-tech-cat-name">
-                  <span className="dv-dim">{"// "}</span>
-                  {c.label}
-                </p>
-                <ul className="dv-tech-chips">
-                  {c.items.map((t) => (
-                    <li className="dv-chip" key={t}>
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div

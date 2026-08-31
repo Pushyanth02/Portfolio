@@ -12,7 +12,6 @@ import { SideQuests } from "@/components/site/side-quests";
 import { About } from "@/components/site/about";
 import { Connect } from "@/components/site/connect";
 import { Footer } from "@/components/site/footer";
-import { BackToTop } from "@/components/site/back-to-top";
 import { ModeFold } from "@/components/site/mode-fold";
 
 import { DevHero } from "@/components/dev/dev-hero";
@@ -158,7 +157,6 @@ export default function Home() {
         items={isDev ? DEV_MARQUEE_GREEN : STUDENT_MARQUEE_GREEN}
       />
       <Footer />
-      <BackToTop />
       {/* Each universe now navigates with the same icon dock — the student
           surface keeps its roaming Rover mascot AND gets the sticker-shelf
           StudentDock (same items/icons/scrollspy as the DevDock); the dev

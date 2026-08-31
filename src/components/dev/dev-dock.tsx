@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Dock, { type DockItemDef } from "@/components/lightswind/dock";
+import { useVisualLift } from "@/components/lightswind/use-visual-lift";
 import { Icon } from "@/components/site/icons";
 import { sectionGlyphFor, type SectionKey } from "@/components/site/section-icons";
 import { toggleModeFromEvent } from "@/lib/store";
@@ -33,6 +34,11 @@ const SECTIONS: { id: string; label: string; sec: SectionKey }[] = [
 
 export function DevDock() {
   const [active, setActive] = useState("");
+  // Touch-safe placement: on browsers whose layout viewport extends below
+  // the screen (collapsing URL bars), the fixed frame would sit behind the
+  // browser chrome — this lift keeps it inside the actually-visible area
+  // so every tile stays tappable on every device. (No-op on desktop.)
+  const lift = useVisualLift();
 
   // Scrollspy: same observer band as the sections, so dock + badges agree.
   useEffect(() => {
@@ -80,7 +86,11 @@ export function DevDock() {
   );
 
   return (
-    <div className="dv-dock" data-active={active || undefined}>
+    <div
+      className="dv-dock"
+      data-active={active || undefined}
+      style={{ "--vv-lift": `${lift}px` } as React.CSSProperties}
+    >
       <Dock
         items={items}
         className="dv-dock-panel"
