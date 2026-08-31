@@ -1,8 +1,6 @@
 import { memo } from "react";
 import { TECHNOLOGIES, TECH_TOTAL, TOOLS } from "@/lib/tech";
-import PrismGrid from "@/components/originkit/prism-grid";
 import { Icon } from "./icons";
-import { LazyMount } from "./lazy-mount";
 import { SectionBadge } from "./section-icons";
 
 /**
@@ -10,31 +8,13 @@ import { SectionBadge } from "./section-icons";
  * SKILLS SUMMARY), repurposing the old "AI Workbench" slot. Four compact
  * category rows with staggered chip pop-ins; the 13 daily-driver AI tools
  * ride along as a compact footnote strip so nothing from the old workbench
- * is lost. Behind it: an Originkit Prism Grid — a tilted field of warm
- * prismatic cells that light under the pointer (the arsenal, refracted).
- * The content column lets pointer events fall through to the field except
- * on the interactive chips.
+ * is lost. The Originkit Prism Grid that used to live behind this section
+ * now renders as the page-wide living background (PrismBackground) —
+ * same component, same palette, positioned behind both universes.
  */
 export const Tech = memo(function Tech() {
   return (
     <section className="sec tech-sec" id="stack">
-      {/* Originkit — Prism Grid (pointer-reactive tilted cell field),
-          lazy-mounted, warm palette on the notebook paper */}
-      <div className="tech-bg" aria-hidden="true">
-        <LazyMount delay={200}>
-          <PrismGrid
-            colors={["#E8603C", "#F2B33D", "#3E7C4F", "#FBF6EC", "#E9D9BC"]}
-            boxSize={46}
-            maxCols={22}
-            maxRows={22}
-            tilt={{ x: 24, y: 0 }}
-            borderWidth={1}
-            borderColor="rgba(32, 26, 20, 0.09)"
-            fadeDuration={1}
-          />
-        </LazyMount>
-      </div>
-
       <div className="wrap">
         <div className="reveal">
           <SectionBadge id="stack" />

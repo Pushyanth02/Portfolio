@@ -118,6 +118,13 @@
     overflow-x: hidden;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    /* Body owns one stacking context in BOTH universes (dev already
+       isolated it). The prism field is a negative-z child of body, so
+       it paints above the page backdrop but below the in-flow content
+       — and, critically, body's own box no longer shadows it during
+       hit-testing: pointer events fall through the content straight
+       onto the field. */
+    isolation: isolate;
   }
   /* Rendering-perf hint: sections and the rover live in their own layers so
      paints are isolated (no full-page repaints from animated transforms). */
@@ -3071,3 +3078,78 @@ html.dev .sec {
 }
 
 /* force-recompile marker v5 */
+
+/* ============================================================
+   PRISM FIELD — the Originkit Prism Grid as the page background
+   (both universes). One fixed layer behind all content
+   (PrismBackground renders the component exactly as provided;
+   the palette + brightness are per-universe props / rules).
+   ============================================================ */
+
+/* z-index -1 paints the field above the canvas / body background
+   but below every in-flow block — a true background layer. In dev,
+   body isolates its own stacking context, so the field lands above
+   the body's aurora gradients and below the terminal panels. */
+.prism-field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+/* brightness: both universes tune the field so it never reads as too
+   bright or too dark. Student: the warm cells sit at 85% — full-strength
+   sun/coral cells behind the heavy display type vibrated slightly, the
+   small dim keeps them a living accent while the ink lines stay
+   visible. Dev: the whole field is dimmed further (55%) so lit cells
+   read as soft phosphor blips on the near-black terminal instead of
+   white flashes. */
+.prism-field {
+  opacity: 0.85;
+}
+html.dev .prism-field {
+  opacity: 0.55;
+}
+
+/* ------------------------------------------------------------
+   Pointer-events map — the field is interactive on every device.
+   The document flow lets pointer events fall through to the fixed
+   prism layer except on real interactive surfaces, so the grid
+   lights under the pointer wherever it passes over text, lanes
+   and padding. Text selection is already disabled site-wide
+   (content protection), so the fall-through costs nothing.
+   ------------------------------------------------------------ */
+main,
+.site-foot {
+  pointer-events: none;
+}
+
+/* ...and every interactive / hover-reactive element opts back in:
+   controls and links, the hover-lift cards, the pointer-reactive
+   chips, the tilting work surfaces, and the marquee bands (their
+   hover-pause is an intentional feature). Sections with their own
+   opaque reactive canvases (dev hero / dev tech) keep their
+   established internal maps, which nest fine under this one. */
+main :is(a, button, input, textarea, select, summary),
+main :is(
+    .marquee,
+    .badges span,
+    .tags li,
+    .sec-ic,
+    .ac-fig,
+    .sticker,
+    .work-block,
+    .quest,
+    .law,
+    .ccard,
+    .tech-chip,
+    .tech-ai-row li,
+    .dv-repo,
+    .dv-tech-ai-row li,
+    .dv-conn-btn,
+    .dv-conn-handle
+  ) {
+  pointer-events: auto;
+}
+
+/* prism field: cache-bust 1788163144 */

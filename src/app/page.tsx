@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { ClientEffects } from "@/components/site/client-effects";
 import { Header } from "@/components/site/header";
+import { PrismBackground } from "@/components/site/prism-background";
 import { Marquee } from "@/components/site/marquee";
 import { Beliefs } from "@/components/site/beliefs";
 import { Tech } from "@/components/site/tech";
@@ -117,6 +118,9 @@ export default function Home() {
 
   return (
     <>
+      {/* the Originkit Prism Grid — one fixed field behind everything,
+          alive in both universes (palette swaps in place on fold) */}
+      <PrismBackground />
       {/* keyed by mode: a mode switch remounts the tree, and the fresh
           ClientEffects instance re-observes the new .reveal/.lm/.tilt nodes */}
       <ClientEffects key={`fx-${mode}`} />

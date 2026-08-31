@@ -501,55 +501,10 @@
    4 · TECH — the arsenal (id="stack")
    ============================================================ */
 
-/* the section becomes a stage for the Originkit Prism Grid field */
-.tech-sec {
-  position: relative;
-  background: var(--cream);
-}
-
-/* the tilted prism field — full bleed, clipped, under the content */
-.tech-bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-}
-
-/* scrim so the copy stays AA over lit cells; the prism glow breathes
-   through at the edges */
-.tech-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(
-      120% 90% at 50% 40%,
-      rgba(245, 239, 227, 0.72),
-      rgba(245, 239, 227, 0.3) 68%
-    ),
-    linear-gradient(
-      to bottom,
-      rgba(245, 239, 227, 0.6),
-      rgba(245, 239, 227, 0.28) 30%,
-      rgba(245, 239, 227, 0.28) 72%,
-      rgba(245, 239, 227, 0.62)
-    );
-}
-
-/* content rides above the field; pointer events fall through to the
-   prism grid everywhere except the interactive chips */
-.tech-sec .wrap {
-  position: relative;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.tech-sec .tech-chip,
-.tech-sec .tech-ai-row li {
-  pointer-events: auto;
-}
-
+/* The Originkit Prism Grid that staged this section now renders as
+   the page-wide PrismBackground (globals.css); the section is back
+   to transparent so the global field flows through, and the global
+   pointer-events map handles the chip fall-through. */
 .tech-sub {
   margin-top: 16px;
   max-width: 56ch;
