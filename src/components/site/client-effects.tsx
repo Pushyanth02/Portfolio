@@ -31,6 +31,22 @@ export function ClientEffects() {
     );
     document.querySelectorAll(".reveal, .lm:not(.in)").forEach((el) => revealIO.observe(el));
 
+    // --- MutationObserver: pick up .reveal elements injected by
+    //     next/dynamic (ssr: false) after ClientEffects mounted (e.g. Tech,
+    //     Beliefs, Certificates in student mode). Without this, their .reveal
+    //     children stay at opacity:0 forever because the IO was set up before
+    //     they existed in the DOM. ---
+    const domMutations = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        for (const node of m.addedNodes) {
+          if (!(node instanceof HTMLElement)) continue;
+          if (node.matches(".reveal, .lm:not(.in)")) revealIO.observe(node);
+          node.querySelectorAll?.(".reveal, .lm:not(.in)").forEach((el) => revealIO.observe(el));
+        }
+      }
+    });
+    domMutations.observe(document.body, { childList: true, subtree: true });
+
     // --- scroll progress bar (#progress) ---
     // scaleX (compositor-only) instead of width (layout on every scroll frame).
     const prog = progressRef.current;
@@ -132,6 +148,7 @@ export function ClientEffects() {
 
     return () => {
       revealIO.disconnect();
+      domMutations.disconnect();
       numIO.disconnect();
       if (progRaf) cancelAnimationFrame(progRaf);
       window.removeEventListener("scroll", updProg);
