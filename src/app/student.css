@@ -960,10 +960,10 @@
 .sec-ic[data-sec="laws"] svg {
   color: #8a3b1e;
 }
-.sec-ic[data-sec="quests"] {
+.sec-ic[data-sec="certs"] {
   background: var(--sun-soft);
 }
-.sec-ic[data-sec="quests"] svg {
+.sec-ic[data-sec="certs"] svg {
   color: var(--coral);
 }
 .sec-ic[data-sec="connect"] {
@@ -1404,7 +1404,7 @@
   background: #fdeae3;
   color: #8a3b1e;
 }
-.st-dock .lsw-dock-item.st-sec-quests .lsw-dock-item-visual {
+.st-dock .lsw-dock-item.st-sec-certs .lsw-dock-item-visual {
   background: var(--sun-soft);
   color: var(--coral);
 }

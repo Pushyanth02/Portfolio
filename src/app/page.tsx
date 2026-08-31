@@ -9,7 +9,7 @@ import { Marquee } from "@/components/site/marquee";
 import { Beliefs } from "@/components/site/beliefs";
 import { Tech } from "@/components/site/tech";
 import { Work } from "@/components/site/work";
-import { SideQuests } from "@/components/site/side-quests";
+import { Certificates } from "@/components/site/certificates";
 import { About } from "@/components/site/about";
 import { Connect } from "@/components/site/connect";
 import { Footer } from "@/components/site/footer";
@@ -19,7 +19,7 @@ import { DevHero } from "@/components/dev/dev-hero";
 import { DevLaws } from "@/components/dev/dev-laws";
 import { DevTech } from "@/components/dev/dev-tech";
 import { DevWork } from "@/components/dev/dev-work";
-import { DevQuests } from "@/components/dev/dev-quests";
+import DevCertificates from "@/components/dev/dev-certificates";
 import { DevAbout } from "@/components/dev/dev-about";
 import { DevConnect } from "@/components/dev/dev-connect";
 
@@ -129,7 +129,7 @@ export default function Home() {
         {isDev ? (
           <>
             {/* Strict section parity with the student surface:
-                about → hero → marquee → work → stack → laws → quests →
+                about → hero → marquee → work → stack → laws → certs →
                 connect. The dev universe reads the same page, darker. */}
             <DevAbout />
             <DevHero />
@@ -137,7 +137,7 @@ export default function Home() {
             <DevWork />
             <DevTech />
             <DevLaws />
-            <DevQuests />
+            <DevCertificates />
             <DevConnect />
           </>
         ) : (
@@ -151,7 +151,7 @@ export default function Home() {
             <Work />
             <Tech />
             <Beliefs />
-            <SideQuests />
+            <Certificates />
             <Connect />
           </>
         )}

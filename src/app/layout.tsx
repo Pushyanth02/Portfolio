@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://pushyanth02.github.io/Portfolio/"),
   title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
   description:
-    "Pushyanth (Pushyanth02) · CS/DSA student & builder creating AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and side quests.",
+    "Pushyanth (Pushyanth02) · CS/DSA student & builder creating AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
   keywords: [
     "Pushyanth",
     "Pushyanth02",
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
     description:
-      "CS/DSA student & builder creating AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and side quests.",
+      "CS/DSA student & builder creating AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
     type: "website",
     siteName: "Pushyanth",
     locale: "en_US",
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
     description:
-      "AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and side quests.",
+      "AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
     images: ["/art/doodle.webp"],
   },
 };

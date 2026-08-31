@@ -1,0 +1,25 @@
+{
+  "code": 200,
+  "data": {
+    "description": "",
+    "external": {},
+    "html": "<html><head><meta name=\"color-scheme\" content=\"light dark\"></head><body><pre style=\"word-wrap: break-word; white-space: pre-wrap;\">no available server\n</pre></body></html>",
+    "httpStatus": 503,
+    "httpStatusText": "",
+    "metadata": {
+      "color-scheme": "light dark"
+    },
+    "title": "",
+    "url": "https://originkit.com/components/hover-image-reveal",
+    "usage": {
+      "tokens": 46
+    },
+    "warning": "Target URL returned error 503: Service Unavailable"
+  },
+  "meta": {
+    "usage": {
+      "tokens": 46
+    }
+  },
+  "status": 20000
+}

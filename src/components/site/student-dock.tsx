@@ -11,7 +11,7 @@ import { toggleModeFromEvent } from "@/lib/store";
  * StudentDock — the student surface's icon navigation.
  *
  * The same Lightswind Dock + the same Lucide icon set as the DevDock
- * (UserRound · Package · Layers · Scale · Gamepad2 · Send · ∞), so the
+ * (UserRound · Package · Layers · Scale · Award · Send · ∞), so the
  * two universes navigate with identical muscle memory — but skinned as
  * a paper sticker shelf instead of a container terminal (see `st-dock`
  * in student.css: ink borders, offset sticker shadows, per-section warm
@@ -39,7 +39,7 @@ const SECTIONS: { id: string; label: string; sec: SectionKey }[] = [
   { id: "work", label: "shipped work", sec: "work" },
   { id: "stack", label: "the arsenal", sec: "stack" },
   { id: "beliefs", label: "the laws", sec: "laws" },
-  { id: "quests", label: "side quests", sec: "quests" },
+  { id: "certs", label: "the paper trail", sec: "certs" },
   { id: "connect", label: "let's chat!", sec: "connect" },
 ];
 

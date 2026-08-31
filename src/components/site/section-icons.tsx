@@ -4,7 +4,7 @@ import {
   Package,
   Layers,
   Scale,
-  Gamepad2,
+  Award,
   Send,
   type LucideIcon,
 } from "lucide-react";
@@ -26,14 +26,14 @@ import {
  * never drift apart.
  */
 
-export type SectionKey = "about" | "work" | "stack" | "laws" | "quests" | "connect";
+export type SectionKey = "about" | "work" | "stack" | "laws" | "certs" | "connect";
 
 const ICONS: Record<SectionKey, LucideIcon> = {
   about: UserRound,
   work: Package,
   stack: Layers,
   laws: Scale,
-  quests: Gamepad2,
+  certs: Award,
   connect: Send,
 };
 
@@ -47,7 +47,7 @@ const LABELS: Record<SectionKey, string> = {
   work: "work",
   stack: "stack",
   laws: "laws",
-  quests: "quests",
+  certs: "certs",
   connect: "connect",
 };
 

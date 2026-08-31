@@ -28,7 +28,7 @@ const SECTIONS: { id: string; label: string; sec: SectionKey }[] = [
   { id: "work", label: "work", sec: "work" },
   { id: "stack", label: "stack", sec: "stack" },
   { id: "beliefs", label: "laws", sec: "laws" },
-  { id: "quests", label: "quests", sec: "quests" },
+  { id: "certs", label: "certs", sec: "certs" },
   { id: "connect", label: "connect", sec: "connect" },
 ];
 
