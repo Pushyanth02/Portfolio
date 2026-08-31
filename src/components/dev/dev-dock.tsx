@@ -3,15 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Dock, { type DockItemDef } from "@/components/lightswind/dock";
 import { Icon } from "@/components/site/icons";
-import {
-  UserRound,
-  Package,
-  Layers,
-  Scale,
-  Gamepad2,
-  Send,
-  type LucideIcon,
-} from "lucide-react";
+import { sectionGlyphFor, type SectionKey } from "@/components/site/section-icons";
 import { toggleModeFromEvent } from "@/lib/store";
 
 /**
@@ -19,10 +11,10 @@ import { toggleModeFromEvent } from "@/lib/store";
  *
  * A Lightswind Dock (macOS magnification) skinned as a container
  * terminal: mono labels, terminal-green active state, a running-dot
- * indicator per section. It replaces the student mode's Rover and is
- * deliberately distinct from everything else on the site — the dev
- * surface navigates like a desktop environment, the student surface
- * plays with a roaming mascot.
+ * indicator per section. It shares its icon set and scrollspy band
+ * with the student surface's StudentDock (same glyphs via
+ * `sectionGlyphFor`, same observer band) so the two docks are exact
+ * behavioural mirrors — only the skin differs.
  *
  * Scrollspy mirrors the section band. The final item is the mode toggle:
  * its click point becomes the Infinity Fold's origin. (The source.zip
@@ -30,13 +22,13 @@ import { toggleModeFromEvent } from "@/lib/store";
  * carries navigation and the fold only.)
  */
 
-const SECTIONS: { id: string; label: string; Glyph: LucideIcon }[] = [
-  { id: "about", label: "about", Glyph: UserRound },
-  { id: "work", label: "work", Glyph: Package },
-  { id: "stack", label: "stack", Glyph: Layers },
-  { id: "beliefs", label: "laws", Glyph: Scale },
-  { id: "quests", label: "quests", Glyph: Gamepad2 },
-  { id: "connect", label: "connect", Glyph: Send },
+const SECTIONS: { id: string; label: string; sec: SectionKey }[] = [
+  { id: "about", label: "about", sec: "about" },
+  { id: "work", label: "work", sec: "work" },
+  { id: "stack", label: "stack", sec: "stack" },
+  { id: "beliefs", label: "laws", sec: "laws" },
+  { id: "quests", label: "quests", sec: "quests" },
+  { id: "connect", label: "connect", sec: "connect" },
 ];
 
 export function DevDock() {
@@ -61,19 +53,22 @@ export function DevDock() {
 
   const items: DockItemDef[] = useMemo(
     () => [
-      ...SECTIONS.map((s) => ({
-        id: s.id,
-        label: `cd ~/${s.label}`,
-        icon: <s.Glyph strokeWidth={1.8} width={20} height={20} />,
-        onClick: () => {
-          const el = document.getElementById(s.id);
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-            history.pushState(null, "", `#${s.id}`);
-          }
-        },
-        active: active === s.id,
-      })),
+      ...SECTIONS.map((s) => {
+        const Glyph = sectionGlyphFor(s.sec);
+        return {
+          id: s.id,
+          label: `cd ~/${s.label}`,
+          icon: <Glyph strokeWidth={1.8} width={20} height={20} />,
+          onClick: () => {
+            const el = document.getElementById(s.id);
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+              history.pushState(null, "", `#${s.id}`);
+            }
+          },
+          active: active === s.id,
+        };
+      }),
       {
         id: "mode-toggle",
         label: "fold → student.env",

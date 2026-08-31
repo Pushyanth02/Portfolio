@@ -50,6 +50,8 @@ export type DockItemDef = {
   badge?: number;
   /** Marks the item as the current section (active styling hook). */
   active?: boolean;
+  /** Extra classes for the item root — per-skin hooks (e.g. section tints). */
+  className?: string;
 };
 
 export type DockProps = {
@@ -199,10 +201,14 @@ function DockItemView({
     }
   };
 
+  const classes = def.active
+    ? `lsw-dock-item is-active${def.className ? ` ${def.className}` : ""}`
+    : `lsw-dock-item${def.className ? ` ${def.className}` : ""}`;
+
   return (
     <motion.div
       ref={ref}
-      className={def.active ? "lsw-dock-item is-active" : "lsw-dock-item"}
+      className={classes}
       style={{
         position: "relative",
         display: "flex",

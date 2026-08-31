@@ -21,7 +21,9 @@ import {
  *     path prefix, soft glow (scoped via `html.dev .sec-ic` in dev.css)
  *
  * Same glyph per section in both modes so the two surfaces read as
- * deliberate mirrors of each other.
+ * deliberate mirrors of each other. Both docks (DevDock · StudentDock)
+ * consume `sectionGlyphFor` so the badge chips and the dock tiles can
+ * never drift apart.
  */
 
 export type SectionKey = "about" | "work" | "stack" | "laws" | "quests" | "connect";
@@ -34,6 +36,11 @@ const ICONS: Record<SectionKey, LucideIcon> = {
   quests: Gamepad2,
   connect: Send,
 };
+
+/** The shared Lucide glyph for a section key (badges + both docks). */
+export function sectionGlyphFor(id: SectionKey): LucideIcon {
+  return ICONS[id];
+}
 
 const LABELS: Record<SectionKey, string> = {
   about: "about",

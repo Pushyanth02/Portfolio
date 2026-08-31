@@ -1313,3 +1313,198 @@
     display: none;
   }
 }
+
+/* ============================================================
+   STUDENT DOCK — the sticker-shelf section navigation
+   (Lightswind Dock, skinned as a paper sticker shelf)
+
+   The student twin of the DevDock: same items, same icons, same
+   scrollspy — but in the notebook's language: card paper, hard ink
+   borders, offset sticker shadows, per-section warm tints that match
+   the SectionBadge chips. The trailing ∞ tile is the Infinity Fold
+   toggle.
+
+   Device notes (handled by the shared Dock base):
+   · fine pointer + hover  → macOS magnification springs
+   · touch                 → static tiles, ≥44px hit targets
+   · keyboard              → role=toolbar items, Enter/Space, focus
+                             shows the sticker label chip
+   · prefers-reduced-motion→ static sizes, labels only fade
+   ============================================================ */
+
+/* fixed frame — centre-bottom, above the Rover (z 900) so the mascot
+   slides under the shelf, under back-to-top (2100) and dialogs (2600) */
+.st-dock {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  z-index: 1000;
+  pointer-events: none; /* the frame only positions; the dock itself eats events */
+}
+
+.st-dock .lsw-dock {
+  pointer-events: auto;
+}
+
+/* the panel: a paper sticker shelf */
+.st-dock .lsw-dock-panel {
+  gap: 8px;
+  padding-inline: 12px;
+  border-radius: 20px;
+  background: rgba(251, 246, 236, 0.94);
+  border: 1.5px solid var(--ink);
+  box-shadow:
+    5px 6px 0 rgba(32, 26, 20, 0.85),
+    0 18px 42px rgba(32, 26, 20, 0.12);
+}
+
+/* item tiles: stickers on the shelf */
+.st-dock .lsw-dock-item {
+  border-radius: 13px;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.st-dock .lsw-dock-item-visual {
+  border-radius: 13px;
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 rgba(32, 26, 20, 0.55);
+  transition:
+    transform 0.25s var(--ease),
+    box-shadow 0.25s var(--ease),
+    border-color 0.25s var(--ease),
+    color 0.25s var(--ease),
+    background 0.25s var(--ease);
+}
+
+.st-dock .lsw-dock-item-visual svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* per-section warm tints — the exact SectionBadge chip palette */
+.st-dock .lsw-dock-item.st-sec-about .lsw-dock-item-visual {
+  background: #fdeae3;
+  color: var(--coral);
+}
+.st-dock .lsw-dock-item.st-sec-work .lsw-dock-item-visual {
+  background: var(--sun-soft);
+  color: #cf9226;
+}
+.st-dock .lsw-dock-item.st-sec-stack .lsw-dock-item-visual {
+  background: #e7f0e6;
+  color: var(--leaf);
+}
+.st-dock .lsw-dock-item.st-sec-laws .lsw-dock-item-visual {
+  background: #fdeae3;
+  color: #8a3b1e;
+}
+.st-dock .lsw-dock-item.st-sec-quests .lsw-dock-item-visual {
+  background: var(--sun-soft);
+  color: var(--coral);
+}
+.st-dock .lsw-dock-item.st-sec-connect .lsw-dock-item-visual {
+  background: #e7f0e6;
+  color: var(--coral);
+}
+/* the ∞ fold toggle — a sun-tinted tile, warm like the Rover's ∞ */
+.st-dock .lsw-dock-item.st-sec-toggle .lsw-dock-item-visual {
+  background: var(--sun-soft);
+  color: var(--coral);
+}
+
+@media (hover: hover) {
+  .st-dock .lsw-dock-item:hover .lsw-dock-item-visual {
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .st-dock .lsw-dock-item.st-sec-toggle:hover .lsw-dock-item-visual {
+    background: var(--sun);
+    color: var(--ink);
+  }
+}
+
+.st-dock .lsw-dock-item:focus-visible .lsw-dock-item-visual {
+  border-color: var(--coral);
+  box-shadow: 3px 3px 0 var(--coral);
+}
+
+/* the sticker you're reading: active section pops off the shelf */
+.st-dock .lsw-dock-item.is-active .lsw-dock-item-visual {
+  background: #fff;
+  border-color: var(--coral);
+  color: var(--coral);
+  transform: translateY(-3px) rotate(-2deg);
+  box-shadow: 3px 4px 0 rgba(232, 96, 60, 0.75);
+}
+
+.st-dock .lsw-dock-active-dot {
+  background: var(--coral);
+  box-shadow: 0 0 0 3px rgba(232, 96, 60, 0.2);
+}
+
+/* tooltip labels: sticker chips */
+.st-dock .lsw-dock-label {
+  font: 700 10.5px / 1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  color: var(--ink);
+  background: var(--card);
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  padding: 6px 10px;
+  box-shadow: 2px 2px 0 rgba(32, 26, 20, 0.8);
+}
+
+/* badges: sticker dots (unused today, skinned for completeness) */
+.st-dock .lsw-dock-badge {
+  display: grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--coral);
+  color: #fff6ec;
+  border: 1px solid var(--ink);
+  font: 700 9.5px / 1 var(--mono);
+}
+
+/* the dock floats over the footer's centre — on narrow screens the
+   footer copy stacks into that space, so give it clearance
+   (the dev universe does the same via html.dev .site-foot) */
+@media (max-width: 640px) {
+  html:not(.dev) .site-foot {
+    padding-bottom: 96px;
+  }
+
+  .st-dock .lsw-dock-panel {
+    gap: 5px;
+    padding-inline: 10px;
+    border-radius: 16px;
+  }
+}
+
+/* very narrow phones: let the shelf scroll rather than clip */
+@media (max-width: 359px) {
+  .st-dock {
+    left: 0;
+    transform: none;
+    width: 100vw;
+  }
+
+  .st-dock .lsw-dock {
+    justify-content: flex-start;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .st-dock .lsw-dock::-webkit-scrollbar {
+    display: none;
+  }
+}
+

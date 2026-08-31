@@ -11,8 +11,9 @@ import type { PortfolioMode } from "@/lib/mode";
  * Left:  the infinity logo (the mode switch — student ⇄ dev, click point
  *        feeds the Infinity Fold's origin).
  * Right: ONLY the resume button (per the redesign: the section nav links
- *        were removed; wayfinding lives in the Rover (student) and the
- *        DevDock (dev), which both scrollspy on their own).
+ *        were removed; wayfinding lives in the icon docks — StudentDock
+ *        (student, alongside the Rover mascot) and DevDock (dev), which
+ *        both scrollspy on their own).
  *
  * No scrollspy, no mobile dropdown — a single always-visible action that
  * fits every viewport without a menu button.

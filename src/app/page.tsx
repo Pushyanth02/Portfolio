@@ -31,6 +31,10 @@ import { usePortfolioStore } from "@/lib/store";
 const Rover = dynamic(() => import("@/components/site/rover").then((m) => m.Rover), {
   ssr: false,
 });
+const StudentDock = dynamic(
+  () => import("@/components/site/student-dock").then((m) => m.StudentDock),
+  { ssr: false }
+);
 const DevDock = dynamic(
   () => import("@/components/dev/dev-dock").then((m) => m.DevDock),
   { ssr: false }
@@ -155,13 +159,18 @@ export default function Home() {
       />
       <Footer />
       <BackToTop />
-      {/* Each universe has its own wayfinder: the student surface has the
-          roaming Rover mascot; the dev surface navigates via the Docker-style
-          DevDock. Both load lazily and remount with their mode. */}
+      {/* Each universe now navigates with the same icon dock — the student
+          surface keeps its roaming Rover mascot AND gets the sticker-shelf
+          StudentDock (same items/icons/scrollspy as the DevDock); the dev
+          surface navigates via the terminal-skinned DevDock. Both load
+          lazily and remount with their mode. */}
       {isDev ? (
         <DevDock key="dock-dev" />
       ) : (
-        <Rover key="rover-student" />
+        <>
+          <Rover key="rover-student" />
+          <StudentDock key="dock-student" />
+        </>
       )}
       {/* Mount-on-first-open: the modal chunks stay out of the initial
           bundle and still animate out cleanly after they've loaded. */}
