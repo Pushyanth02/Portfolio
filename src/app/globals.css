@@ -3,6 +3,7 @@
 @import "./student.css";
 @import "./dev.css";
 @import "./fold.css";
+@import "./loader.css";
 
 @custom-variant dark (&:is(.dark *));
 
