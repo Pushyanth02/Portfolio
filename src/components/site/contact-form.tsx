@@ -328,11 +328,9 @@ export function ContactFormDialog() {
                   send it <Send strokeWidth={1.9} aria-hidden="true" />
                 </>
               )}
-            </button>
-
-            <p className="cf-note">
-              your note is validated &amp; saved server-side, then a prefilled
-              gmail draft opens — one click there and it&apos;s in the inbox.
+            </button>              <p className="cf-note">
+              your note is validated locally, then a prefilled gmail draft
+              opens — one click there and it&apos;s in the inbox.
             </p>
           </form>
         )}
