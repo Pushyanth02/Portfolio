@@ -81,7 +81,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/art/doodle.webp",
+        url: `${process.env.NEXT_PUBLIC_BASE_PATH ?? "/Portfolio"}/art/doodle.webp`,
         width: 1024,
         height: 1024,
         alt: "Pushyanth Portfolio Mascot",
@@ -93,7 +93,7 @@ export const metadata: Metadata = {
     title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
     description:
       "AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
-    images: ["/art/doodle.webp"],
+    images: [`${process.env.NEXT_PUBLIC_BASE_PATH ?? "/Portfolio"}/art/doodle.webp`],
   },
 };
 
