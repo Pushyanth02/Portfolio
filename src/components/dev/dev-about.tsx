@@ -11,7 +11,9 @@ const LOOK_FOR = [
 
 const WHOAMI = [
   ["user", "pushyanth (pushyanth02)"],
-  ["role", "cs student · software crafter"],
+  ["role", "cs undergrad · full-stack developer"],
+  ["core", "typescript · next.js · react · web apis"],
+  ["focus", "local-first · deterministic · explainable"],
   ["shell", "/bin/build-with-ai"],
   ["editor", "vs code + claude code"],
   ["location", "bangalore, in · UTC+5:30"],
@@ -53,10 +55,11 @@ export const DevAbout = memo(function DevAbout() {
             </div>
             <div className="dv-md">
               <p>
-                pushyanth here. cs student, software crafter. i build with AI
-                and keep my systems explainable. days go to data structures
-                and algorithms, evenings to full-stack builds with AI
-                copilots in the loop.
+                pushyanth here. cs undergrad, full-stack developer. strong in
+                typescript, next.js, react and modern browser apis — i build
+                local-first web apps, client-side parsing pipelines and
+                deterministic state engines, grounded in c/c++ memory work,
+                linear data structures and relational databases.
               </p>
               <p>
                 off-hours: wandering open-source repos, testing new AI

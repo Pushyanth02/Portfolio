@@ -1,0 +1,75 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Deploy the portfolio to GitHub Pages.
+#
+# Builds the Next.js static export (`next build` → `out/`) with Bun and
+# publishes it via the official Pages actions. `NEXT_PUBLIC_BASE_PATH` is
+# computed from the repository name: project sites (`owner/repo`) are served
+# under `/repo`, while user/org sites (`owner.github.io`) live at the root.
+#
+# One-time repo setup: Settings → Pages → Build and deployment →
+# Source = "GitHub Actions". `public/.nojekyll` is included so Pages skips
+# Jekyll processing and serves the `out/` tree verbatim.
+# ─────────────────────────────────────────────────────────────────────────────
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one in-flight deployment; don't cancel running ones mid-flight
+# so a Pages deployment is never torn down halfway through.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Compute base path
+        id: base
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          if [[ "${REPO_NAME}" == *.github.io ]]; then
+            echo "BASE_PATH=" >> "$GITHUB_OUTPUT"
+          else
+            echo "BASE_PATH=/${REPO_NAME}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build static site
+        env:
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.base.outputs.BASE_PATH }}
+        run: bun run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

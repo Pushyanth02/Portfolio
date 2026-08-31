@@ -112,30 +112,32 @@ export const usePortfolioStore = create<PortfolioStore>()((set, get) => ({
       // Reduced motion: a quick, calm crossfade — no theatrics.
       notifyWarpBegin();
       foldTimers = [
-        window.setTimeout(swap, 120),
-        window.setTimeout(() => set({ fold: { ...get().fold, stage: "close" } }), 200),
+        window.setTimeout(swap, 140),
+        window.setTimeout(() => set({ fold: { ...get().fold, stage: "close" } }), 240),
         window.setTimeout(() => {
           finish();
           notifyWarpEnd();
-        }, 600),
+        }, 700),
       ];
       return;
     }
 
-    // The iris needs ~380ms to cover the stage; canvas fields tear down
-    // only once the cover can hide the pop. The ∞ slide owns the centre
-    // of attention by then.
-    // t=520ms: the new universe mounts silently behind the opaque cover.
-    // t=660ms: the fold closes back into its origin, page-turn style.
-    // t=1120ms: done.
+    // The extended Infinity Fold — a slower, more cinematic page-turn
+    // (~1.65s total) so the universe swap feels earned, not instant:
+    // the iris needs ~600ms to majestically cover the stage; canvas
+    // fields tear down only once the cover can hide the pop.
+    // t=780ms: the new universe mounts silently behind the opaque
+    //          cover, exactly as the ∞ glyph banks through centre.
+    // t=1040ms: the fold closes back into its origin, page-turn style.
+    // t=1660ms: done.
     foldTimers = [
-      window.setTimeout(() => notifyWarpBegin(), 380),
-      window.setTimeout(swap, 520),
-      window.setTimeout(() => set({ fold: { ...get().fold, stage: "close" } }), 660),
+      window.setTimeout(() => notifyWarpBegin(), 480),
+      window.setTimeout(swap, 780),
+      window.setTimeout(() => set({ fold: { ...get().fold, stage: "close" } }), 1040),
       window.setTimeout(() => {
         finish();
         notifyWarpEnd();
-      }, 1120),
+      }, 1660),
     ];
   },
 

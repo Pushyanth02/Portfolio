@@ -8,16 +8,16 @@ import { usePortfolioStore } from "@/lib/store";
 /**
  * ContactFormDialog — the "let's chat" message form (both universes).
  *
- * Replaces the old click-to-copy email card: clicking "send a message"
- * opens this dialog (name · gmail · message). On submit:
+ * Fully client-side by design (the portfolio is a static export — no
+ * server runtime): clicking "send a note"
  *
- *   1. the note is validated client-side, then POSTed to /api/contact
- *      (server re-validates, rate-limits, and stores it durably in SQLite)
- *   2. the API answers with a prefilled Gmail compose URL addressed to
- *      the owner — the window is opened synchronously with the click
- *      gesture (popup-blocker-safe) and redirected once the response
- *      lands, so the message actually arrives in the owner's Gmail
- *   3. if a popup was blocked anyway, an in-dialog success state with a
+ *   1. validates the fields client-side (length caps + email shape)
+ *   2. builds the prefilled Gmail compose URL for the owner's inbox
+ *      locally (same format the former /api/contact route produced)
+ *   3. opens it synchronously inside the click gesture (popup-blocker-
+ *      safe) so the note is pre-addressed, pre-written — one click in
+ *      Gmail delivers it
+ *   4. if a popup was blocked anyway, an in-dialog success state with a
  *      manual "open draft" link keeps the flow working
  *
  * Skins: student = warm sticker card; dev = dark terminal card
@@ -31,6 +31,8 @@ type FieldErrors = Partial<Record<keyof Fields, string>>;
 
 const EMPTY: Fields = { name: "", email: "", message: "" };
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+/** The inbox every prefilled Gmail draft targets. */
+const OWNER_EMAIL = "pushyanth2008@gmail.com";
 
 function validateClient(f: Fields): FieldErrors {
   const errors: FieldErrors = {};
@@ -116,7 +118,7 @@ export function ContactFormDialog() {
     if (errors[key]) setErrors((er) => ({ ...er, [key]: undefined }));
   };
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (status === "sending") return;
 
@@ -126,56 +128,46 @@ export function ContactFormDialog() {
       return;
     }
 
+    /* Build the prefilled Gmail compose URL locally — the portfolio is
+       a static export, so the delivery vehicle is the visitor's own
+       Gmail: the draft is pre-addressed and pre-written; one click in
+       Gmail sends it. (Identical URL format to the retired API route.) */
+    const subject = `Portfolio message from ${fields.name.trim()}`;
+    const body = [
+      fields.message.trim(),
+      "",
+      "—",
+      `${fields.name.trim()} (${fields.email.trim()})`,
+      `sent from the portfolio contact form · ${new Date().toISOString()}`,
+    ].join("\n");
+    const compose = `https://mail.google.com/mail/?${new URLSearchParams({
+      view: "cm",
+      fs: "1",
+      to: OWNER_EMAIL,
+      su: subject,
+      body,
+    }).toString()}`;
+
     /* Open the compose window synchronously inside the user gesture so
-       popup blockers allow it; redirect it once the API answers. */
-    const composeWin = window.open("", "_blank");
+       popup blockers allow it. */
+    const composeWin = window.open(compose, "_blank", "noopener,noreferrer");
 
-    setStatus("sending");
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fields.name,
-          email: fields.email,
-          message: fields.message,
-        }),
+    if (composeWin) {
+      setStatus("done");
+      setFields(EMPTY);
+      toast.success("Message on its way", {
+        description: "A Gmail draft just opened — hit send and it lands in my inbox.",
+        duration: 5000,
       });
-      const data = (await res.json()) as {
-        ok?: boolean;
-        compose?: string | null;
-        error?: string;
-        fields?: FieldErrors;
-      };
-
-      if (res.ok && data.ok) {
-        setStatus("done");
-        if (composeWin && data.compose) {
-          composeWin.location.href = data.compose;
-          toast.success("Message on its way", {
-            description: "A Gmail draft just opened — hit send and it lands in my inbox.",
-            duration: 5000,
-          });
-          setFields(EMPTY);
-          requestClose();
-        } else {
-          /* Popup was blocked — surface a manual link instead. */
-          setComposeUrl(data.compose ?? null);
-          toast.info("Almost there", {
-            description: "Your note is saved — open the Gmail draft from the dialog.",
-            duration: 5000,
-          });
-        }
-      } else {
-        composeWin?.close();
-        if (data.fields) setErrors(data.fields);
-        toast.error(data.error ?? "Couldn't send — please try again.");
-      }
-    } catch {
-      composeWin?.close();
-      toast.error("Network hiccup — please try again.");
-    } finally {
-      if (status !== "done") setStatus("idle");
+      requestClose();
+    } else {
+      /* Popup was blocked — surface a manual link instead. */
+      setStatus("done");
+      setComposeUrl(compose);
+      toast.info("Almost there", {
+        description: "Pop-up blocked — open the Gmail draft from the dialog.",
+        duration: 5000,
+      });
     }
   };
 

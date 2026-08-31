@@ -94,8 +94,8 @@ export function DevDock() {
       <Dock
         items={items}
         className="dv-dock-panel"
-        baseItemSize={42}
-        magnification={62}
+        baseItemSize={44}
+        magnification={64}
         distance={120}
       />
     </div>

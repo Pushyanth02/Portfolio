@@ -10,8 +10,9 @@ const LOOK_FOR = [
 
 const FACTS = [
   { k: "based", v: "bangalore, in" },
-  { k: "studying", v: "cs @ lpu ’29" },
-  { k: "stack", v: "ts · next.js · node" },
+  { k: "studying", v: "b.tech cs @ lpu ’29 · cgpa 7.98" },
+  { k: "stack", v: "ts · next.js · react · node" },
+  { k: "focus", v: "local-first · deterministic" },
   { k: "status", v: "open to collab" },
 ];
 
@@ -36,12 +37,13 @@ export const About = memo(function About() {
             </span>
           </h1>
           <p className="reveal" style={{ "--d": ".1s" } as React.CSSProperties}>
-            I&apos;m Pushyanth, a computer science student and software crafter.
-            I build with AI and keep every system explainable. Days go to
-            data structures and algorithms; evenings go to full-stack builds
-            with Claude, Codex and friends in the loop. Whatever catches my
-            curiosity, AI/ML or cloud, I study it hands-first and explain it
-            always.
+            I&apos;m Pushyanth — a computer science undergraduate and full-stack
+            developer strong in TypeScript, Next.js, React and modern browser
+            APIs. I build local-first web applications, client-side data
+            parsing pipelines and deterministic state engines, grounded in
+            C/C++ memory work, linear data structures and relational
+            databases. Whatever catches my curiosity — AI/ML or cloud — I
+            study it hands-first and keep every system explainable.
           </p>
           <p className="reveal" style={{ "--d": ".18s" } as React.CSSProperties}>
             When I&apos;m not shipping, I wander open-source repos, chase new AI

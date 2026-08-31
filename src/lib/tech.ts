@@ -1,9 +1,14 @@
 import type { IconName } from "@/components/site/icons";
 
 /**
- * Technologies — extracted verbatim from the resume
- * (public/Pushyanth_Reddy_Resume.pdf → SKILLS SUMMARY), grouped for the
+ * Technologies — extracted verbatim from the latest resume
+ * (public/Pushyanth_Reddy_Resume.pdf → TECHNICAL SKILLS), grouped for the
  * dedicated "Technologies" section that replaces the old AI Workbench.
+ * The resume's five skill lines map onto four visible groups: its
+ * "Frontend & UI" line (incl. Zustand + UI/UX accessibility) lives in
+ * frameworks, and "Backend & Databases" (Node + SQL + client-side stores)
+ * lives in backend. The resume's soft skills stay in the about prose —
+ * a technologies section shouldn't list personality.
  */
 export type TechCategory = {
   id: string;
@@ -17,19 +22,19 @@ export const TECHNOLOGIES: TechCategory[] = [
     id: "languages",
     label: "Languages",
     hint: "typed · strict · daily",
-    items: ["TypeScript", "JavaScript", "Python", "C", "C++", "HTML", "CSS", "SQL"],
+    items: ["TypeScript", "JavaScript", "Python", "C", "C++", "HTML5", "CSS3", "SQL"],
   },
   {
     id: "frameworks",
-    label: "Frameworks",
-    hint: "the full-stack core",
-    items: ["Next.js", "React", "Tailwind CSS"],
+    label: "Frontend & UI",
+    hint: "the interface core",
+    items: ["Next.js", "React", "Tailwind CSS", "Zustand", "UI/UX Accessibility"],
   },
   {
     id: "backend",
     label: "Backend & Data",
-    hint: "api + persistence",
-    items: ["Node.js", "PostgreSQL", "MySQL"],
+    hint: "api · sql · persistence",
+    items: ["Node.js", "PostgreSQL", "MySQL", "SQLite", "IndexedDB"],
   },
   {
     id: "platform",

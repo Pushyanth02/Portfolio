@@ -343,6 +343,11 @@ export default function PrismGrid({
             // Touch: when the browser takes the gesture over for scrolling it
             // fires pointercancel — retire the lit cell instead of freezing it.
             onPointerCancel={leave}
+            // Touch tap-to-light: a pointerdown lights the cell under the
+            // finger immediately (before any scroll claim), so taps and
+            // drags both paint the field on hover-less devices. Mouse/pen
+            // taps behave exactly like a pointermove.
+            onPointerDown={handlePointerMove}
             style={{
                 position: "relative",
                 width: "100%",

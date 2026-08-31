@@ -12,8 +12,8 @@
             revealed last at the tap point, page-turn style.
 
    The ∞ slide: a large infinity glyph sweeps through the overlay
-   (t≈0.16–0.88s), banking through centre exactly as the universe
-   swaps behind the cover, two softer echoes trailing.
+   (t≈0.22–1.37s), banking through centre exactly as the universe
+   swaps behind the cover (t=0.78s), two softer echoes trailing.
 
    MOUNT-SAFE BY CONSTRUCTION — every phase is a keyframe
    animation, never a transition. The fold element is inserted
@@ -28,13 +28,14 @@
    clip-path circle is GPU-interpolated on every current engine.
 
    Stages are classes on .fold (is-open / is-close), driven by the
-   timer state machine in page.tsx:
-     0ms    fold mounts, iris opens (0.48s)
-     380ms  canvas fields tear down behind the cover
-     520ms  the new universe mounts silently
-     660ms  the fold closes back into its origin (0.42s)
-     1120ms fold unmounts — total 1.12s, ~28% faster than the
-            retired ripple-led fold
+   timer state machine in the store (v2 — the extended cinematic cut):
+     0ms    fold mounts, iris opens (0.62s)
+     480ms  canvas fields tear down behind the cover
+     780ms  the new universe mounts silently — the ∞ banks through
+            centre at the same beat
+     1040ms the fold closes back into its origin (0.56s)
+     1660ms fold unmounts — total ~1.66s, a slower page-turn that
+            lets each phase read before the next begins
    Accent keys off data-target (the DESTINATION): terminal green
    when folding into the dev surface, warm coral when folding
    back into the student one.
@@ -76,11 +77,11 @@ body.folding {
 }
 
 .fold.is-open {
-  animation: fold-iris-open 0.48s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation: fold-iris-open 0.62s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
 
 .fold.is-close {
-  animation: fold-iris-close 0.42s cubic-bezier(0.4, 0, 0.55, 1) both;
+  animation: fold-iris-close 0.56s cubic-bezier(0.4, 0, 0.55, 1) both;
   /* the reveal is nearly done — let late pointer events through */
   pointer-events: none;
 }
@@ -157,14 +158,15 @@ body.folding {
   color: var(--fold-accent);
 }
 
-/* mount-safe staggered slide-in, 70ms apart */
+/* mount-safe staggered slide-in, 90ms apart — slower cut, more
+   deliberate reading time per line */
 .fold.is-open .fold-item {
-  animation: fold-item-in 0.34s cubic-bezier(0.22, 1, 0.36, 1)
-    calc(0.05s + var(--i, 0) * 0.07s) both;
+  animation: fold-item-in 0.4s cubic-bezier(0.22, 1, 0.36, 1)
+    calc(0.08s + var(--i, 0) * 0.09s) both;
 }
 
 .fold.is-close .fold-item {
-  animation: fold-item-out 0.2s ease both;
+  animation: fold-item-out 0.26s ease both;
 }
 
 @keyframes fold-item-in {
@@ -221,18 +223,19 @@ body.folding {
 
 /* Keyed to .fold (not the stage classes): the sweep keeps gliding
    uninterrupted while the iris closes around it — the class swap
-   never restarts the animation. */
+   never restarts the animation. Extended cut: a longer, lower sweep
+   (1.15s) whose centre-cross lands exactly on the t=0.78s swap. */
 .fold .fold-inf-main {
-  animation: fold-inf-slide 0.72s cubic-bezier(0.65, 0, 0.35, 1) 0.16s both;
+  animation: fold-inf-slide 1.15s cubic-bezier(0.62, 0, 0.3, 1) 0.22s both;
 }
 
 .fold .fold-inf-echo-1 {
-  animation: fold-inf-slide-echo 0.72s cubic-bezier(0.65, 0, 0.35, 1) 0.24s
+  animation: fold-inf-slide-echo 1.15s cubic-bezier(0.62, 0, 0.3, 1) 0.38s
     both;
 }
 
 .fold .fold-inf-echo-2 {
-  animation: fold-inf-slide-echo 0.72s cubic-bezier(0.65, 0, 0.35, 1) 0.32s
+  animation: fold-inf-slide-echo 1.15s cubic-bezier(0.62, 0, 0.3, 1) 0.54s
     both;
 }
 
@@ -241,15 +244,15 @@ body.folding {
     transform: translate3d(-42vw, 0, 0) rotate(-10deg) scale(0.86);
     opacity: 0;
   }
-  10% {
+  12% {
     opacity: 1;
   }
-  50% {
+  48% {
     /* banks through centre — straight through where the ripple
        core used to breathe — as the universe swaps behind */
-    transform: translate3d(46vw, -5vh, 0) rotate(4deg) scale(1.06);
+    transform: translate3d(44vw, -5vh, 0) rotate(4deg) scale(1.1);
   }
-  88% {
+  86% {
     opacity: 1;
   }
   100% {
@@ -297,7 +300,7 @@ body.folding {
    the dev dock is rendered outside main). */
 
 body.folding main {
-  animation: fold-arrive 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.14s both;
+  animation: fold-arrive 0.52s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
 @keyframes fold-arrive {

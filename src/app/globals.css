@@ -657,7 +657,7 @@ section {
 .lm .lm-in {
   display: block;
   transform: translateY(112%);
-  transition: transform 0.9s var(--ease);
+  transition: transform 0.95s var(--ease);
   transition-delay: var(--d, 0s);
 }
 .lm.in .lm-in {
@@ -667,7 +667,7 @@ section {
   opacity: 0;
   transform: translateY(24px);
   transition:
-    opacity 0.7s ease,
+    opacity 0.65s var(--ease),
     transform 0.85s var(--ease);
   transition-delay: var(--d, 0s);
 }
@@ -1984,6 +1984,13 @@ svg {
   padding-bottom: 16px;
   margin-bottom: 24px;
 }
+/* the resume's PROFESSIONAL SUMMARY paragraph — quiet editorial lead */
+.cd-sum {
+  font: 600 clamp(0.95rem, 1.6vw, 1.04rem)/1.62 var(--disp);
+  color: var(--ink);
+  border-left: 3px solid var(--sun);
+  padding-left: 14px;
+}
 .cd-item li,
 .cd-cert-list li {
   line-height: 1.55;
@@ -2912,8 +2919,8 @@ html.dev .sec {
 /* The about figure in BOTH universes: the portrait photo sits on the
    front face (i.e. above), the in-house drawn resident infinity doodle
    on the back. Click / Enter / Space flips between them. The turn
-   animation itself is mode-specific — springy side-hinge paper-craft in
-   student.css (.pcard-student), terminal top-hinge + CRT flash in
+   choreography is mode-specific — the "polaroid toss" flight in
+   student.css (.pcard-student), the "phosphor swap" CRT turn in
    dev.css (.pcard-dev) — so the same card feels native to each world. */
 .pcard {
   position: relative;

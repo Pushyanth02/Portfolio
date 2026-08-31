@@ -180,7 +180,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   Vulavala Pushyanth Reddy
                 </h3>
                 <p className="rh-sub">
-                  CS Student · Systems Builder · Bangalore, India
+                  CS Undergrad · Full-Stack Developer · Bangalore, India
                 </p>
               </div>
             </div>
@@ -291,61 +291,75 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
               <div className="resume-clean-view">
                 {/* Clean View Document */}
                 <article className="clean-doc">
-                  {/* Top Intro */}
+                  {/* Top Intro — one contact line, exactly as the resume prints it */}
                   <header className="cd-head">
                     <h2>Vulavala Pushyanth Reddy</h2>
                     <div className="cd-contacts">
+                      <a href="tel:+916363121593">+91-6363121593</a>
+                      <a href="mailto:pushyanth2008@gmail.com">
+                        pushyanth2008@gmail.com
+                      </a>
                       <a
                         href="https://www.linkedin.com/in/pushyanth-reddy"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        LinkedIn: Pushyanth | Linkedin ↗
-                      </a>
-                      <a href="mailto:pushyanth2008@gmail.com">
-                        Email: pushyanth2008@gmail.com
+                        linkedin.com/in/pushyanth ↗
                       </a>
                       <a
                         href="https://github.com/Pushyanth02"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        GitHub: github.com/Pushyanth ↗
+                        github.com/pushyanth ↗
                       </a>
-                      <span>Mobile: +91-6363121593</span>
                     </div>
                   </header>
 
-                  {/* Skills */}
+                  {/* Professional Summary */}
                   <section className="cd-section">
-                    <h4>SKILLS SUMMARY</h4>
+                    <h4>PROFESSIONAL SUMMARY</h4>
+                    <p className="cd-sum">
+                      Computer Science undergraduate and Full-Stack Developer
+                      with strong expertise in TypeScript, Next.js, React, and
+                      modern browser APIs. Experienced in building local-first
+                      web applications, client-side data parsing pipelines, and
+                      deterministic state management engines. Grounded in
+                      C/C++ memory management, linear data structures, and
+                      relational database systems.
+                    </p>
+                  </section>
+
+                  {/* Technical Skills */}
+                  <section className="cd-section">
+                    <h4>TECHNICAL SKILLS</h4>
                     <div className="cd-skills">
                       <div className="cd-row">
                         <b>Languages:</b> TypeScript, JavaScript, Python, C,
-                        C++, HTML, CSS, SQL
+                        C++, HTML5, CSS3, SQL
                       </div>
                       <div className="cd-row">
-                        <b>Libraries &amp; Frameworks:</b> Next.js, React,
-                        Tailwind CSS
+                        <b>Frontend &amp; UI:</b> Next.js, React, Tailwind CSS,
+                        Zustand, UI/UX Accessibility
                       </div>
                       <div className="cd-row">
-                        <b>Tools/Platforms:</b> Git, GitHub, GitHub Actions
+                        <b>Backend &amp; Databases:</b> Node.js, PostgreSQL,
+                        MySQL, SQLite, IndexedDB
+                      </div>
+                      <div className="cd-row">
+                        <b>Developer Tools:</b> Git, GitHub, GitHub Actions
                         (CI/CD), Docker, Vercel, VS Code
                       </div>
                       <div className="cd-row">
-                        <b>Backend:</b> Node.js, PostgreSQL, MySQL
-                      </div>
-                      <div className="cd-row">
-                        <b>Soft Skills:</b> Team Collaboration, Problem-Solving,
-                        Adaptability, Communication, Critical thinking,
-                        Leadership
+                        <b>Soft Skills:</b> Problem Solving, Critical Thinking,
+                        Creativity, Adaptability, Time Management
                       </div>
                     </div>
                   </section>
 
-                  {/* Projects */}
+                  {/* Technical Projects */}
                   <section className="cd-section">
-                    <h4>PROJECTS</h4>
+                    <h4>TECHNICAL PROJECTS</h4>
 
                     <div className="cd-item">
                       <div className="cd-item-head">
@@ -359,29 +373,30 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                           </a>
                           <span className="cd-tech">
                             {" "}
-                            | TypeScript · Next.js · IndexedDB · Zod
+                            | TypeScript · Next.js · IndexedDB · Zod · Web APIs
                           </span>
-                          <a className="cd-git" href="https://github.com/Pushyanth02/Lemniscate" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                          <a className="cd-git" href="https://lemniscate02.vercel.app/" target="_blank" rel="noopener noreferrer">Live ↗</a>
                         </h5>
-                        <span className="cd-date">Nov 2025 - Aug 2026</span>
+                        <span className="cd-date">Apr 2024 – Aug 2026</span>
                       </div>
                       <ul>
                         <li>
-                          Built a local-first document processing web
-                          application supporting 7 file formats (including PDF,
-                          EPUB, DOCX) utilizing pdf.js and JSZip for fully
-                          client-side parsing with zero server data exposure.
+                          Built a local-first document processing application
+                          supporting 7 file formats (PDF, EPUB, DOCX) using
+                          pdf.js and JSZip for client-side parsing with zero
+                          server data exposure.
                         </li>
                         <li>
-                          Integrated a modular AI streaming interface using
-                          Server-Sent Events (SSE) for real-time token rendering,
-                          validated by runtime Zod schemas for structured
-                          output integrity.
+                          Integrated an AI streaming interface using
+                          Server-Sent Events (SSE) for real-time token
+                          rendering, validated via runtime Zod schemas to
+                          guarantee structured data integrity.
                         </li>
                         <li>
                           Implemented an on-device extractive text
                           summarization pipeline, integrating IndexedDB with
-                          SHA/hash-based keying for local document caching.
+                          hash-based keying for persistent client-side
+                          document caching.
                         </li>
                       </ul>
                     </div>
@@ -400,27 +415,27 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                             {" "}
                             | Next.js · React · TypeScript · Zustand
                           </span>
-                          <a className="cd-git" href="https://github.com/Pushyanth02/Dungeoncore-Necromancer" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                          <a className="cd-git" href="https://pushyanth02.github.io/Dungeoncore-Necromancer/" target="_blank" rel="noopener noreferrer">Live ↗</a>
                         </h5>
-                        <span className="cd-date">June 2026 – Aug 2026</span>
+                        <span className="cd-date">Jun 2026 – Aug 2026</span>
                       </div>
                       <ul>
                         <li>
-                          Developed a dynamic web reading platform featuring a
-                          unified command palette (⌘K) with fuzzy search for
-                          low-latency client-side indexing and query matching.
+                          Developed a responsive web reading platform featuring
+                          a unified command palette with client-side fuzzy
+                          search for low-latency query matching.
                         </li>
                         <li>
-                          Designed a procedural audio synthesizer utilizing the
-                          Web Audio API to generate dynamic audio in real time,
-                          eliminating external media assets and optimizing
-                          initial bundle payload.
+                          Engineered a procedural audio synthesis engine using
+                          the Web Audio API to generate real-time dynamic
+                          soundscapes, eliminating external audio assets and
+                          reducing payload size.
                         </li>
                         <li>
-                          Deployed a fully static-exported, zero-server web
-                          application adhering to WCAG AA accessibility
-                          standards (keyboard focus trapping, ARIA live regions)
-                          via GitHub Actions CI/CD.
+                          Deployed a static-exported web application adhering
+                          to WCAG AA accessibility standards (keyboard focus
+                          trapping, ARIA live regions) via GitHub Actions
+                          CI/CD to GitHub Pages.
                         </li>
                       </ul>
                     </div>
@@ -429,97 +444,42 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       <div className="cd-item-head">
                         <h5>
                           <a
-                            href="https://github.com/Pushyanth02/LuckOMatic-9000"
+                            href="https://github.com/Pushyanth02/Archmage"
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            Luck-O-Matic 9000 ↗
+                            Archmage ↗
                           </a>
                           <span className="cd-tech">
                             {" "}
-                            | TypeScript · Next.js · Tailwind · Web Audio API
+                            | Next.js · TypeScript · Tailwind CSS
                           </span>
-                          <a className="cd-git" href="https://github.com/Pushyanth02/LuckOMatic-9000" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+                          <a className="cd-git" href="https://pushyanth02.github.io/Archmage/" target="_blank" rel="noopener noreferrer">Live ↗</a>
                         </h5>
-                        <span className="cd-date">Jan 2026 - Aug 2026</span>
+                        <span className="cd-date">Jan 2026 – Aug 2026</span>
                       </div>
                       <ul>
                         <li>
-                          Engineered an interactive web application featuring
-                          dynamic state-driven progression, multi-tier inventory
-                          structures, and responsive UI components built with
-                          Tailwind CSS.
+                          Engineered a browser-based arcade roguelike
+                          featuring 50 structured waves, 5 biomes, dynamically
+                          shuffled tyrants, endless progression, and responsive
+                          real-time gameplay systems.
                         </li>
                         <li>
-                          Built a deterministic state-management engine in
-                          TypeScript using immutable reducers and time-delta
-                          calculation to process asynchronous background
-                          calculations.
+                          Designed deterministic gameplay mechanics in
+                          TypeScript, including seeded RNG, scaling difficulty
+                          curves, multi-element spell resonances, weighted
+                          reward cycling, and state-driven enemy/boss behavior.
                         </li>
                         <li>
-                          Implemented client-side data persistence utilizing
-                          Local Storage APIs, ensuring continuous state
-                          synchronization and data integrity across browser
-                          reloads.
+                          Implemented persistent meta-progression,
+                          accessibility controls, HUD systems, and synthesized
+                          dynamic audio using Web Audio API, delivering a fully
+                          client-side gameplay experience without accounts or
+                          backend services.
                         </li>
                       </ul>
                     </div>
-                  </section>
-
-                  {/* Training */}
-                  <section className="cd-section">
-                    <h4>TRAINING</h4>
-                    <div className="cd-item">
-                      <div className="cd-item-head">
-                        <h5>
-                          Computer Programming in C - iamneo{" "}
-                          <a className="cd-git" href="https://github.com/Pushyanth02" target="_blank" rel="noopener noreferrer">Certificate ↗</a>
-                        </h5>
-                        <span className="cd-date">Jan 2026 - May 2026</span>
-                      </div>
-                      <ul>
-                        <li>
-                          Completed rigorous coursework in C covering
-                          foundational syntax, control flow, POSIX standard
-                          libraries, and structural programming patterns.
-                        </li>
-                        <li>
-                          Implemented low-level memory management solutions
-                          using explicit pointer arithmetic, dynamic heap
-                          allocation (malloc/calloc/free), and structured data
-                          layouts.
-                        </li>
-                        <li>
-                          Engineered linear data structures (linked lists,
-                          dynamic arrays) and algorithmic routines focused on
-                          pointer manipulation and time/space complexity
-                          optimization.
-                        </li>
-                      </ul>
-                    </div>
-                  </section>
-
-                  {/* Certificates */}
-                  <section className="cd-section">
-                    <h4>CERTIFICATES</h4>
-                    <ul className="cd-cert-list">
-                      <li>
-                        <b>Data Analytics Essentials by Cisco</b> | <a className="cd-git" href="https://github.com/Pushyanth02" target="_blank" rel="noopener noreferrer">Certificate ↗</a>{" "}
-                        <span className="cd-date-tag">Feb 2026</span>
-                      </li>
-                      <li>
-                        <b>Introduction to Cybersecurity by Infosys</b> | <a className="cd-git" href="https://github.com/Pushyanth02" target="_blank" rel="noopener noreferrer">Certificate ↗</a>{" "}
-                        <span className="cd-date-tag">Mar 2026</span>
-                      </li>
-                      <li>
-                        <b>
-                          Master Your Leadership Effectiveness Skills by
-                          LinkedIn
-                        </b>{" "}
-                        | <a className="cd-git" href="https://github.com/Pushyanth02" target="_blank" rel="noopener noreferrer">Certificate ↗</a>{" "}
-                        <span className="cd-date-tag">Nov 2025</span>
-                      </li>
-                    </ul>
                   </section>
 
                   {/* Education */}
@@ -529,13 +489,13 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       <div className="cd-edu-card">
                         <div className="cd-item-head">
                           <h5>Lovely Professional University</h5>
-                          <span className="cd-date">Aug 2025 - May 2029</span>
+                          <span className="cd-date">Aug 2025 – May 2029</span>
                         </div>
                         <p>
-                          Bachelor of Technology - Computer Science and
+                          Bachelor of Technology in Computer Science and
                           Engineering
                         </p>
-                        <span className="cd-score">CGPA: 7.98</span>
+                        <span className="cd-score">CGPA: 7.98 · Phagwara, Punjab</span>
                       </div>
 
                       <div className="cd-edu-card">
@@ -543,19 +503,32 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                           <h5>Christ Academy Junior College</h5>
                           <span className="cd-date">May 2023 – Mar 2025</span>
                         </div>
-                        <p>Pre-University Course (PUC/12th)</p>
-                        <span className="cd-score">Percentage: 86%</span>
-                      </div>
-
-                      <div className="cd-edu-card">
-                        <div className="cd-item-head">
-                          <h5>New Horizon High School</h5>
-                          <span className="cd-date">May 2022 – Mar 2023</span>
-                        </div>
-                        <p>Secondary School (10th)</p>
-                        <span className="cd-score">Percentage: 92%</span>
+                        <p>
+                          Pre-University Course (PUC / 12th) — Science &amp;
+                          Mathematics
+                        </p>
+                        <span className="cd-score">Percentage: 86.0% · Bangalore, Karnataka</span>
                       </div>
                     </div>
+                  </section>
+
+                  {/* Certifications & Technical Training */}
+                  <section className="cd-section">
+                    <h4>CERTIFICATIONS &amp; TECHNICAL TRAINING</h4>
+                    <ul className="cd-cert-list">
+                      <li>
+                        <b>Computer Programming in C – iamneo Certification</b>{" "}
+                        <span className="cd-date-tag">Jan 2026 – May 2026</span>
+                      </li>
+                      <li>
+                        <b>Data Analytics Essentials – Cisco</b>{" "}
+                        <span className="cd-date-tag">Feb 2026</span>
+                      </li>
+                      <li>
+                        <b>Introduction to Cybersecurity – Infosys</b>{" "}
+                        <span className="cd-date-tag">Mar 2026</span>
+                      </li>
+                    </ul>
                   </section>
                 </article>
               </div>

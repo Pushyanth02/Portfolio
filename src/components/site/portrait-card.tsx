@@ -10,19 +10,23 @@ import { assetUrl } from "@/lib/utils";
  * front (i.e. "above"), and the in-house drawn resident infinity doodle
  * lives on the back. A click / Enter / Space flips the card between them.
  *
- * The flip animation is deliberately different per mode — same component,
- * two personalities:
- *  · student ("pcard-student") — a springy side-hinge paper-craft turn
- *    (rotateY with an overshoot curve + a little polaroid bounce)
- *  · dev     ("pcard-dev")     — a terminal "swap" — top-hinge rotateX
- *    under a one-shot CRT scanline/glitch flash in phosphor green
+ * v2 — the immersive turns (one-shot ~1.05s choreography, driven by the
+ * `is-flipping` window + `data-dir` so each direction plays its own arc):
+ *  · student ("pcard-student") — THE POLAROID TOSS: the card is plucked
+ *    off the page toward the viewer, swings a wobbly side-hinge arc
+ *    (rotateY + a drunk rotateZ drift + scale breathing), a paper-glare
+ *    sweep crosses the surface mid-flight, and it settles with a springy
+ *    overshoot while the polaroid shadow pulses underneath.
+ *  · dev     ("pcard-dev")     — THE PHOSPHOR SWAP: the card hinges up to
+ *    nearly edge-on and HESITATES (the terminal "changing reels"), a CRT
+ *    scanline roll + phosphor flash floods the frame, then it snaps
+ *    through with an overshoot — like a monitor re-rendering its face.
  *
- * Reduced motion: the rotation transition and glitch/bounce keyframes
- * are disabled — the faces still swap instantly (the state change is the
- * feature; the movement is garnish).
+ * Reduced motion: the choreography collapses — the faces still swap
+ * instantly (the state change is the feature; the movement is garnish).
  */
 
-const FLIP_MS = 720;
+const FLIP_MS = 1080;
 
 export function PortraitCard({
   variant,
@@ -30,9 +34,10 @@ export function PortraitCard({
   variant: "student" | "dev";
 }) {
   const [flipped, setFlipped] = useState(false);
-  // One-shot window during the turn — drives the dev glitch flash and the
-  // student polaroid bounce while the rotation transition runs.
+  // One-shot window during the turn — drives the choreography keyframes
+  // (the dev phosphor flash, the student toss arc) while they run.
   const [flipping, setFlipping] = useState(false);
+  const [dir, setDir] = useState<"to-back" | "to-front">("to-back");
   const timer = useRef<number | null>(null);
 
   useEffect(
@@ -43,7 +48,11 @@ export function PortraitCard({
   );
 
   const toggle = () => {
-    setFlipped((f) => !f);
+    setFlipped((f) => {
+      const next = !f;
+      setDir(next ? "to-back" : "to-front");
+      return next;
+    });
     setFlipping(true);
     if (timer.current) window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setFlipping(false), FLIP_MS);
@@ -56,7 +65,7 @@ export function PortraitCard({
   const eager = variant === "student"; // the student cover sits above the fold
 
   return (
-    <div className={root}>
+    <div className={root} data-dir={flipping ? dir : undefined}>
       <button
         type="button"
         className="pcard-btn"
@@ -91,8 +100,13 @@ export function PortraitCard({
             sizes="(max-width: 960px) min(440px, 100vw), 33vw"
           />
         </span>
+        {/* student-only: the paper glare that sweeps the mid-flight surface
+            (see student.css) — dev keeps its phosphor glitch overlay below */}
+        {variant === "student" && (
+          <span className="pcard-glare" aria-hidden="true" />
+        )}
       </button>
-      {/* dev-only: the CRT flash that sweeps the turn (see dev.css) */}
+      {/* dev-only: the CRT scanline roll + phosphor flash (see dev.css) */}
       {variant === "dev" && <span className="pcard-glitch" aria-hidden="true" />}
     </div>
   );
