@@ -11,6 +11,7 @@ import { About } from "@/components/site/about";
 import { Connect } from "@/components/site/connect";
 import { Footer } from "@/components/site/footer";
 import { ModeFold } from "@/components/site/mode-fold";
+import { ModeAnnouncer } from "@/components/site/mode-announcer";
 
 /* Below-fold sections are code-split: they load only after the hero
    and first viewport content are painted, cutting the initial bundle. */
@@ -193,6 +194,7 @@ export default function Home() {
       )}
       {contactEverOpened && <ContactFormDialog />}
       <ModeFold fold={fold} />
+      <ModeAnnouncer />
     </>
   );
 }
