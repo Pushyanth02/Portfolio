@@ -10,9 +10,10 @@ import CertRevealView from "./cert-reveal-view";
  * names floats a cursor-following image window that switches to the
  * matching certificate (spring motion + stacked sliding panes, exactly as
  * Originkit ships it). Row texts stay intentionally short — the component
- * renders each row with `whiteSpace: pre` (one unwrapped line), so the
- * long official titles live in the cert-notes legend below + the image
- * alt text.
+ * renders each row with `whiteSpace: pre` (one unwrapped line); the long
+ * official titles + issuers live only in the image alt text (reference
+ * metadata in the CERTS records below — no rendered name/detail list, the
+ * reveal images ARE the certificates).
  *
  * The reveal window fits the WHOLE certificate (`contain` over a paper
  * back) and is bounds-clamped inside the stage, so hovering the first or
@@ -29,10 +30,11 @@ export type Cert = {
   text: string;
   /** Rendered certificate image (Originkit `image.src`). */
   src: string;
-  /** Full official title, used for the legend + a11y alt. */
+  /** Full official title (reference metadata; surfaces via `alt`). */
   title: string;
+  /** Issuing organization (reference metadata). */
   issuer: string;
-  /** Full certificate PDF (Originkit `link` — the row links to it). */
+  /** Full certificate PDF (Originkit `link` — used by the dev universe). */
   link: string;
   alt: string;
 };
@@ -139,18 +141,6 @@ export const Certificates = memo(function Certificates() {
             backgroundColor="transparent"
           />
         </div>
-
-        {/* the legend: full official titles + issuers — a quiet index,
-            intentionally NOT linked in the student universe (the reveal
-            images above are the certificates) */}
-        <ul className="cert-notes reveal">
-          {CERTS.map((c) => (
-            <li key={c.text}>
-              <span className="cert-note-name">{c.title}</span>
-              <span className="cert-note-issuer">{c.issuer}</span>
-            </li>
-          ))}
-        </ul>
 
         <p className="cert-hint reveal" aria-hidden="true">
           hover — or tap — a name to meet the certificate

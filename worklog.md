@@ -128,3 +128,17 @@ Work Log:
 
 Stage Summary:
 - Student mode now has zero view-able links in the Certificates section (rows + legend are plain; the reveal images ARE the viewer), while dev keeps its terminal pdf links. The Originkit Hover Image Reveal — still structurally verbatim — now letterboxes the entire certificate (contain over per-mode paper/terminal backs), clamps its cursor-follow window inside the stage, opens on touch taps (tap-outside dismisses), and scales down responsively via the new cert-reveal-view.tsx shell, so the whole certificate is properly visible on hover/tap on any device and any row. New file: src/components/site/cert-reveal-view.tsx; changed: originkit/hover-image-reveal.tsx, site/certificates.tsx, dev/dev-certificates.tsx, globals.css.
+
+---
+Task ID: 9
+Agent: main-agent (Z.ai Code)
+Task: Remove the certificate names and details (the legend list of full titles + issuers below the reveal) from the Certificates section, per the user's screenshot of that block.
+
+Work Log:
+- **Legend removed**: the `<ul className="cert-notes">` block (5 rows of full official titles + issuer names — "Data Analytics Essentials · CISCO NETWORKING ACADEMY", etc.) deleted from site/certificates.tsx. The section is now: badge → kicker → h2 → Originkit Hover Image Reveal rows → the one-line hint ("hover — or tap — a name to meet the certificate"). This also removes the dock-over-legend overlap visible in the user's screenshot.
+- **CSS cleanup (globals.css)**: deleted the whole legend rule family — `.cert-notes`, `.cert-notes li`, `.cert-note-name`, `.cert-note-issuer` and their ≤960 / ≤380 media overrides (~40 lines); verified zero `cert-notes` references remain in src/.
+- **Comments/data tidied**: certificates.tsx docblock + `Cert` type now describe title/issuer as reference metadata (surfacing only via the image alt text); dev-certificates.tsx needed no change (it never rendered the legend — its `ls ~/certs` terminal rows + pdf links are untouched).
+- **Verification (agent-browser + VLM)**: student desktop 1280 — `.cert-notes` count 0, hint present; layout measured sound (rows vertically centered in the 500px stage by the component's own design, hint 18px below, no dead gap); hover row 2 → Infosys cert floats whole and fully in-bounds (VLM: interactive + intentional, no title/issuer list anywhere); dev mode — 0 legend, 5 pdf row anchors intact + dv-cert-note; student mobile 390 — tap opens the reveal on-screen, no legend; fresh reload + full-page scroll round-trip: 0 page errors, 0 console errors, all GET / 200; lint clean.
+
+Stage Summary:
+- The certificate name/detail legend below the reveal is gone from the Certificates section (student universe; dev never had it). The reveal rows + hint are now the only content — the hover/tap floating certificates remain the sole presentation of the certificates, with title/issuer metadata living only in the alt text. ~40 lines of dead legend CSS removed. Verified in both modes at desktop + mobile with the interaction intact and zero errors.
