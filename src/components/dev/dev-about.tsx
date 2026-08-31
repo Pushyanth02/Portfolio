@@ -13,7 +13,6 @@ const WHOAMI = [
   ["user", "pushyanth (pushyanth02)"],
   ["role", "cs undergrad · full-stack developer"],
   ["core", "typescript · next.js · react · web apis"],
-  ["focus", "local-first · deterministic · explainable"],
   ["shell", "/bin/build-with-ai"],
   ["editor", "vs code + claude code"],
   ["location", "bangalore, in · UTC+5:30"],
@@ -55,15 +54,14 @@ export const DevAbout = memo(function DevAbout() {
             </div>
             <div className="dv-md">
               <p>
-                pushyanth here. cs undergrad, full-stack developer. strong in
-                typescript, next.js, react and modern browser apis — i build
+                pushyanth here. cs undergrad, full-stack developer. i build
                 local-first web apps, client-side parsing pipelines and
-                deterministic state engines, grounded in c/c++ memory work,
-                linear data structures and relational databases.
+                deterministic state engines — grounded in c/c++ and
+                relational databases, kept explainable end to end.
               </p>
               <p>
-                off-hours: wandering open-source repos, testing new AI
-                tooling, folding the good parts back into my own projects.
+                off-hours: wandering open-source repos and folding the good
+                parts back into my own projects.
               </p>
               <p className="dv-md-looking" aria-label="looking for">
                 <span className="dv-line-comment">{"// currently looking for"}</span>

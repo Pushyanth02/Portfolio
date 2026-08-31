@@ -327,7 +327,7 @@ html.dev .dv-tech-ai-row li svg {
    (mirrored by the student dock for html:not(.dev)) */
 @media (max-width: 820px) {
   html.dev .site-foot {
-    padding-bottom: 116px;
+    padding-bottom: 130px;
   }
 
   /* narrow-viewport placement: raise the shelf clear of the bottom
@@ -362,13 +362,14 @@ html.dev .dv-tech-ai-row li svg {
 /* TRUE-TOUCH REDESIGN — any hover-less device (phone, tablet,
    touch-only laptop), width-independent and AFTER the width rules so
    it always wins on real touch hardware: the terminal shelf rides
-   well clear of the bottom dead-zone (thumb arc + persistent browser
-   chrome + home-indicator), so it is never "too low to tap".
+   clearly clear of the bottom dead-zone (thumb arc + persistent browser
+   chrome + home-indicator) — raised a touch further after in-hand
+   testing felt the 30px float still sat in the shallow-thumb zone.
    Desktop-with-mouse keeps the tight float above. */
 @media (hover: none) {
   .dv-dock {
     bottom: calc(
-      max(30px, env(safe-area-inset-bottom, 0px) + 22px) + var(--vv-lift, 0px)
+      max(44px, env(safe-area-inset-bottom, 0px) + 34px) + var(--vv-lift, 0px)
     );
   }
   /* slightly larger glyphs read better at the raised distance */

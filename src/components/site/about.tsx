@@ -10,9 +10,8 @@ const LOOK_FOR = [
 
 const FACTS = [
   { k: "based", v: "bangalore, in" },
-  { k: "studying", v: "b.tech cs @ lpu ’29 · cgpa 7.98" },
+  { k: "studying", v: "b.tech cs @ lpu ’29" },
   { k: "stack", v: "ts · next.js · react · node" },
-  { k: "focus", v: "local-first · deterministic" },
   { k: "status", v: "open to collab" },
 ];
 
@@ -37,21 +36,16 @@ export const About = memo(function About() {
             </span>
           </h1>
           <p className="reveal" style={{ "--d": ".1s" } as React.CSSProperties}>
-            I&apos;m Pushyanth — a computer science undergraduate and full-stack
-            developer strong in TypeScript, Next.js, React and modern browser
-            APIs. I build local-first web applications, client-side data
-            parsing pipelines and deterministic state engines, grounded in
-            C/C++ memory work, linear data structures and relational
-            databases. Whatever catches my curiosity — AI/ML or cloud — I
-            study it hands-first and keep every system explainable.
-          </p>
-          <p className="reveal" style={{ "--d": ".18s" } as React.CSSProperties}>
-            When I&apos;m not shipping, I wander open-source repos, chase new AI
-            tooling, and carry the interesting bits back into my own projects.
+            I&apos;m Pushyanth — a CS undergrad and full-stack developer. I
+            build local-first web apps, client-side parsing pipelines and
+            deterministic state engines, grounded in C/C++ and relational
+            databases — and I keep every system explainable end to end.
+            Off-hours I wander open-source repos and fold the good parts back
+            into my own projects.
           </p>
           <ul
             className="lookfor reveal"
-            style={{ "--d": ".26s" } as React.CSSProperties}
+            style={{ "--d": ".18s" } as React.CSSProperties}
           >
             {LOOK_FOR.map((t) => (
               <li key={t}>
@@ -67,7 +61,7 @@ export const About = memo(function About() {
           </ul>
           <dl
             className="ac-facts reveal"
-            style={{ "--d": ".34s" } as React.CSSProperties}
+            style={{ "--d": ".26s" } as React.CSSProperties}
           >
             {FACTS.map((f) => (
               <div className="ac-fact" key={f.k}>
