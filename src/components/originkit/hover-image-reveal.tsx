@@ -2,8 +2,7 @@
 // swaps a cursor-following image window (spring motion, stacked sliding 
 // panes). Base component used verbatim from Originkit: 
 // https://www.originkit.dev/components/hover-image-reveal 
-// (framer-motion import kept exactly as delivered; framer-motion 12 is 
-// installed alongside motion 13 in this project.)
+// (motion/react v12+ is used.)
 //
 // Portfolio additions (all optional, defaults = stock Originkit behavior):
 // - `imageFit` / `imageBackgroundColor` — the floating window can letterbox
@@ -20,7 +19,7 @@ import {
   useMotionValue,
   useSpring,
   type Transition as MotionTransition,
-} from "framer-motion";
+} from "motion/react";
 
 interface Item {
   text?: string;

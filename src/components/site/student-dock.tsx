@@ -92,7 +92,7 @@ export function StudentDock() {
         label: "flip to dev ∞",
         className: "st-sec-toggle",
         icon: <Icon name="inf" />,
-        onClick: (e: React.MouseEvent) => toggleModeFromEvent(e),
+        onClick: (e?: React.MouseEvent<HTMLDivElement>) => toggleModeFromEvent(e),
       },
     ],
     [active]

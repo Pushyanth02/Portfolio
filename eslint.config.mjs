@@ -60,23 +60,6 @@ const eslintConfig = [
       "build/**",
       "next-env.d.ts",
       "dev.log",
-      // Sandbox-only artifacts — mirrored from .gitignore so `eslint .`
-      // stays clean in the dev sandbox without affecting CI on GitHub,
-      // where these paths do not exist.
-      ".zscripts/**",
-      "db/**",
-      "mini-services/**",
-      "examples/**",
-      "tests/**",
-      "download/**",
-      "tool-results/**",
-      "skills/**",
-      "upload/**",
-      // Agent tooling installed into the repo (impeccable + taste-skill):
-      // third-party skill scripts, not portfolio source.
-      ".github/skills/**",
-      ".agents/**",
-      ".claude/**",
     ],
   },
 ];

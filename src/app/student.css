@@ -179,14 +179,11 @@
 }
 
 /* ---- the flippable portrait ⇄ resident-infinity card ----
-   The polaroid photo square becomes a two-faced card: the portrait on
-   the front, the doodle on the back. THE POLAROID TOSS: the whole turn
-   is a single keyframed arc (no plain transition) — the card is plucked
-   toward the viewer, swings a wobbly side-hinge flight with a paper-glare
-   sweep at the peak, and settles with a springy overshoot while the
-   polaroid itself floats and its shadow breathes. `data-dir` plays the
-   arc forward (to the doodle) or in reverse (back to the portrait), so
-   both directions feel hand-tossed, not rewound. */
+   THE PAGE TURN: the card swings open along the Y-axis like a thick
+   notebook page, pivoting on its left edge. A slight lift (translateZ)
+   and an asymmetric page-curl shadow give it the organic feel of a hand-turned page.
+   `data-dir` plays the arc forward (to the doodle) or in reverse (back to the
+   portrait). */
 .ac-polaroid .pcard-btn {
   border-radius: 6px;
   color: var(--coral); /* focus-visible ring */
@@ -195,136 +192,14 @@
 /* settled states — instant under reduced motion, and the landing pose the
    choreography ends on (keyframes 100% === this transform) */
 .ac-polaroid .pcard.is-flipped .pcard-btn {
-  transform: rotateY(180deg);
+  transform: rotateY(-180deg);
 }
-/* the toss arc (1.05s): rise → peak lift near edge-on → swing through →
-   overshoot → land. translateZ pulls the card off the page toward the
-   viewer; rotateZ drift + scale breathing keep it paper-loose. */
-.ac-polaroid .pcard.is-flipping[data-dir="to-back"] .pcard-btn {
-  animation: pcardToss 1.05s cubic-bezier(0.32, 0.88, 0.28, 1) forwards;
+.ac-polaroid .pcard-back {
+  /* Ensure the back face is correctly oriented for a Y-axis flip
+     (overriding the global X-axis rotate from globals.css) */
+  transform: rotateY(-180deg);
 }
-.ac-polaroid .pcard.is-flipping[data-dir="to-front"] .pcard-btn {
-  animation: pcardToss 1.05s cubic-bezier(0.32, 0.88, 0.28, 1) reverse forwards;
-}
-@keyframes pcardToss {
-  0% {
-    transform: rotateY(0deg) translateZ(0) rotateZ(0deg) scale(1);
-  }
-  22% {
-    transform: rotateY(38deg) translateZ(42px) rotateZ(-2.5deg) scale(1.02);
-  }
-  48% {
-    transform: rotateY(96deg) translateZ(88px) rotateZ(-6deg) scale(1.07);
-  }
-  72% {
-    transform: rotateY(150deg) translateZ(46px) rotateZ(-2deg) scale(1.035);
-  }
-  88% {
-    transform: rotateY(187deg) translateZ(6px) rotateZ(1.2deg) scale(1);
-  }
-  100% {
-    transform: rotateY(180deg) translateZ(0) rotateZ(0deg) scale(1);
-  }
-}
-/* the paper glare — a diagonal shine bar that crosses the surface exactly
-   while the card rides the top of its arc (28%–66% of the flight) */
-.pcard .pcard-glare {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  border-radius: inherit;
-  overflow: hidden;
-  opacity: 0;
-}
-.pcard .pcard-glare::before {
-  content: "";
-  position: absolute;
-  top: -20%;
-  left: -30%;
-  width: 34%;
-  height: 140%;
-  transform: translateX(-160%) rotate(18deg);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 252, 240, 0.0) 18%,
-    rgba(255, 252, 240, 0.5) 50%,
-    rgba(255, 252, 240, 0.0) 82%,
-    transparent
-  );
-  filter: blur(2px);
-}
-.ac-polaroid .pcard.is-flipping .pcard-glare {
-  animation: pcardGlare 1.05s cubic-bezier(0.4, 0, 0.2, 1);
-}
-@keyframes pcardGlare {
-  0%,
-  26% {
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  62% {
-    opacity: 0.85;
-  }
-  70%,
-  100% {
-    opacity: 0;
-  }
-}
-/* the moving bar (opacity gated above) */
-.pcard.is-flipping .pcard-glare::before {
-  animation: pcardGlareBar 1.05s cubic-bezier(0.4, 0, 0.2, 1);
-}
-@keyframes pcardGlareBar {
-  0%,
-  26% {
-    transform: translateX(-160%) rotate(18deg);
-  }
-  62% {
-    transform: translateX(430%) rotate(18deg);
-  }
-  100% {
-    transform: translateX(430%) rotate(18deg);
-  }
-}
-/* the polaroid floats under the toss: a soft lift while the card rides
-   high, with the frame's shadow breathing underneath */
-.ac-polaroid .pcard.is-flipping {
-  animation: pcardFloat 1.05s var(--ease);
-}
-@keyframes pcardFloat {
-  0% {
-    transform: translateY(0) rotateZ(0deg);
-  }
-  42% {
-    transform: translateY(-10px) rotateZ(-1.6deg);
-  }
-  74% {
-    transform: translateY(2px) rotateZ(0.5deg);
-  }
-  100% {
-    transform: translateY(0) rotateZ(0deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ac-polaroid .pcard.is-flipping .pcard-btn,
-  .ac-polaroid .pcard.is-flipping[data-dir] .pcard-btn {
-    animation: none;
-  }
-  .ac-polaroid .pcard.is-flipping {
-    animation: none;
-  }
-  .ac-polaroid .pcard.is-flipping .pcard-glare {
-    animation: none;
-    opacity: 0;
-  }
-  .pcard.is-flipping .pcard-glare::before {
-    animation: none;
-  }
-}
+
 
 /* ============================================================
    2 · CONNECT FIELD — the finale's ∞ particle band.
@@ -997,14 +872,6 @@
     opacity: 1 !important;
   }
 
-  /* the portrait card still flips (state swap), just without the motion */
-  .ac-polaroid .pcard.is-flipping {
-    animation: none !important;
-  }
-  .ac-polaroid .pcard.is-flipping .pcard-btn,
-  .ac-polaroid .pcard.is-flipping[data-dir] .pcard-btn {
-    animation: none !important;
-  }
 
   .law-rule,
   .tech-cat-rule {

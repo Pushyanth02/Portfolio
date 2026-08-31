@@ -79,7 +79,7 @@ export function DevDock() {
         id: "mode-toggle",
         label: "fold → student.env",
         icon: <Icon name="inf" />,
-        onClick: (e: React.MouseEvent) => toggleModeFromEvent(e),
+        onClick: (e?: React.MouseEvent<HTMLDivElement>) => toggleModeFromEvent(e),
       },
     ],
     [active]

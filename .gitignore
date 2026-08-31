@@ -58,26 +58,3 @@ Thumbs.db
 
 # NOTE: `.vscode/` is intentionally NOT ignored — the workspace
 # settings and extension recommendations are shared with the team.
-
-# ─────────────────────────────────────────────────────────────
-# Sandbox-only working folders — used while developing this
-# project inside the build sandbox; they are NOT part of the
-# shipped repository:
-#   db            local SQLite database (contact-form dev inbox)
-#   upload        uploaded sources, screenshots, verification captures
-#   download      export staging
-#   tool-results  tool output captures
-#   scripts       one-off VLM verification scripts
-#   tests         sandbox runtime probe scripts
-#   examples      sandbox example code
-# ─────────────────────────────────────────────────────────────
-/db/
-/upload/
-/download/
-/tool-results/
-/scripts/
-/tests/
-/examples/
-/mini-services/
-/skills/
-/.zscripts/

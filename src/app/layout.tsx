@@ -141,6 +141,7 @@ export default function RootLayout({
         />
       </head>
       <body
+        suppressHydrationWarning
         className={`${fraunces.variable} ${epilogue.variable} ${spaceMono.variable} font-sans antialiased`}
       >
         {children}
