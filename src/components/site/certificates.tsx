@@ -1,6 +1,7 @@
 import { memo } from "react";
 import { SectionBadge } from "./section-icons";
 import CertRevealView from "./cert-reveal-view";
+import { assetUrl } from "@/lib/utils";
 
 /**
  * Certificates — the section that replaced "Side Quests".
@@ -92,7 +93,7 @@ export function certItems(): Record<string, unknown> {
   CERTS.forEach((c, i) => {
     items[`item${i + 1}`] = {
       text: c.text,
-      image: { src: c.src, alt: c.alt },
+      image: { src: assetUrl(c.src), alt: c.alt },
     };
   });
   return items;

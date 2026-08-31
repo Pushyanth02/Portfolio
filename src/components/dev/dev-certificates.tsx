@@ -3,6 +3,7 @@ import { CERTS, certItems } from "@/components/site/certificates";
 import { SectionBadge } from "@/components/site/section-icons";
 import { DevWindow } from "./dev-window";
 import CertRevealView from "@/components/site/cert-reveal-view";
+import { assetUrl } from "@/lib/utils";
 
 /**
  * DevCertificates — certificates rendered in the terminal universe.
@@ -28,8 +29,8 @@ function devItems(): Record<string, unknown> {
   CERTS.forEach((c, i) => {
     items[`item${i + 1}`] = {
       text: DEV_FILES[i] ?? c.text,
-      image: { src: c.src, alt: c.alt },
-      link: c.link,
+      image: { src: assetUrl(c.src), alt: c.alt },
+      link: assetUrl(c.link),
     };
   });
   return items;
