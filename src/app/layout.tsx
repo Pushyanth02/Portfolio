@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Epilogue, Space_Mono } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ContentProtection } from "@/components/site/content-protection";
+import { InfinityLoader } from "@/components/site/infinity-loader";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -131,6 +133,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Preconnect to Google Fonts for faster font loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* noscript fallback: ensure reveals are visible without JS */}
         <noscript>
           <style>{`.reveal,.lm .lm-in{opacity:1;transform:none}`}</style>
@@ -144,7 +149,10 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${fraunces.variable} ${epilogue.variable} ${spaceMono.variable} font-sans antialiased`}
       >
-        {children}
+        <InfinityLoader />
+        <Suspense>
+          {children}
+        </Suspense>
         <ContentProtection />
         <SonnerToaster position="bottom-center" richColors={false} />
       </body>

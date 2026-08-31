@@ -6,14 +6,26 @@ import { ClientEffects } from "@/components/site/client-effects";
 import { Header } from "@/components/site/header";
 import { PrismBackground } from "@/components/site/prism-background";
 import { Marquee } from "@/components/site/marquee";
-import { Beliefs } from "@/components/site/beliefs";
-import { Tech } from "@/components/site/tech";
 import { Work } from "@/components/site/work";
-import { Certificates } from "@/components/site/certificates";
 import { About } from "@/components/site/about";
 import { Connect } from "@/components/site/connect";
 import { Footer } from "@/components/site/footer";
 import { ModeFold } from "@/components/site/mode-fold";
+
+/* Below-fold sections are code-split: they load only after the hero
+   and first viewport content are painted, cutting the initial bundle. */
+const Beliefs = dynamic(
+  () => import("@/components/site/beliefs").then((m) => m.Beliefs),
+  { ssr: false }
+);
+const Tech = dynamic(
+  () => import("@/components/site/tech").then((m) => m.Tech),
+  { ssr: false }
+);
+const Certificates = dynamic(
+  () => import("@/components/site/certificates").then((m) => m.Certificates),
+  { ssr: false }
+);
 
 import { DevHero } from "@/components/dev/dev-hero";
 import { DevLaws } from "@/components/dev/dev-laws";
