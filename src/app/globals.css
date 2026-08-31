@@ -2191,8 +2191,9 @@ a.cd-git,
    is completely untouched above this line.
 
    Aesthetic: dark developer surface, Space Mono everywhere,
-   blueprint grid + aurora glow + CRT scanlines (lightswind-style
-   atmosphere), coral terminal accents, window chrome cards.
+   aurora glow orbs + radial gradients (gradient-only atmosphere —
+   the blueprint grid / CRT scanline line overlays were removed),
+   coral terminal accents, window chrome cards.
    ============================================================ */
 
 html.dev {
@@ -2221,39 +2222,11 @@ html.dev body {
   isolation: isolate;
 }
 
-/* blueprint grid — under the content, slow drift.
-   The layer is one tile (44px) larger than the viewport on every side and
-   the drift animates transform (compositor-only) instead of
-   background-position, which repainted the full-screen layer every frame. */
-html.dev body::before {
-  content: "";
-  position: fixed;
-  inset: -44px;
-  z-index: -1;
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--dv-line-soft) 1px, transparent 1px),
-    linear-gradient(90deg, var(--dv-line-soft) 1px, transparent 1px);
-  background-size: 44px 44px;
-  -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 100%);
-  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 30%, transparent 100%);
-  animation: dv-grid-drift 64s linear infinite;
-}
-
-/* CRT scanlines — over everything, non-interactive */
-html.dev body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 2147483000;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.16) 0 1px,
-    transparent 1px 3px
-  );
-  opacity: 0.5;
-}
+/* The dev surface's background atmosphere is gradient-only (aurora
+   orbs + radial glows). The former blueprint grid and CRT scanline
+   overlays — the horizontal line patterns — were removed by design:
+   they read as stray horizontal lines, moiréd on high-DPI phones and
+   striped over the dock. */
 
 /* aurora glow orbs */
 html.dev::after {
@@ -2269,10 +2242,6 @@ html.dev::after {
   animation: dv-aurora 26s ease-in-out infinite alternate;
 }
 
-@keyframes dv-grid-drift {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-44px, -44px, 0); }
-}
 @keyframes dv-aurora {
   from {
     transform: translate3d(-2%, -1%, 0) rotate(-1.5deg);
@@ -3100,7 +3069,6 @@ html.dev .sec {
 
 /* reduced motion: freeze the atmosphere, keep it readable */
 @media (prefers-reduced-motion: reduce) {
-  html.dev body::before,
   html.dev::after,
   html.dev .dv-dot::after,
   html.dev .logo-cursor {

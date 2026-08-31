@@ -331,10 +331,29 @@ export default function Dock({
         alignItems: "flex-end",
         justifyContent: "center",
       }}
-      // Tracked on the wrapper (not just the panel) so the cursor stays
-      // "inside" while it is over the magnified tiles that pop above the panel.
-      onMouseMove={
-        caps.magnify ? (event) => mouseX.set(event.clientX) : undefined
+      /* Tracked on the wrapper (not just the panel) so the cursor stays
+         "inside" while it is over the magnified tiles that pop above the panel.
+         POINTER EVENTS ONLY FROM A REAL MOUSE: some touch environments
+         (iPadOS with pointer:fine, touch-screen laptops, older WebViews)
+         dispatch synthetic mousemove events from taps — an unfiltered
+         listener would set mouseX at the tap point with no mouseleave
+         ever following, leaving the dock stuck magnified there. The
+         pointerType filter + touch pointerdown reset keep magnification
+         strictly mouse-driven on every device class. */
+      onPointerMove={
+        caps.magnify
+          ? (event) => {
+              if (event.pointerType === "mouse") mouseX.set(event.clientX);
+            }
+          : undefined
+      }
+      onPointerDown={
+        caps.magnify
+          ? (event) => {
+              if (event.pointerType !== "mouse")
+                mouseX.set(Number.POSITIVE_INFINITY);
+            }
+          : undefined
       }
       onMouseLeave={
         caps.magnify

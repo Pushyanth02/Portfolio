@@ -2,46 +2,41 @@
 
 import { memo } from "react";
 import { Icon } from "./icons";
-import { usePortfolioStore, toggleModeFromEvent } from "@/lib/store";
+import { usePortfolioStore } from "@/lib/store";
 import type { PortfolioMode } from "@/lib/mode";
 
 /**
  * Header — a lean chrome strip.
  *
- * Left:  the infinity logo (the mode switch — student ⇄ dev, click point
- *        feeds the Infinity Fold's origin).
- * Right: ONLY the resume button (per the redesign: the section nav links
- *        were removed; wayfinding lives in the icon docks — StudentDock
- *        (student, alongside the Rover mascot) and DevDock (dev), which
- *        both scrollspy on their own).
+ * Left:  the infinity logo — scrolls back to the top of the page (per
+ *        the redesign: it is no longer the mode switch).
+ * Right: ONLY the resume button (wayfinding lives in the icon docks;
+ *        mode switching lives in each dock's trailing ∞ tile).
  *
- * No scrollspy, no mobile dropdown — a single always-visible action that
- * fits every viewport without a menu button.
+ * The mode-chip points readers at the dock's ∞ tile for the Infinity
+ * Fold. No scrollspy, no mobile dropdown — a single always-visible
+ * action that fits every viewport without a menu button.
  */
 export const Header = memo(function Header() {
   const mode: PortfolioMode = usePortfolioStore((s) => s.mode);
   const openResume = usePortfolioStore((s) => s.openResume);
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <header className="site-head">
       <div className="wrap head-in">
-        {/* The infinity logo is the mode switch: student (default, warm
-            notebook) ⇄ developer (dark terminal skin). The click point is
-            passed through so the warp ring can burst out of the logo. */}
+        {/* The infinity logo scrolls back to the top of the page — the
+            standard "home" affordance. Mode switching moved to the ∞ tile
+            at the end of each surface's icon dock. */}
         <button
           type="button"
-          className="logo logo-toggle"
-          onClick={(e) => toggleModeFromEvent(e)}
-          aria-label={
-            mode === "student"
-              ? "Switch to developer mode: same portfolio, dark terminal skin"
-              : "Switch back to student mode: warm sticker notebook"
-          }
-          title={
-            mode === "student"
-              ? "enter developer mode ∞"
-              : "back to student mode ∞"
-          }
+          className="logo logo-top"
+          onClick={scrollToTop}
+          aria-label="Scroll back to the top of the page"
+          title="scroll to top ↑"
         >
           <span className="logo-student">
             Pushyanth <span className="inf"><Icon name="inf" /></span>
@@ -52,7 +47,9 @@ export const Header = memo(function Header() {
           </span>
         </button>
         <span className="mode-chip" aria-hidden="true">
-          {mode === "student" ? "student ∴ click ∞ for dev" : "developer ∴ click ∞ for student"}
+          {mode === "student"
+            ? "student ∴ tap dock ∞ for dev"
+            : "developer ∴ tap dock ∞ for student"}
         </span>
         <nav className="nav" id="siteNav" aria-label="Resume">
           <button

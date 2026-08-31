@@ -1473,10 +1473,10 @@
   font: 700 9.5px / 1 var(--mono);
 }
 
-/* the dock floats over the footer's centre — on narrow screens the
-   footer copy stacks into that space, so give it clearance
+/* the dock floats over the footer's centre — on phones AND tablets
+   the footer copy can stack into that space, so give it clearance
    (the dev universe does the same via html.dev .site-foot) */
-@media (max-width: 640px) {
+@media (max-width: 820px) {
   html:not(.dev) .site-foot {
     padding-bottom: 96px;
   }
