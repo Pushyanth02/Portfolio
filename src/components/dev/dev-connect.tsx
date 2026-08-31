@@ -1,52 +1,35 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { toast } from "sonner";
+import { memo, useEffect, useRef } from "react";
+import { usePortfolioStore } from "@/lib/store";
 import { CHANNELS } from "@/components/site/connect";
 import { Icon } from "@/components/site/icons";
-import { assetUrl } from "@/lib/utils";
+import { SectionBadge } from "@/components/site/section-icons";
 import { DevWindow } from "./dev-window";
 
 /**
  * DevConnect — the contact channels as a runnable script.
- * Same CHANNELS data as student mode; email click-to-copy with toast.
+ * Same CHANNELS data as student mode; the email row opens the
+ * ContactFormDialog (name · gmail · message) which POSTs to
+ * /api/contact and hands back a prefilled Gmail draft.
  */
-export function DevConnect() {
-  const addrRef = useRef("");
+export const DevConnect = memo(function DevConnect() {
+  const openContact = usePortfolioStore((s) => s.openContact);
+  const mailValRef = useRef<HTMLSpanElement>(null);
 
+  // Light obfuscation: the address is only ever assembled client-side.
   useEffect(() => {
-    addrRef.current = ["pushyanth2008", "@", "gmail", ".", "com"].join("");
+    const addr = ["pushyanth2008", "@", "gmail", ".", "com"].join("");
+    if (mailValRef.current) mailValRef.current.textContent = addr;
   }, []);
-
-  const onCopy = async () => {
-    const addr = addrRef.current;
-    if (!addr) return;
-    try {
-      await navigator.clipboard.writeText(addr);
-    } catch {
-      const ta = document.createElement("textarea");
-      ta.value = addr;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand("copy");
-      } catch {
-        /* noop */
-      }
-      ta.remove();
-    }
-    toast.success("Email copied to clipboard", {
-      description: addr,
-      duration: 2200,
-    });
-  };
 
   return (
     <section className="connect" id="connect">
       <div className="wrap">
-        <p className="kicker reveal">$ ./connect.sh --no-forms</p>
+        <div className="reveal">
+          <SectionBadge id="connect" />
+        </div>
+        <p className="kicker reveal">$ ./contact.sh --message</p>
         <h2>
           <span className="lm">
             <span className="lm-in">
@@ -58,12 +41,12 @@ export function DevConnect() {
           className="connect-intro reveal"
           style={{ "--d": ".1s" } as React.CSSProperties}
         >
-          Got a project, a problem, or a beautifully weird idea? No forms, no
-          funnels. Just pick a line and I&apos;ll answer.
+          Got a project, a problem, or a beautifully weird idea? Pick a
+          line, or pipe a message straight through the form — I&apos;ll answer.
         </p>
 
         <div className="reveal" style={{ "--d": ".12s" } as React.CSSProperties}>
-          <DevWindow title="connect.sh — interactive" prompt="./connect.sh">
+          <DevWindow title="contact.sh — interactive" prompt="./contact.sh">
             <ul className="dv-conn">
               {CHANNELS.map((c) => (
                 <li key={c.key} className="dv-conn-row">
@@ -71,16 +54,16 @@ export function DevConnect() {
                     <Icon name={c.icon} fill={c.icon === "gh" || c.icon === "in"} />
                     {c.label.toLowerCase()}
                   </span>
-                  {c.copy ? (
+                  {c.form ? (
                     <button
                       type="button"
                       className="dv-conn-handle dv-conn-btn"
-                      onClick={onCopy}
-                      aria-label="Copy email address to clipboard"
+                      onClick={openContact}
+                      aria-label="Open the message form to send an email"
                       data-allow-copy
                     >
-                      {c.handle}
-                      <span className="dv-conn-action">[ copy ]</span>
+                      <span ref={mailValRef}>{c.handle}</span>
+                      <span className="dv-conn-action">[ send ]</span>
                     </button>
                   ) : (
                     <a
@@ -96,21 +79,6 @@ export function DevConnect() {
                   )}
                 </li>
               ))}
-              <li className="dv-conn-row">
-                <span className="dv-conn-label">
-                  <Icon name="dl" />
-                  source.zip
-                </span>
-                <a
-                  className="dv-conn-handle"
-                  href={assetUrl("/Portfolio-source.zip")}
-                  download="Portfolio-source.zip"
-                  aria-label="Download this portfolio's source code as a zip archive"
-                >
-                  Portfolio-source.zip
-                  <span className="dv-conn-action">[ save ]</span>
-                </a>
-              </li>
             </ul>
             <p className="dv-line dv-line-comment">
               {"// replies usually ship faster than features"}
@@ -120,4 +88,4 @@ export function DevConnect() {
       </div>
     </section>
   );
-}
+});

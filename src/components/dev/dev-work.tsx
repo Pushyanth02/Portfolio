@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { Icon } from "@/components/site/icons";
+import { SectionBadge } from "@/components/site/section-icons";
 import { WORK } from "@/components/site/work";
 import { assetUrl } from "@/lib/utils";
 
@@ -7,10 +9,13 @@ import { assetUrl } from "@/lib/utils";
  * Same WORK data as student mode, presented as repo cards inside a
  * terminal session.
  */
-export function DevWork() {
+export const DevWork = memo(function DevWork() {
   return (
     <section className="sec" id="work">
       <div className="wrap">
+        <div className="reveal">
+          <SectionBadge id="work" />
+        </div>
         <p className="kicker reveal">$ git log --shipped</p>
         <h2 className="h2" style={{ marginBottom: "clamp(36px, 5vw, 64px)" }}>
           <span className="lm">
@@ -103,4 +108,4 @@ export function DevWork() {
       </div>
     </section>
   );
-}
+});

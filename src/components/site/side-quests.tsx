@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { Icon, type IconName } from "./icons";
+import { SectionBadge } from "./section-icons";
 
 export type Quest = {
   icon: IconName;
@@ -53,10 +55,13 @@ export const QUESTS: Quest[] = [
   },
 ];
 
-export function SideQuests() {
+export const SideQuests = memo(function SideQuests() {
   return (
     <section className="sec quests" id="quests">
       <div className="wrap">
+        <div className="reveal">
+          <SectionBadge id="quests" />
+        </div>
         <p className="kicker reveal">off the main path</p>
         <h2 className="h2"><span className="lm"><span className="lm-in">Side quests.</span></span></h2>
         <div className="quest-grid">
@@ -105,4 +110,4 @@ export function SideQuests() {
       </div>
     </section>
   );
-}
+});

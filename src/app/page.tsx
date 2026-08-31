@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
+import dynamic from "next/dynamic";
 import { ClientEffects } from "@/components/site/client-effects";
-import { Rover } from "@/components/site/rover";
 import { Header } from "@/components/site/header";
 import { Marquee } from "@/components/site/marquee";
 import { Beliefs } from "@/components/site/beliefs";
@@ -13,8 +13,7 @@ import { About } from "@/components/site/about";
 import { Connect } from "@/components/site/connect";
 import { Footer } from "@/components/site/footer";
 import { BackToTop } from "@/components/site/back-to-top";
-import { ResumeModal } from "@/components/site/resume-modal";
-import { ModeFold, type FoldState } from "@/components/site/mode-fold";
+import { ModeFold } from "@/components/site/mode-fold";
 
 import { DevHero } from "@/components/dev/dev-hero";
 import { DevLaws } from "@/components/dev/dev-laws";
@@ -23,15 +22,27 @@ import { DevWork } from "@/components/dev/dev-work";
 import { DevQuests } from "@/components/dev/dev-quests";
 import { DevAbout } from "@/components/dev/dev-about";
 import { DevConnect } from "@/components/dev/dev-connect";
-import { DevDock } from "@/components/dev/dev-dock";
 
-import {
-  applyMode,
-  normalizeMode,
-  readStoredMode,
-  type PortfolioMode,
-} from "@/lib/mode";
-import { notifyWarpBegin, notifyWarpEnd } from "@/components/site/lazy-mount";
+import { usePortfolioStore } from "@/lib/store";
+
+/* Heavy / late-mounting surfaces are code-split: the dialogs load their
+   chunks only on first open ("mount-on-first-open" via *EverOpened flags
+   in the store), and the wayfinders load after first paint. */
+const Rover = dynamic(() => import("@/components/site/rover").then((m) => m.Rover), {
+  ssr: false,
+});
+const DevDock = dynamic(
+  () => import("@/components/dev/dev-dock").then((m) => m.DevDock),
+  { ssr: false }
+);
+const ResumeModal = dynamic(
+  () => import("@/components/site/resume-modal").then((m) => m.ResumeModal),
+  { ssr: false }
+);
+const ContactFormDialog = dynamic(
+  () => import("@/components/site/contact-form").then((m) => m.ContactFormDialog),
+  { ssr: false }
+);
 
 const STUDENT_MARQUEE = [
   "code • eat • sleep • repeat",
@@ -74,50 +85,22 @@ const DEV_MARQUEE_GREEN = [
 export default function Home() {
   // Two entirely different websites sharing one URL. The student surface is
   // the default; the dev surface is a dark terminal universe. Switching
-  // folds reality through ModeFold — "The Infinity Fold".
-  const [mode, setMode] = useState<PortfolioMode>("student");
-  const [resumeOpen, setResumeOpen] = useState(false);
-  const [fold, setFold] = useState<FoldState>({
-    active: false,
-    target: "student",
-    origin: null,
-    stage: "idle",
-  });
-
-  // Latest-value refs so callbacks/timeouts never read stale state. Synced in
-  // an effect (not during render) per react-hooks/refs; every consumer runs
-  // long after commit, so the one-frame lag is inconsequential.
-  const modeRef = useRef(mode);
-  const foldRef = useRef(fold);
-  const timersRef = useRef<number[]>([]);
-
-  useEffect(() => {
-    modeRef.current = mode;
-    foldRef.current = fold;
-  }, [mode, fold]);
+  // folds reality through ModeFold — "The Infinity Fold". All cross-cutting
+  // state (mode, fold, dialogs) lives in the portfolio store.
+  const mode = usePortfolioStore((s) => s.mode);
+  const fold = usePortfolioStore((s) => s.fold);
+  const hydrate = usePortfolioStore((s) => s.hydrate);
+  const resumeOpen = usePortfolioStore((s) => s.resumeOpen);
+  const resumeEverOpened = usePortfolioStore((s) => s.resumeEverOpened);
+  const closeResume = usePortfolioStore((s) => s.closeResume);
+  const contactEverOpened = usePortfolioStore((s) => s.contactEverOpened);
 
   // Pick up a persisted / hash-addressed mode once on mount (no fold on
-  // first paint — the page just boots in the right universe). The swap must
-  // happen post-mount: SSR renders "student", so a lazy initializer would
-  // hydration-mismatch.
+  // first paint — the page just boots in the right universe) and bind the
+  // shareable #dev / #student hash listener.
   useEffect(() => {
-    const stored = readStoredMode();
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (stored !== modeRef.current) setMode(stored);
-    else applyMode(stored);
-  }, []);
-
-  // Reflect the mode everywhere it lives: <html> class, storage, URL hash.
-  useEffect(() => {
-    applyMode(mode);
-  }, [mode]);
-
-  const clearFoldTimers = useCallback(() => {
-    timersRef.current.forEach((t) => window.clearTimeout(t));
-    timersRef.current = [];
-  }, []);
-
-  useEffect(() => clearFoldTimers, [clearFoldTimers]);
+    hydrate();
+  }, [hydrate]);
 
   // Freeze the page while folding between universes.
   useEffect(() => {
@@ -127,102 +110,6 @@ export default function Home() {
     }
   }, [fold.active]);
 
-  /** The Infinity Fold — one page-turn between universes. */
-  const beginFold = useCallback(
-    (target: PortfolioMode, origin: { x: number; y: number } | null) => {
-      if (foldRef.current.active || target === modeRef.current) return;
-      clearFoldTimers();
-      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      setFold({ active: true, target, origin, stage: "open" });
-
-      if (reduced) {
-        // Reduced motion: a quick, calm crossfade — no theatrics.
-        notifyWarpBegin();
-        timersRef.current.push(
-          window.setTimeout(() => {
-            setMode(target);
-            window.scrollTo({ top: 0, behavior: "auto" });
-          }, 120),
-          window.setTimeout(
-            () => setFold((f) => ({ ...f, stage: "close" })),
-            200
-          ),
-          window.setTimeout(
-            () => {
-              setFold({
-                active: false,
-                target,
-                origin: null,
-                stage: "idle",
-              });
-              notifyWarpEnd();
-            },
-            600
-          )
-        );
-        return;
-      }
-
-      // The iris needs ~380ms to cover the stage; the canvas fields tear
-      // down only once the cover can hide the pop. The ∞ slide owns the
-      // centre of attention by then.
-      // t=520ms: the new universe mounts silently behind the opaque cover.
-      // t=660ms: the fold closes back into its origin, page-turn style.
-      // t=1120ms: done — 28% faster than the old ripple-led fold.
-      timersRef.current.push(
-        window.setTimeout(() => notifyWarpBegin(), 380),
-        window.setTimeout(() => {
-          setMode(target);
-          window.scrollTo({ top: 0, behavior: "auto" });
-        }, 520),
-        window.setTimeout(
-          () => setFold((f) => ({ ...f, stage: "close" })),
-          660
-        ),
-        window.setTimeout(
-          () => {
-            setFold({
-              active: false,
-              target,
-              origin: null,
-              stage: "idle",
-            });
-            notifyWarpEnd();
-          },
-          1120
-        )
-      );
-    },
-    [clearFoldTimers]
-  );
-
-  // #dev / #student links are shareable — a manual hash edit folds through
-  // the overlay too (origin: screen centre).
-  useEffect(() => {
-    const onHashChange = () => {
-      if (foldRef.current.active) return;
-      const fromHash = normalizeMode(window.location.hash.replace(/^#/, ""));
-      if (fromHash) beginFold(fromHash, null);
-    };
-    window.addEventListener("hashchange", onHashChange);
-    return () => window.removeEventListener("hashchange", onHashChange);
-  }, [beginFold]);
-
-  const toggleFromLogo = useCallback(
-    (e?: React.MouseEvent) => {
-      const origin = e ? { x: e.clientX, y: e.clientY } : null;
-      beginFold(modeRef.current === "student" ? "dev" : "student", origin);
-    },
-    [beginFold]
-  );
-
-  useEffect(() => {
-    const handleOpen = () => setResumeOpen(true);
-    window.addEventListener("open-resume", handleOpen);
-    return () => window.removeEventListener("open-resume", handleOpen);
-  }, []);
-
   const isDev = mode === "dev";
 
   return (
@@ -230,14 +117,7 @@ export default function Home() {
       {/* keyed by mode: a mode switch remounts the tree, and the fresh
           ClientEffects instance re-observes the new .reveal/.lm/.tilt nodes */}
       <ClientEffects key={`fx-${mode}`} />
-      {/* keyed by mode: the header's scrollspy and the rover's dock hold
-          refs to section DOM that a fold replaces — remounting rebinds them */}
-      <Header
-        key={`head-${mode}`}
-        onOpenResume={() => setResumeOpen(true)}
-        mode={mode}
-        onToggleMode={toggleFromLogo}
-      />
+      <Header />
       <main id="top" key={`main-${mode}`} className={isDev ? "dv-main" : ""}>
         {isDev ? (
           <>
@@ -277,13 +157,18 @@ export default function Home() {
       <BackToTop />
       {/* Each universe has its own wayfinder: the student surface has the
           roaming Rover mascot; the dev surface navigates via the Docker-style
-          DevDock. Both remount with their mode. */}
+          DevDock. Both load lazily and remount with their mode. */}
       {isDev ? (
-        <DevDock key="dock-dev" onToggleMode={toggleFromLogo} />
+        <DevDock key="dock-dev" />
       ) : (
         <Rover key="rover-student" />
       )}
-      <ResumeModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
+      {/* Mount-on-first-open: the modal chunks stay out of the initial
+          bundle and still animate out cleanly after they've loaded. */}
+      {resumeEverOpened && (
+        <ResumeModal isOpen={resumeOpen} onClose={closeResume} />
+      )}
+      {contactEverOpened && <ContactFormDialog />}
       <ModeFold fold={fold} />
     </>
   );

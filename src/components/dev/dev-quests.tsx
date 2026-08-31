@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { QUESTS } from "@/components/site/side-quests";
+import { SectionBadge } from "@/components/site/section-icons";
 import { DevWindow } from "./dev-window";
 
 /**
@@ -7,10 +9,13 @@ import { DevWindow } from "./dev-window";
  */
 const HASHES = ["f4c8e21", "a17b3d9", "0dd5e88", "9c2a417"];
 
-export function DevQuests() {
+export const DevQuests = memo(function DevQuests() {
   return (
     <section className="sec quests" id="quests">
       <div className="wrap">
+        <div className="reveal">
+          <SectionBadge id="quests" />
+        </div>
         <p className="kicker reveal">$ git log --oneline --all</p>
         <h2 className="h2">
           <span className="lm">
@@ -68,4 +73,4 @@ export function DevQuests() {
       </div>
     </section>
   );
-}
+});

@@ -1,7 +1,9 @@
+import { memo } from "react";
 import { TECHNOLOGIES, TECH_TOTAL, TOOLS } from "@/lib/tech";
 import PrismGrid from "@/components/originkit/prism-grid";
 import { Icon } from "./icons";
 import { LazyMount } from "./lazy-mount";
+import { SectionBadge } from "./section-icons";
 
 /**
  * Tech — the dedicated Technologies section (extracted from the resume's
@@ -13,7 +15,7 @@ import { LazyMount } from "./lazy-mount";
  * The content column lets pointer events fall through to the field except
  * on the interactive chips.
  */
-export function Tech() {
+export const Tech = memo(function Tech() {
   return (
     <section className="sec tech-sec" id="stack">
       {/* Originkit — Prism Grid (pointer-reactive tilted cell field),
@@ -34,6 +36,9 @@ export function Tech() {
       </div>
 
       <div className="wrap">
+        <div className="reveal">
+          <SectionBadge id="stack" />
+        </div>
         <p className="kicker reveal">the arsenal</p>
         <h2 className="h2">
           <span className="lm">
@@ -102,4 +107,4 @@ export function Tech() {
       </div>
     </section>
   );
-}
+});

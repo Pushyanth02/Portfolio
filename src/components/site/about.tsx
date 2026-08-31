@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { assetUrl } from "@/lib/utils";
+import { SectionBadge } from "./section-icons";
 
 const LOOK_FOR = [
   "impactful, explainable work",
@@ -17,11 +19,14 @@ const FACTS = [
  * About — the opening cover of the notebook. The page now starts with the
  * human: editorial cover grid, polaroid avatar, quick facts strip.
  */
-export function About() {
+export const About = memo(function About() {
   return (
     <section className="sec about-cover" id="about" aria-label="About Pushyanth">
       <div className="wrap ac-grid">
         <div className="ac-copy">
+          <div className="reveal">
+            <SectionBadge id="about" />
+          </div>
           <p className="kicker reveal">the human behind the commits</p>
           <h1 className="h2 ac-title">
             <span className="lm">
@@ -89,4 +94,4 @@ export function About() {
       </div>
     </section>
   );
-}
+});

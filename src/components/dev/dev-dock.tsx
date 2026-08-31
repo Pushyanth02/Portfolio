@@ -1,10 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 import Dock, { type DockItemDef } from "@/components/lightswind/dock";
-import { Icon, type IconName } from "@/components/site/icons";
-import { assetUrl } from "@/lib/utils";
+import { Icon } from "@/components/site/icons";
+import {
+  UserRound,
+  Package,
+  Layers,
+  Scale,
+  Gamepad2,
+  Send,
+  type LucideIcon,
+} from "lucide-react";
+import { toggleModeFromEvent } from "@/lib/store";
 
 /**
  * DevDock — the developer-mode surface's Docker-style navigation.
@@ -16,29 +24,25 @@ import { assetUrl } from "@/lib/utils";
  * surface navigates like a desktop environment, the student surface
  * plays with a roaming mascot.
  *
- * Scrollspy mirrors the header's observer band. The final item is the
- * mode toggle: its click point becomes the Infinity Fold's origin. The
- * download item serves the source snapshot at public/Portfolio-source.zip
- * (regenerate with scripts/package-source.sh before deploys).
+ * Scrollspy mirrors the section band. The final item is the mode toggle:
+ * its click point becomes the Infinity Fold's origin. (The source.zip
+ * download item was removed from the dock by design — the surface now
+ * carries navigation and the fold only.)
  */
 
-const SECTIONS: { id: string; label: string; icon: IconName }[] = [
-  { id: "about", label: "about", icon: "id" },
-  { id: "work", label: "work", icon: "cube" },
-  { id: "stack", label: "stack", icon: "chip" },
-  { id: "beliefs", label: "laws", icon: "check" },
-  { id: "quests", label: "quests", icon: "rocket" },
-  { id: "connect", label: "connect", icon: "mail" },
+const SECTIONS: { id: string; label: string; Glyph: LucideIcon }[] = [
+  { id: "about", label: "about", Glyph: UserRound },
+  { id: "work", label: "work", Glyph: Package },
+  { id: "stack", label: "stack", Glyph: Layers },
+  { id: "beliefs", label: "laws", Glyph: Scale },
+  { id: "quests", label: "quests", Glyph: Gamepad2 },
+  { id: "connect", label: "connect", Glyph: Send },
 ];
 
-interface DevDockProps {
-  onToggleMode?: (e?: React.MouseEvent) => void;
-}
-
-export function DevDock({ onToggleMode }: DevDockProps) {
+export function DevDock() {
   const [active, setActive] = useState("");
 
-  // Scrollspy: same observer band as the header, so dock + nav agree.
+  // Scrollspy: same observer band as the sections, so dock + badges agree.
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
@@ -60,7 +64,7 @@ export function DevDock({ onToggleMode }: DevDockProps) {
       ...SECTIONS.map((s) => ({
         id: s.id,
         label: `cd ~/${s.label}`,
-        icon: <Icon name={s.icon} />,
+        icon: <s.Glyph strokeWidth={1.8} width={20} height={20} />,
         onClick: () => {
           const el = document.getElementById(s.id);
           if (el) {
@@ -71,31 +75,13 @@ export function DevDock({ onToggleMode }: DevDockProps) {
         active: active === s.id,
       })),
       {
-        id: "download-source",
-        label: "curl -O source.zip",
-        icon: <Icon name="dl" />,
-        onClick: () => {
-          const a = document.createElement("a");
-          a.href = assetUrl("/Portfolio-source.zip");
-          a.download = "Portfolio-source.zip";
-          a.rel = "noopener";
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          toast.success("Downloading source archive", {
-            description: "Portfolio-source.zip · static snapshot",
-            duration: 2500,
-          });
-        },
-      },
-      {
         id: "mode-toggle",
         label: "fold → student.env",
         icon: <Icon name="inf" />,
-        onClick: (e) => onToggleMode?.(e),
+        onClick: (e: React.MouseEvent) => toggleModeFromEvent(e),
       },
     ],
-    [active, onToggleMode]
+    [active]
   );
 
   return (

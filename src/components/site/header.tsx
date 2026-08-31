@@ -1,95 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { memo } from "react";
 import { Icon } from "./icons";
+import { usePortfolioStore, toggleModeFromEvent } from "@/lib/store";
 import type { PortfolioMode } from "@/lib/mode";
 
-type NavLink = {
-  href: string;
-  label: string;
-  hot?: boolean;
-  isResume?: boolean;
-};
-
-const NAV_LINKS: NavLink[] = [
-  { href: "#about", label: "about" },
-  { href: "#work", label: "work" },
-  { href: "#stack", label: "stack" },
-  { href: "#resume", label: "resume", isResume: true },
-  { href: "#connect", label: "connect", hot: true },
-];
-
-interface HeaderProps {
-  onOpenResume?: () => void;
-  mode?: PortfolioMode;
-  onToggleMode?: (e?: React.MouseEvent) => void;
-}
-
-export function Header({ onOpenResume, mode = "student", onToggleMode }: HeaderProps) {
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState<string>("");
-
-  // Scrollspy: mark the nav link whose section is in view.
-  useEffect(() => {
-    const ids = NAV_LINKS.filter((l) => !l.isResume).map((l) => l.href.slice(1));
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((en) => {
-          if (en.isIntersecting) setActive(en.target.id);
-        });
-      },
-      { rootMargin: "-35% 0px -55% 0px" }
-    );
-    ids.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) io.observe(el);
-    });
-    return () => io.disconnect();
-  }, []);
-
-  // Close mobile menu on outside click / Esc.
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
-    const onDocClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (target && !target.closest(".site-head")) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    document.addEventListener("click", onDocClick);
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.removeEventListener("click", onDocClick);
-    };
-  }, [open]);
-
-
-  // Smooth-scroll nav: guarantees consistent section navigation across
-  // browsers/states (native hash jumps can misbehave with fixed headers).
-  const handleAnchor = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    setOpen(false);
-    const el = document.getElementById(href.slice(1));
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      history.pushState(null, "", href);
-      el.setAttribute("tabindex", "-1");
-      el.focus({ preventScroll: true });
-    } else {
-      history.pushState(null, "", href);
-    }
-  };
-
-  const handleResumeClick = () => {
-    setOpen(false);
-    if (onOpenResume) {
-      onOpenResume();
-    } else {
-      window.dispatchEvent(new CustomEvent("open-resume"));
-    }
-  };
+/**
+ * Header — a lean chrome strip.
+ *
+ * Left:  the infinity logo (the mode switch — student ⇄ dev, click point
+ *        feeds the Infinity Fold's origin).
+ * Right: ONLY the resume button (per the redesign: the section nav links
+ *        were removed; wayfinding lives in the Rover (student) and the
+ *        DevDock (dev), which both scrollspy on their own).
+ *
+ * No scrollspy, no mobile dropdown — a single always-visible action that
+ * fits every viewport without a menu button.
+ */
+export const Header = memo(function Header() {
+  const mode: PortfolioMode = usePortfolioStore((s) => s.mode);
+  const openResume = usePortfolioStore((s) => s.openResume);
 
   return (
     <header className="site-head">
@@ -100,7 +30,7 @@ export function Header({ onOpenResume, mode = "student", onToggleMode }: HeaderP
         <button
           type="button"
           className="logo logo-toggle"
-          onClick={(e) => onToggleMode?.(e)}
+          onClick={(e) => toggleModeFromEvent(e)}
           aria-label={
             mode === "student"
               ? "Switch to developer mode: same portfolio, dark terminal skin"
@@ -123,41 +53,17 @@ export function Header({ onOpenResume, mode = "student", onToggleMode }: HeaderP
         <span className="mode-chip" aria-hidden="true">
           {mode === "student" ? "student ∴ click ∞ for dev" : "developer ∴ click ∞ for student"}
         </span>
-        <button
-          className="menu-btn"
-          aria-expanded={open}
-          aria-controls="siteNav"
-          aria-label="Toggle navigation menu"
-          onClick={() => setOpen((o) => !o)}
-        >
-          <Icon name="menu" style={{ width: 20, height: 20 }} />
-        </button>
-        <nav className={`nav${open ? " open" : ""}`} id="siteNav" aria-label="Primary">
-          {NAV_LINKS.map((l) =>
-            l.isResume ? (
-              <button
-                key={l.label}
-                type="button"
-                className="nav-resume-btn"
-                onClick={handleResumeClick}
-                aria-label="Open Vulavala Pushyanth Reddy Resume"
-              >
-                {l.label} <span className="nav-resume-badge"><Icon name="inf" /></span>
-              </button>
-            ) : (
-              <a
-                key={l.href}
-                href={l.href}
-                className={`${l.hot ? "hot" : ""} ${active === l.href.slice(1) ? "active" : ""}`}
-                aria-current={active === l.href.slice(1) ? "page" : undefined}
-                onClick={(e) => handleAnchor(e, l.href)}
-              >
-                {l.label}
-              </a>
-            )
-          )}
+        <nav className="nav" id="siteNav" aria-label="Resume">
+          <button
+            type="button"
+            className="nav-resume-btn"
+            onClick={openResume}
+            aria-label="Open Vulavala Pushyanth Reddy Resume"
+          >
+            resume <span className="nav-resume-badge"><Icon name="inf" /></span>
+          </button>
         </nav>
       </div>
     </header>
   );
-}
+});

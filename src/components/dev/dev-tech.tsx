@@ -1,5 +1,7 @@
+import { memo } from "react";
 import { TECHNOLOGIES, TECH_TOTAL, TOOLS } from "@/lib/tech";
 import { Icon } from "@/components/site/icons";
+import { SectionBadge } from "@/components/site/section-icons";
 import { DevWindow } from "./dev-window";
 import LiquidGrid from "@/components/originkit/liquid-grid";
 import { LazyMount } from "@/components/site/lazy-mount";
@@ -10,7 +12,7 @@ import { LazyMount } from "@/components/site/lazy-mount";
  * window and a compact chip cloud. The 13 AI copilots ride along as a
  * `ls ~/ai-workbench` row.
  */
-export function DevTech() {
+export const DevTech = memo(function DevTech() {
   return (
     <section className="sec dv-tech" id="stack" aria-label="Technologies — developer mode">
       {/* Originkit — Liquid Grid (dot physics field), lazy-mounted */}
@@ -31,6 +33,9 @@ export function DevTech() {
       </div>
 
       <div className="wrap dv-tech-in">
+        <div className="reveal">
+          <SectionBadge id="stack" />
+        </div>
         <p className="kicker reveal">$ pushyanth --stack</p>
         <h2 className="h2">
           <span className="lm">
@@ -126,4 +131,4 @@ export function DevTech() {
       </div>
     </section>
   );
-}
+});

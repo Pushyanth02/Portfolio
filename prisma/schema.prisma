@@ -30,3 +30,17 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// Messages submitted through the "let's chat" contact form.
+// Stored server-side as a durable inbox; every submission also hands the
+// visitor a prefilled Gmail compose addressed to the owner.
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  ipHash    String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}

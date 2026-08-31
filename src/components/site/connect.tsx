@@ -1,23 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { toast } from "sonner";
-import SvgParticles from "@/components/originkit/svg-particles";
-import { LazyMount } from "./lazy-mount";
+import { memo, useEffect, useRef } from "react";
+import { usePortfolioStore } from "@/lib/store";
 import { Icon, type IconName } from "./icons";
+import { SectionBadge } from "./section-icons";
 
 /**
  * Connect — a fresh, structured card-grid contact section.
- * Three contact cards: email (click-to-copy), GitHub, LinkedIn. Each card is a
- * self-contained tile with an icon badge, label, handle and an action hint.
- * The email address is assembled client-side (light obfuscation) and never
- * appears in the server-rendered HTML.
+ * Three contact cards: email (opens the message form), GitHub, LinkedIn.
+ * Each card is a self-contained tile with an icon badge, label, handle
+ * and an action hint. The email address is assembled client-side (light
+ * obfuscation) and never appears in the server-rendered HTML.
  *
- * The finale breathes: an Originkit SVG Particles field — relocated here
- * from the retired thesis band — drifts behind the cards in deep warm
- * tones. The copy layer is pointer-transparent (cards re-enabled
- * individually), so the ∞ assembles wherever the pointer roams the open
- * ground and scatters over the cards.
+ * The email card is now a gateway to the ContactFormDialog (name · gmail
+ * · message) instead of click-to-copy — the note goes through the
+ * /api/contact pipeline (validated, rate-limited, stored) and arrives as
+ * a prefilled Gmail draft in the owner's inbox.
  */
 export type Channel = {
   key: string;
@@ -26,7 +24,8 @@ export type Channel = {
   handle: string;
   action: string;
   href?: string;
-  copy?: boolean;
+  /** Opens the contact form dialog instead of navigating. */
+  form?: boolean;
 };
 
 export const CHANNELS: Channel[] = [
@@ -35,8 +34,8 @@ export const CHANNELS: Channel[] = [
     icon: "mail",
     label: "Email",
     handle: "pushyanth2008@gmail.com",
-    action: "click to copy",
-    copy: true,
+    action: "send a message",
+    form: true,
   },
   {
     key: "github",
@@ -56,67 +55,18 @@ export const CHANNELS: Channel[] = [
   },
 ];
 
-export function Connect() {
+export const Connect = memo(function Connect() {
+  const openContact = usePortfolioStore((s) => s.openContact);
   const mailValRef = useRef<HTMLSpanElement>(null);
-  const cardRef = useRef<HTMLButtonElement>(null);
-  const addrRef = useRef<string>("");
 
+  // Light obfuscation: the address is only ever assembled client-side.
   useEffect(() => {
     const addr = ["pushyanth2008", "@", "gmail", ".", "com"].join("");
-    addrRef.current = addr;
     if (mailValRef.current) mailValRef.current.textContent = addr;
   }, []);
 
-  const onCopy = async () => {
-    const addr = addrRef.current;
-    if (!addr) return;
-    try {
-      await navigator.clipboard.writeText(addr);
-    } catch {
-      const ta = document.createElement("textarea");
-      ta.value = addr;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        document.execCommand("copy");
-      } catch {
-        /* noop */
-      }
-      ta.remove();
-    }
-    toast.success("Email copied to clipboard", {
-      description: addr,
-      duration: 2200,
-    });
-    const card = cardRef.current;
-    if (card) {
-      card.classList.add("copied");
-      window.setTimeout(() => card.classList.remove("copied"), 1400);
-    }
-  };
-
   return (
-    <section className="connect has-field" id="connect">
-      {/* Originkit — SVG Particles (∞ particle field), lazy-mounted so the
-          finale never competes with first paint. Deep warm palette reads as
-          drifting confetti over the sun band. */}
-      <div className="connect-field" aria-hidden="true">
-        <LazyMount delay={180}>
-          <SvgParticles
-            colors={["#201A14", "#8A3B1E", "#3E7C4F", "#6B5A44"]}
-            count={700}
-            size={4}
-            roam={true}
-            repel={true}
-            repelRadius={80}
-            repelForce={7}
-            duration={850}
-            ariaLabel="Infinity symbol formed by drifting particles"
-          />
-        </LazyMount>
-      </div>
+    <section className="connect" id="connect">
       <div className="wrap">
         <div className="connect-head">
           <div
@@ -131,6 +81,9 @@ export function Connect() {
               <Icon name="inf" />
             </span>
           </div>
+          <div className="reveal">
+            <SectionBadge id="connect" />
+          </div>
           <h2>
             <span className="lm">
               <span className="lm-in">
@@ -139,8 +92,8 @@ export function Connect() {
             </span>
           </h2>
           <p className="connect-intro reveal">
-            Got a project, a problem, or a beautifully weird idea? No forms, no
-            funnels. Just pick a line and I&apos;ll answer.
+            Got a project, a problem, or a beautifully weird idea? Pick a
+            line, or send a note straight through the form — I&apos;ll answer.
           </p>
         </div>
 
@@ -149,14 +102,13 @@ export function Connect() {
           style={{ "--d": ".12s" } as React.CSSProperties}
         >
           {CHANNELS.map((c) =>
-            c.copy ? (
+            c.form ? (
               <button
                 key={c.key}
-                ref={cardRef}
                 type="button"
                 className="ccard"
-                aria-label="Copy email address to clipboard"
-                onClick={onCopy}
+                aria-label="Open the message form to send an email"
+                onClick={openContact}
               >
                 <span className="ccard-ic">
                   <Icon name={c.icon} />
@@ -204,4 +156,4 @@ export function Connect() {
       </div>
     </section>
   );
-}
+});

@@ -1,5 +1,7 @@
+import { memo } from "react";
 import DotMatrix from "@/components/originkit/dotmatrix";
 import { BELIEFS } from "@/components/site/beliefs";
+import { SectionBadge } from "@/components/site/section-icons";
 import { LazyMount } from "@/components/site/lazy-mount";
 
 /**
@@ -10,7 +12,7 @@ import { LazyMount } from "@/components/site/lazy-mount";
  * instances share their structural CSS through the --law-* variables;
  * this one carries the dark palette.
  */
-export function DevLaws() {
+export const DevLaws = memo(function DevLaws() {
   return (
     <section className="dv-laws" id="beliefs" aria-label="Engineering laws">
       {/* Originkit — Dot Matrix (WebGL dot field), lazy-mounted.
@@ -32,6 +34,9 @@ export function DevLaws() {
 
       <div className="wrap laws-in">
         <header className="laws-head reveal">
+          <div>
+            <SectionBadge id="laws" />
+          </div>
           <p className="kicker">$ cat core.config.ts</p>
           <h2 className="h2">
             <span className="lm">
@@ -64,4 +69,4 @@ export function DevLaws() {
       </div>
     </section>
   );
-}
+});

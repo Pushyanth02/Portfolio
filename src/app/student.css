@@ -906,3 +906,410 @@
     transition: none !important;
   }
 }
+
+/* ============================================================
+   SECTION ICON BADGES (student skin)
+   One unified Lucide icon set across both universes; the student
+   skin renders it as a sticker chip: hard ink border, offset
+   shadow, hand-set rotation, per-section warm tint + accent.
+   ============================================================ */
+.sec-ic {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 15px 7px 11px;
+  border-radius: 999px;
+  border: 1.5px solid var(--ink);
+  background: var(--card);
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: rotate(-1.6deg);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease),
+    background 0.3s var(--ease);
+  margin-bottom: 14px;
+  user-select: none;
+}
+.sec-ic:hover {
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow: 4px 5px 0 var(--ink);
+}
+.sec-ic svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.sec-ic-label {
+  font: 700 0.68rem var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink70);
+}
+/* per-section accents: coral · sun · leaf rotation */
+.sec-ic[data-sec="about"] {
+  background: #fdeae3;
+}
+.sec-ic[data-sec="about"] svg {
+  color: var(--coral);
+}
+.sec-ic[data-sec="work"] {
+  background: var(--sun-soft);
+}
+.sec-ic[data-sec="work"] svg {
+  color: #cf9226;
+}
+.sec-ic[data-sec="stack"] {
+  background: #e7f0e6;
+}
+.sec-ic[data-sec="stack"] svg {
+  color: var(--leaf);
+}
+.sec-ic[data-sec="laws"] {
+  background: #fdeae3;
+}
+.sec-ic[data-sec="laws"] svg {
+  color: #8a3b1e;
+}
+.sec-ic[data-sec="quests"] {
+  background: var(--sun-soft);
+}
+.sec-ic[data-sec="quests"] svg {
+  color: var(--coral);
+}
+.sec-ic[data-sec="connect"] {
+  background: #e7f0e6;
+}
+.sec-ic[data-sec="connect"] svg {
+  color: var(--coral);
+}
+
+/* the badge sits tight above the kicker in section heads */
+.laws-head .sec-ic {
+  margin-bottom: 10px;
+}
+.connect-head .sec-ic {
+  margin-bottom: 6px;
+}
+
+/* ============================================================
+   CONTACT FORM DIALOG (student skin — warm sticker card)
+   Base structure here; the dark terminal skin lives in dev.css
+   under `html.dev .cf-*`.
+   ============================================================ */
+.cf-back {
+  position: fixed;
+  inset: 0;
+  z-index: 2600;
+  background: rgba(24, 19, 15, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(12px, 3vw, 32px);
+  animation: cfBackdropIn 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.cf-back.cf-closing {
+  animation: cfBackdropOut 0.24s ease forwards;
+}
+@keyframes cfBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes cfBackdropOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.cf-card {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  background: var(--card);
+  border: 2px solid var(--ink);
+  border-radius: var(--r);
+  box-shadow: 10px 10px 0 var(--ink);
+  animation: cfCardIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.14s both;
+  will-change: transform, opacity;
+}
+.cf-card.cf-closing {
+  animation: cfCardOut 0.24s ease forwards;
+}
+@keyframes cfCardIn {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 26px, 0) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+@keyframes cfCardOut {
+  0% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale(0.97);
+  }
+}
+
+.cf-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px clamp(16px, 2.5vw, 22px);
+  background: var(--cream);
+  border-bottom: 1.5px solid var(--ink);
+}
+.cf-head-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+.cf-badge {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  background: var(--coral);
+  color: #fff6ec;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+  transform: rotate(-3deg);
+}
+.cf-badge svg {
+  width: 18px;
+  height: 18px;
+}
+.cf-title {
+  font: 700 clamp(1.05rem, 2vw, 1.2rem) var(--disp);
+  line-height: 1.15;
+}
+.cf-sub {
+  font: 500 0.7rem var(--mono);
+  color: var(--ink50);
+}
+.cf-close {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--ink);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: 2px 2px 0 var(--ink);
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  touch-action: manipulation;
+}
+.cf-close:hover {
+  background: var(--sun-soft);
+  transform: translateY(-2px);
+}
+.cf-close:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.cf-close svg {
+  width: 17px;
+  height: 17px;
+}
+
+.cf-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: clamp(18px, 3vw, 26px);
+}
+.cf-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.cf-field label {
+  font: 700 0.7rem var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink70);
+}
+.cf-input,
+.cf-textarea {
+  font: 500 0.92rem var(--body);
+  color: var(--ink);
+  background: var(--cream);
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  padding: 11px 14px;
+  width: 100%;
+  transition: box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
+  touch-action: manipulation;
+}
+.cf-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.55;
+}
+.cf-input:focus,
+.cf-textarea:focus {
+  outline: none;
+  box-shadow: 3px 3px 0 var(--ink);
+  transform: translateY(-1px);
+}
+.cf-input.cf-invalid,
+.cf-textarea.cf-invalid {
+  border-color: #b3261e;
+  background: #fdeeed;
+}
+.cf-error {
+  font: 600 0.72rem var(--mono);
+  color: #b3261e;
+}
+.cf-field-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.cf-count {
+  font: 500 0.68rem var(--mono);
+  color: var(--ink50);
+  margin-left: auto;
+}
+.cf-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.cf-submit {
+  font: 700 0.88rem var(--mono);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 13px 22px;
+  border-radius: 16px;
+  border: 1.5px solid var(--ink);
+  background: var(--coral);
+  color: #fff6ec;
+  box-shadow: 3px 3px 0 var(--ink);
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.cf-submit svg {
+  width: 16px;
+  height: 16px;
+}
+.cf-submit:hover:not(:disabled) {
+  transform: translate(-1px, -2px);
+  box-shadow: 4px 5px 0 var(--ink);
+}
+.cf-submit:active:not(:disabled) {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ink);
+}
+.cf-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+.cf-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 246, 236, 0.35);
+  border-top-color: #fff6ec;
+  border-radius: 50%;
+  animation: cfSpin 0.7s linear infinite;
+}
+@keyframes cfSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.cf-note {
+  font: 500 0.72rem var(--mono);
+  color: var(--ink50);
+  line-height: 1.6;
+}
+
+/* success fallback state (popup blocked → manual draft link) */
+.cf-success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: clamp(20px, 3vw, 30px);
+}
+.cf-success-ic {
+  width: 34px;
+  height: 34px;
+  color: var(--leaf);
+}
+.cf-success-title {
+  font: 700 1.15rem var(--disp);
+}
+.cf-success-body {
+  font: 500 0.88rem var(--body);
+  color: var(--ink70);
+  line-height: 1.6;
+  max-width: 40ch;
+}
+.cf-open-draft {
+  font: 700 0.82rem var(--mono);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: 1.5px solid var(--ink);
+  background: var(--sun-soft);
+  color: var(--ink);
+  box-shadow: 2.5px 2.5px 0 var(--ink);
+  text-decoration: none;
+  transition: all 0.22s var(--ease);
+}
+.cf-open-draft:hover {
+  transform: translateY(-2px);
+  box-shadow: 3.5px 4px 0 var(--ink);
+}
+.cf-ghost {
+  font: 600 0.78rem var(--mono);
+  background: none;
+  border: none;
+  color: var(--ink50);
+  cursor: pointer;
+  padding: 6px 2px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.cf-ghost:hover {
+  color: var(--ink);
+}
+
+@media (max-width: 560px) {
+  .cf-card {
+    border-width: 1.5px;
+    box-shadow: 6px 6px 0 var(--ink);
+  }
+  .cf-sub {
+    display: none;
+  }
+}

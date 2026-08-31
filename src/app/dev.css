@@ -497,3 +497,180 @@ html.dev .dv-tech-ai-row li svg {
     display: none;
   }
 }
+
+/* ============================================================
+   SECTION ICON BADGES (dev skin)
+   Same Lucide glyph set as the student surface, re-skinned as a
+   terminal chip: phosphor-green glyph, ~/path label, soft glow.
+   ============================================================ */
+html.dev .sec-ic {
+  border: 1px solid rgba(126, 231, 135, 0.4);
+  background: rgba(126, 231, 135, 0.06);
+  box-shadow: 0 0 18px rgba(126, 231, 135, 0.12);
+  transform: none;
+  border-radius: 9px;
+  padding: 6px 13px 6px 10px;
+}
+html.dev .sec-ic:hover {
+  transform: none;
+  box-shadow: 0 0 26px rgba(126, 231, 135, 0.22);
+  background: rgba(126, 231, 135, 0.1);
+}
+html.dev .sec-ic svg {
+  width: 15px;
+  height: 15px;
+  color: #7ee787;
+}
+html.dev .sec-ic-label {
+  color: #7ee787;
+  letter-spacing: 0.16em;
+  text-shadow: 0 0 10px rgba(126, 231, 135, 0.45);
+}
+html.dev .sec-ic-label::before {
+  content: "~/";
+  color: #57a95f;
+  margin-right: 1px;
+}
+html.dev .laws-head .sec-ic,
+html.dev .connect-head .sec-ic {
+  margin-bottom: 10px;
+}
+
+/* ============================================================
+   CONTACT FORM DIALOG (dev skin — terminal void)
+   Structural styles live in student.css; these re-skin the card
+   for the dark universe.
+   ============================================================ */
+html.dev .cf-back {
+  background: rgba(4, 6, 8, 0.88);
+}
+html.dev .cf-card {
+  background: #0f1418;
+  border: 1px solid rgba(126, 231, 135, 0.42);
+  box-shadow: 0 0 34px rgba(126, 231, 135, 0.14);
+  border-radius: 16px;
+}
+html.dev .cf-card.cf-closing {
+  animation: cfCardOut 0.24s ease forwards;
+}
+html.dev .cf-head {
+  background: #0b0e11;
+  border-bottom: 1px solid rgba(126, 231, 135, 0.28);
+}
+html.dev .cf-badge {
+  background: rgba(126, 231, 135, 0.12);
+  color: #7ee787;
+  border: 1px solid rgba(126, 231, 135, 0.5);
+  box-shadow: 0 0 16px rgba(126, 231, 135, 0.25);
+  transform: none;
+  border-radius: 10px;
+}
+html.dev .cf-title {
+  color: #e6edf3;
+  font-family: var(--mono);
+}
+html.dev .cf-title::before {
+  content: "$ ";
+  color: #57a95f;
+}
+html.dev .cf-sub {
+  color: #57a95f;
+}
+html.dev .cf-close {
+  background: #0b0e11;
+  border: 1px solid rgba(126, 231, 135, 0.4);
+  color: #7ee787;
+  box-shadow: none;
+  border-radius: 9px;
+}
+html.dev .cf-close:hover {
+  background: rgba(126, 231, 135, 0.12);
+  transform: none;
+}
+html.dev .cf-field label {
+  color: #7ee787;
+}
+html.dev .cf-field label::before {
+  content: "--";
+  color: #57a95f;
+  margin-right: 6px;
+}
+html.dev .cf-input,
+html.dev .cf-textarea {
+  background: #0b0e11;
+  border: 1px solid rgba(126, 231, 135, 0.3);
+  color: #e6edf3;
+  border-radius: 10px;
+  caret-color: #7ee787;
+}
+html.dev .cf-input::placeholder,
+html.dev .cf-textarea::placeholder {
+  color: #4c5a61;
+}
+html.dev .cf-input:focus,
+html.dev .cf-textarea:focus {
+  box-shadow: 0 0 18px rgba(126, 231, 135, 0.25);
+  border-color: rgba(126, 231, 135, 0.7);
+  transform: none;
+}
+html.dev .cf-input.cf-invalid,
+html.dev .cf-textarea.cf-invalid {
+  border-color: #f85149;
+  background: rgba(248, 81, 73, 0.06);
+}
+html.dev .cf-error {
+  color: #f85149;
+}
+html.dev .cf-count {
+  color: #4c5a61;
+}
+html.dev .cf-submit {
+  background: rgba(126, 231, 135, 0.14);
+  color: #7ee787;
+  border: 1px solid rgba(126, 231, 135, 0.55);
+  box-shadow: 0 0 22px rgba(126, 231, 135, 0.2);
+  border-radius: 12px;
+}
+html.dev .cf-submit:hover:not(:disabled) {
+  transform: none;
+  background: rgba(126, 231, 135, 0.22);
+  box-shadow: 0 0 30px rgba(126, 231, 135, 0.32);
+}
+html.dev .cf-submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+html.dev .cf-spinner {
+  border-color: rgba(126, 231, 135, 0.3);
+  border-top-color: #7ee787;
+}
+html.dev .cf-note {
+  color: #57a95f;
+}
+html.dev .cf-note::before {
+  content: "// ";
+}
+html.dev .cf-success-ic {
+  color: #7ee787;
+  filter: drop-shadow(0 0 10px rgba(126, 231, 135, 0.5));
+}
+html.dev .cf-success-title {
+  color: #e6edf3;
+  font-family: var(--mono);
+}
+html.dev .cf-success-body {
+  color: #9aa7b1;
+}
+html.dev .cf-open-draft {
+  background: rgba(126, 231, 135, 0.12);
+  color: #7ee787;
+  border: 1px solid rgba(126, 231, 135, 0.55);
+  box-shadow: 0 0 18px rgba(126, 231, 135, 0.2);
+  border-radius: 12px;
+}
+html.dev .cf-open-draft:hover {
+  transform: none;
+  background: rgba(126, 231, 135, 0.2);
+}
+html.dev .cf-ghost {
+  color: #57a95f;
+}

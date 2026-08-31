@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { Icon } from "./icons";
+import { SectionBadge } from "./section-icons";
 import { assetUrl } from "@/lib/utils";
 
 export type WorkItem = {
@@ -123,10 +125,13 @@ export const WORK: WorkItem[] = [
   },
 ];
 
-export function Work() {
+export const Work = memo(function Work() {
   return (
     <section className="sec" id="work">
       <div className="wrap">
+        <div className="reveal">
+          <SectionBadge id="work" />
+        </div>
         <p className="kicker reveal">the highlight reel</p>
         <h2 className="h2" style={{ marginBottom: "clamp(36px, 5vw, 64px)" }}>
           <span className="lm">
@@ -210,4 +215,4 @@ export function Work() {
       </div>
     </section>
   );
-}
+});

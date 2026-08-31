@@ -1,4 +1,6 @@
+import { memo } from "react";
 import { assetUrl } from "@/lib/utils";
+import { SectionBadge } from "@/components/site/section-icons";
 import { DevWindow } from "./dev-window";
 
 const LOOK_FOR = [
@@ -28,10 +30,13 @@ const BOOT = [
  * preceded by a quick boot log so the section reads like a power-on
  * sequence. First section of the dev surface (about first in both modes).
  */
-export function DevAbout() {
+export const DevAbout = memo(function DevAbout() {
   return (
     <section className="sec" id="about" aria-label="About — developer mode">
       <div className="wrap">
+        <div className="reveal">
+          <SectionBadge id="about" />
+        </div>
         <p className="kicker reveal">$ whoami</p>
         <h1 className="h2">
           <span className="lm">
@@ -110,4 +115,4 @@ export function DevAbout() {
       </div>
     </section>
   );
-}
+});

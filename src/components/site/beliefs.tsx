@@ -1,5 +1,7 @@
+import { memo } from "react";
 import DotMatrix from "@/components/originkit/dotmatrix";
 import { LazyMount } from "./lazy-mount";
+import { SectionBadge } from "./section-icons";
 
 export type Belief = {
   no: string;
@@ -73,7 +75,7 @@ export const BELIEFS: Belief[] = [
  * the page. The same band structure renders in developer mode as the
  * dark .dv-laws — the two share their CSS via the --law-* variables.
  */
-export function Beliefs() {
+export const Beliefs = memo(function Beliefs() {
   return (
     <section className="laws-band" id="beliefs" aria-label="Engineering laws">
       {/* Originkit — Dot Matrix (WebGL dot field), lazy-mounted.
@@ -96,6 +98,9 @@ export function Beliefs() {
 
       <div className="wrap laws-in">
         <header className="laws-head reveal">
+          <div>
+            <SectionBadge id="laws" />
+          </div>
           <p className="kicker">my operating system</p>
           <h2 className="h2">
             <span className="lm">
@@ -128,4 +133,4 @@ export function Beliefs() {
       </div>
     </section>
   );
-}
+});

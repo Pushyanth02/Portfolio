@@ -1381,54 +1381,19 @@ section {
 }
 
 @media (max-width: 720px) {
-  .menu-btn {
-    display: grid;
-  }
   /* taller hit area for the ∞ power button under thumbs */
   .logo {
     min-height: 44px;
   }
+  /* The header now carries only the resume action — no dropdown menu,
+     so the nav stays a simple inline row on every viewport. */
   .nav {
-    position: absolute;
-    top: 68px;
-    right: clamp(10px, 3vw, 20px);
-    left: clamp(10px, 3vw, 20px);
-    flex-direction: column;
-    align-items: stretch;
-    background: var(--card);
-    border: 1.5px solid var(--ink);
-    border-radius: 18px;
-    box-shadow: 5px 6px 0 var(--ink);
-    padding: 12px;
-    display: none;
-    gap: 8px;
-    z-index: 1020;
-    opacity: 0;
-    transform: translateY(-8px);
-    transition:
-      opacity 0.22s var(--ease),
-      transform 0.22s var(--ease);
-  }
-  .nav.open {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .nav a {
-    text-align: center;
-    padding: 12px 16px;
-    min-height: 44px;
     display: flex;
     align-items: center;
-    justify-content: center;
-  }
-  .nav a.hot {
-    box-shadow: none;
+    gap: 8px;
   }
   .nav-resume-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 12px 16px;
+    padding: 10px 16px;
     min-height: 44px;
     border-radius: 14px;
   }
@@ -3145,3 +3110,5 @@ html.dev .sec {
     animation: none;
   }
 }
+
+/* force-recompile marker */
