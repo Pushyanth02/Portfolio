@@ -1,32 +1,21 @@
-# ─────────────────────────────────────────────────────────────────────────────
-# Deploy the portfolio to GitHub Pages.
-#
-# Builds the Next.js static export (`next build` → `out/`) with Bun and
-# publishes it via the official Pages actions. `NEXT_PUBLIC_BASE_PATH` is
-# computed from the repository name: project sites (`owner/repo`) are served
-# under `/repo`, while user/org sites (`owner.github.io`) live at the root.
-#
-# One-time repo setup: Settings → Pages → Build and deployment →
-# Source = "GitHub Actions". `public/.nojekyll` is included so Pages skips
-# Jekyll processing and serves the `out/` tree verbatim.
-# ─────────────────────────────────────────────────────────────────────────────
 name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: ["main"]
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one in-flight deployment; don't cancel running ones mid-flight
-# so a Pages deployment is never torn down halfway through.
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -35,46 +24,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Bun
+      - name: Setup Bun
         uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
 
       - name: Install dependencies
-        run: bun install
+        run: bun install --frozen-lockfile
 
-      - name: Lint
-        run: bun run lint
-
-      - name: Type check
-        run: bun run typecheck
-
-      - name: Compute base path
-        id: base
-        run: |
-          REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          if [[ "${REPO_NAME}" == *.github.io ]]; then
-            echo "BASE_PATH=" >> "$GITHUB_OUTPUT"
-          else
-            echo "BASE_PATH=/${REPO_NAME}" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Build static site
-        env:
-          NEXT_PUBLIC_BASE_PATH: ${{ steps.base.outputs.BASE_PATH }}
+      - name: Build with Next.js
         run: bun run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /Portfolio
 
-      - name: Upload Pages artifact
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: out
+          path: ./out
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

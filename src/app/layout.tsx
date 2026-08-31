@@ -62,15 +62,15 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
     },
   },
-  manifest: "/site.webmanifest",
+  manifest: "/Portfolio/site.webmanifest",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/Portfolio/favicon.ico", sizes: "any" },
+      { url: "/Portfolio/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/Portfolio/favicon.svg", type: "image/svg+xml" },
     ],
-    shortcut: ["/favicon.ico"],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/Portfolio/favicon.ico"],
+    apple: [{ url: "/Portfolio/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
