@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Epilogue, Space_Mono } from "next/font/google";
 import "./globals.css";
+import { Suspense } from "react";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import { ContentProtection } from "@/components/site/content-protection";
+import { InfinityLoader } from "@/components/site/infinity-loader";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -60,15 +62,15 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
     },
   },
-  manifest: "/site.webmanifest",
+  manifest: "/Portfolio/site.webmanifest",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/Portfolio/favicon.ico", sizes: "any" },
+      { url: "/Portfolio/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/Portfolio/favicon.svg", type: "image/svg+xml" },
     ],
-    shortcut: ["/favicon.ico"],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: ["/Portfolio/favicon.ico"],
+    apple: [{ url: "/Portfolio/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
     title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
@@ -79,7 +81,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/art/doodle.webp",
+        url: `${process.env.NEXT_PUBLIC_BASE_PATH ?? "/Portfolio"}/art/doodle.webp`,
         width: 1024,
         height: 1024,
         alt: "Pushyanth Portfolio Mascot",
@@ -91,7 +93,7 @@ export const metadata: Metadata = {
     title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
     description:
       "AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
-    images: ["/art/doodle.webp"],
+    images: [`${process.env.NEXT_PUBLIC_BASE_PATH ?? "/Portfolio"}/art/doodle.webp`],
   },
 };
 
@@ -131,6 +133,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Preconnect to Google Fonts for faster font loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         {/* noscript fallback: ensure reveals are visible without JS */}
         <noscript>
           <style>{`.reveal,.lm .lm-in{opacity:1;transform:none}`}</style>
@@ -144,7 +149,10 @@ export default function RootLayout({
         suppressHydrationWarning
         className={`${fraunces.variable} ${epilogue.variable} ${spaceMono.variable} font-sans antialiased`}
       >
-        {children}
+        <InfinityLoader />
+        <Suspense>
+          {children}
+        </Suspense>
         <ContentProtection />
         <SonnerToaster position="bottom-center" richColors={false} />
       </body>

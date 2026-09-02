@@ -3,6 +3,7 @@
 @import "./student.css";
 @import "./dev.css";
 @import "./fold.css";
+@import "./loader.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -163,6 +164,18 @@
   button,
   [role="button"] {
     touch-action: manipulation;
+  }
+  /* Screen-reader-only utility — visually hidden but accessible */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
   }
 }
 

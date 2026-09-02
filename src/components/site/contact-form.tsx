@@ -22,6 +22,12 @@ import { usePortfolioStore } from "@/lib/store";
  *
  * Skins: student = warm sticker card; dev = dark terminal card
  * (via `html.dev .cf-*` rules in dev.css).
+ *
+ * MAINTENANCE NOTE: the delivery mechanism is a Gmail compose URL
+ * (not FormSubmit or a server endpoint). If Gmail changes its compose
+ * URL format, update OWNER_EMAIL and the URLSearchParams below.
+ * Periodically verify that the prefilled draft still opens correctly
+ * by clicking "send a note" → checking the Gmail compose window.
  */
 
 type Status = "idle" | "sending" | "done";
@@ -328,11 +334,9 @@ export function ContactFormDialog() {
                   send it <Send strokeWidth={1.9} aria-hidden="true" />
                 </>
               )}
-            </button>
-
-            <p className="cf-note">
-              your note is validated &amp; saved server-side, then a prefilled
-              gmail draft opens — one click there and it&apos;s in the inbox.
+            </button>              <p className="cf-note">
+              your note is validated locally, then a prefilled gmail draft
+              opens — one click there and it&apos;s in the inbox.
             </p>
           </form>
         )}

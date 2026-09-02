@@ -76,6 +76,11 @@ export const Connect = memo(function Connect() {
             title="Rover dock"
             role="button"
             tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+              }
+            }}
           >
             <span className="dock-ghost" aria-hidden="true">
               <Icon name="inf" />
