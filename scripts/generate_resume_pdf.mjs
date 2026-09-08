@@ -11,15 +11,16 @@ async function createResume() {
   // Exact serif fonts matching the screenshot
   const fontRegular = await pdfDoc.embedFont(StandardFonts.TimesRoman);
   const fontBold = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+  const fontItalic = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
 
-  // Exact color palette
-  const navy = rgb(0.06, 0.15, 0.34); // Deep navy for name & section titles
-  const dark = rgb(0.12, 0.12, 0.14); // Near black for text
-  const blue = rgb(0.1, 0.3, 0.7); // Hyperlink blue
-  const barBg = rgb(0.92, 0.94, 0.97); // Shaded section bar background
+  // Colors
+  const navy = rgb(0.12, 0.22, 0.42); // Section titles & header name
+  const dark = rgb(0.15, 0.15, 0.17); // Body text
+  const blue = rgb(0.1, 0.35, 0.72); // Links
+  const lineGrey = rgb(0.7, 0.7, 0.72); // Divider line
 
-  const leftMargin = 38;
-  const rightMargin = width - 38;
+  const leftMargin = 36;
+  const rightMargin = width - 36;
   const contentWidth = rightMargin - leftMargin;
 
   let y = height - 42;
@@ -47,18 +48,17 @@ async function createResume() {
       }
       annots.push(linkRef);
     } catch {
-      // Annotations are optional enhancements
+      // Annotations optional
     }
   }
 
-  // Helper to draw underlined text (and optionally make it clickable)
-  function drawUnderlinedText(text, x, curY, size, font, color, url = "") {
+  function drawUnderlinedLink(text, x, curY, size, font, color, url) {
     page.drawText(text, { x, y: curY, size, font, color });
     const textWidth = font.widthOfTextAtSize(text, size);
     page.drawLine({
-      start: { x, y: curY - 1.5 },
-      end: { x: x + textWidth, y: curY - 1.5 },
-      thickness: 0.65,
+      start: { x, y: curY - 1.2 },
+      end: { x: x + textWidth, y: curY - 1.2 },
+      thickness: 0.6,
       color,
     });
     if (url) {
@@ -68,113 +68,84 @@ async function createResume() {
   }
 
   // ==================== HEADER ====================
-  // Name
-  page.drawText("Vulavala Pushyanth Reddy", {
-    x: leftMargin,
+  // Name (centered)
+  const nameStr = "PUSHYANTH REDDY";
+  const nameSize = 20;
+  const nameWidth = fontBold.widthOfTextAtSize(nameStr, nameSize);
+  page.drawText(nameStr, {
+    x: (width - nameWidth) / 2,
     y: y,
-    size: 21.5,
+    size: nameSize,
     font: fontBold,
     color: navy,
   });
-  y -= 21;
+  y -= 16;
 
-  // Contact Info Row 1
-  // Left: LinkedIn
-  const liPrefix = "LinkedIn: ";
-  page.drawText(liPrefix, { x: leftMargin, y, size: 9.2, font: fontRegular, color: dark });
-  const liPrefixW = fontRegular.widthOfTextAtSize(liPrefix, 9.2);
-  drawUnderlinedText(
-    "Pushyanth | Linkedin",
-    leftMargin + liPrefixW,
-    y,
-    9.2,
-    fontBold,
-    blue,
-    "https://www.linkedin.com/in/pushyanth-reddy"
-  );
+  // Contact Info Line (centered)
+  // +91-6363121593 • pushyanth2008@gmail.com • LinkedIn • GitHub • Portfolio
+  const contactParts = [
+    { text: "+91-6363121593", isLink: false },
+    { text: " • ", isLink: false },
+    { text: "pushyanth2008@gmail.com", isLink: false },
+    { text: " • ", isLink: false },
+    { text: "LinkedIn", isLink: true, url: "https://www.linkedin.com/in/pushyanth-reddy" },
+    { text: " • ", isLink: false },
+    { text: "GitHub", isLink: true, url: "https://github.com/Pushyanth02" },
+    { text: " • ", isLink: false },
+    { text: "Portfolio", isLink: true, url: "https://pushyanth02.github.io/Portfolio/" },
+  ];
 
-  // Right: Email
-  const emailVal = "pushyanth2008@gmail.com";
-  const emailPrefix = "Email: ";
-  const emailFullW = fontRegular.widthOfTextAtSize(emailPrefix + emailVal, 9.2);
-  const emailStartX = rightMargin - emailFullW;
-  page.drawText(emailPrefix, { x: emailStartX, y, size: 9.2, font: fontRegular, color: dark });
-  page.drawText(emailVal, {
-    x: emailStartX + fontRegular.widthOfTextAtSize(emailPrefix, 9.2),
-    y,
-    size: 9.2,
-    font: fontRegular,
-    color: dark,
-  });
-  y -= 14.5;
+  const subSize = 9.5;
+  let totalSubW = 0;
+  for (const part of contactParts) {
+    const f = part.isLink ? fontRegular : fontRegular;
+    totalSubW += f.widthOfTextAtSize(part.text, subSize);
+  }
 
-  // Contact Info Row 2
-  // Left: GitHub
-  const ghPrefix = "GitHub: ";
-  page.drawText(ghPrefix, { x: leftMargin, y, size: 9.2, font: fontRegular, color: dark });
-  const ghPrefixW = fontRegular.widthOfTextAtSize(ghPrefix, 9.2);
-  drawUnderlinedText(
-    "github.com/Pushyanth",
-    leftMargin + ghPrefixW,
-    y,
-    9.2,
-    fontBold,
-    blue,
-    "https://github.com/Pushyanth02"
-  );
+  let subX = (width - totalSubW) / 2;
+  for (const part of contactParts) {
+    if (part.isLink) {
+      const w = drawUnderlinedLink(part.text, subX, y, subSize, fontRegular, blue, part.url);
+      subX += w;
+    } else {
+      page.drawText(part.text, { x: subX, y, size: subSize, font: fontRegular, color: dark });
+      subX += fontRegular.widthOfTextAtSize(part.text, subSize);
+    }
+  }
+  y -= 14;
 
-  // Right: Mobile
-  const mobVal = "+91-6363121593";
-  const mobPrefix = "Mobile: ";
-  const mobFullW = fontRegular.widthOfTextAtSize(mobPrefix + mobVal, 9.2);
-  const mobStartX = rightMargin - mobFullW;
-  page.drawText(mobPrefix, { x: mobStartX, y, size: 9.2, font: fontRegular, color: dark });
-  page.drawText(mobVal, {
-    x: mobStartX + fontRegular.widthOfTextAtSize(mobPrefix, 9.2),
-    y,
-    size: 9.2,
-    font: fontRegular,
-    color: dark,
-  });
-  y -= 17;
-
-  // ==================== SECTION HEADER HELPER ====================
+  // Horizontal section divider helper
   function drawSectionHeader(title) {
-    y -= 6;
-    const barHeight = 15;
-    page.drawRectangle({
-      x: leftMargin,
-      y: y - 3,
-      width: contentWidth,
-      height: barHeight,
-      color: barBg,
-    });
+    y -= 4;
     page.drawText(title.toUpperCase(), {
-      x: leftMargin + 6,
-      y: y + 1.5,
+      x: leftMargin,
+      y: y,
       size: 10,
       font: fontBold,
       color: navy,
     });
-    y -= 16;
+    y -= 4;
+    page.drawLine({
+      start: { x: leftMargin, y },
+      end: { x: rightMargin, y },
+      thickness: 0.6,
+      color: lineGrey,
+    });
+    y -= 12;
   }
 
-  // ==================== BULLET DRAWING HELPER ====================
-  function drawBullet(text, boldPrefix = "", indent = 14, fontSize = 8.9, lineSpacing = 12) {
-    // Solid bullet circle
-    page.drawCircle({
-      x: leftMargin + indent - 7,
-      y: y + 2.8,
-      size: 1.5,
+  // Multi-line bullet points drawer
+  function drawBullet(text, indent = 12, fontSize = 8.8, lineSpacing = 11.5) {
+    const bulletSymbol = "•";
+    page.drawText(bulletSymbol, {
+      x: leftMargin + 2,
+      y: y,
+      size: fontSize,
+      font: fontRegular,
       color: dark,
     });
 
     let curX = leftMargin + indent;
-    if (boldPrefix) {
-      page.drawText(boldPrefix, { x: curX, y, size: fontSize, font: fontBold, color: dark });
-      curX += fontBold.widthOfTextAtSize(boldPrefix, fontSize) + fontRegular.widthOfTextAtSize(" ", fontSize);
-    }
-
     const words = text.trim().split(/\s+/);
     let line = "";
 
@@ -199,322 +170,218 @@ async function createResume() {
     }
   }
 
-  // ==================== 1. SKILLS SUMMARY ====================
-  drawSectionHeader("Skills Summary");
-  drawBullet("TypeScript, JavaScript, Python, C, C++, HTML, CSS, SQL", "Languages:");
-  y -= 1;
-  drawBullet("Next.js, React, Tailwind CSS", "Libraries & Frameworks:");
-  y -= 1;
-  drawBullet("Git, GitHub, GitHub Actions (CI/CD), Docker, Vercel, VS Code", "Tools/Platforms:");
-  y -= 1;
-  drawBullet("Node.js, PostgreSQL, MySQL", "Backend:");
-  y -= 1;
-  drawBullet(
-    "Team Collaboration, Problem-Solving, Adaptability, Communication, Critical thinking, Leadership",
-    "Soft Skills:"
-  );
+  // ==================== 1. PROFESSIONAL SUMMARY ====================
+  drawSectionHeader("PROFESSIONAL SUMMARY");
+  const summaryText =
+    "Frontend-focused Software Engineer building local-first, client-side applications in TypeScript, Next.js, and React — including multi-format document parsing, real-time streaming UIs, and offline-capable state architectures. Comfortable with C/C++ fundamentals and relational databases; currently extending into backend API development and LLM-integrated systems.";
 
-  y -= 6;
-
-  // ==================== 2. PROJECTS ====================
-  drawSectionHeader("Projects");
-
-  // Project 1: Lemniscate
-  {
-    let curX = leftMargin;
-    const nameW = drawUnderlinedText(
-      "Lemniscate",
-      curX,
-      y,
-      9.3,
-      fontBold,
-      blue,
-      "https://github.com/Pushyanth02/Lemniscate"
-    );
-    curX += nameW;
-
-    const mid = " | TypeScript · Next.js · IndexedDB · Zod | ";
-    page.drawText(mid, { x: curX, y, size: 8.9, font: fontRegular, color: dark });
-    curX += fontRegular.widthOfTextAtSize(mid, 8.9);
-
-    drawUnderlinedText("GitHub", curX, y, 8.9, fontBold, blue, "https://github.com/Pushyanth02/Lemniscate");
-
-    const dateStr = "Nov 2025 - Aug 2026";
-    const dateW = fontRegular.widthOfTextAtSize(dateStr, 8.9);
-    page.drawText(dateStr, { x: rightMargin - dateW, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 13;
-
-    drawBullet(
-      "Built a local-first document processing web application supporting 7 file formats (including PDF, EPUB, DOCX) utilizing pdf.js and JSZip for fully client-side parsing with zero server data exposure."
-    );
-    y -= 1;
-    drawBullet(
-      "Integrated a modular AI streaming interface using Server-Sent Events (SSE) for real-time token rendering, validated by runtime Zod schemas for structured output integrity."
-    );
-    y -= 1;
-    drawBullet(
-      "Implemented an on-device extractive text summarization pipeline, integrating IndexedDB with SHA/hash-based keying for local document caching."
-    );
-    y -= 6;
+  const sumWords = summaryText.split(/\s+/);
+  let sumLine = "";
+  for (let i = 0; i < sumWords.length; i++) {
+    const testLine = sumLine ? `${sumLine} ${sumWords[i]}` : sumWords[i];
+    const testW = fontRegular.widthOfTextAtSize(testLine, 8.8);
+    if (testW > contentWidth && sumLine !== "") {
+      page.drawText(sumLine, { x: leftMargin, y, size: 8.8, font: fontRegular, color: dark });
+      y -= 11.5;
+      sumLine = sumWords[i];
+    } else {
+      sumLine = testLine;
+    }
   }
-
-  // Project 2: Dungeoncore Necromancer
-  {
-    let curX = leftMargin;
-    const nameW = drawUnderlinedText(
-      "Dungeoncore Necromancer",
-      curX,
-      y,
-      9.3,
-      fontBold,
-      blue,
-      "https://github.com/Pushyanth02/Dungeoncore-Necromancer"
-    );
-    curX += nameW;
-
-    const mid = " | Next.js · React · TypeScript · Zustand | ";
-    page.drawText(mid, { x: curX, y, size: 8.9, font: fontRegular, color: dark });
-    curX += fontRegular.widthOfTextAtSize(mid, 8.9);
-
-    drawUnderlinedText(
-      "GitHub",
-      curX,
-      y,
-      8.9,
-      fontBold,
-      blue,
-      "https://github.com/Pushyanth02/Dungeoncore-Necromancer"
-    );
-
-    const dateStr = "June 2026 – Aug 2026";
-    const dateW = fontRegular.widthOfTextAtSize(dateStr, 8.9);
-    page.drawText(dateStr, { x: rightMargin - dateW, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 13;
-
-    drawBullet(
-      "Developed a dynamic web reading platform featuring a unified command palette (Cmd+K) with fuzzy search for low-latency client-side indexing and query matching."
-    );
-    y -= 1;
-    drawBullet(
-      "Designed a procedural audio synthesizer utilizing the Web Audio API to generate dynamic audio in real time, eliminating external media assets and optimizing initial bundle payload."
-    );
-    y -= 1;
-    drawBullet(
-      "Deployed a fully static-exported, zero-server web application adhering to WCAG AA accessibility standards (keyboard focus trapping, ARIA live regions) via GitHub Actions CI/CD."
-    );
-    y -= 6;
+  if (sumLine) {
+    page.drawText(sumLine, { x: leftMargin, y, size: 8.8, font: fontRegular, color: dark });
+    y -= 11.5;
   }
-
-  // Project 3: Luck-O-Matic 9000
-  {
-    let curX = leftMargin;
-    const nameW = drawUnderlinedText(
-      "Luck-O-Matic 9000",
-      curX,
-      y,
-      9.3,
-      fontBold,
-      blue,
-      "https://github.com/Pushyanth02/LuckOMatic-9000"
-    );
-    curX += nameW;
-
-    const mid = " | TypeScript · Next.js · Tailwind · Web Audio API | ";
-    page.drawText(mid, { x: curX, y, size: 8.9, font: fontRegular, color: dark });
-    curX += fontRegular.widthOfTextAtSize(mid, 8.9);
-
-    drawUnderlinedText(
-      "GitHub",
-      curX,
-      y,
-      8.9,
-      fontBold,
-      blue,
-      "https://github.com/Pushyanth02/LuckOMatic-9000"
-    );
-
-    const dateStr = "Jan 2026 - Aug 2026";
-    const dateW = fontRegular.widthOfTextAtSize(dateStr, 8.9);
-    page.drawText(dateStr, { x: rightMargin - dateW, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 13;
-
-    drawBullet(
-      "Engineered an interactive web application featuring dynamic state-driven progression, multi-tier inventory structures, and responsive UI components built with Tailwind CSS."
-    );
-    y -= 1;
-    drawBullet(
-      "Built a deterministic state-management engine in TypeScript using immutable reducers and time-delta calculation to process asynchronous background calculations."
-    );
-    y -= 1;
-    drawBullet(
-      "Implemented client-side data persistence utilizing Local Storage APIs, ensuring continuous state synchronization and data integrity across browser reloads."
-    );
-    y -= 6;
-  }
-
-  // ==================== 3. TRAINING ====================
-  drawSectionHeader("Training");
-  {
-    let curX = leftMargin;
-    const tTitle = "Computer Programming in C - iamneo";
-    page.drawText(tTitle, { x: curX, y, size: 9.3, font: fontBold, color: dark });
-    curX += fontBold.widthOfTextAtSize(tTitle, 9.3);
-
-    const sep = " | ";
-    page.drawText(sep, { x: curX, y, size: 8.9, font: fontRegular, color: dark });
-    curX += fontRegular.widthOfTextAtSize(sep, 8.9);
-
-    drawUnderlinedText(
-      "Certificate",
-      curX,
-      y,
-      8.9,
-      fontBold,
-      blue,
-      "https://github.com/Pushyanth02"
-    );
-
-    const dateStr = "Jan 2026 - May 2026";
-    const dateW = fontRegular.widthOfTextAtSize(dateStr, 8.9);
-    page.drawText(dateStr, { x: rightMargin - dateW, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 13;
-
-    drawBullet(
-      "Completed rigorous coursework in C covering foundational syntax, control flow, POSIX standard libraries, and structural programming patterns."
-    );
-    y -= 1;
-    drawBullet(
-      "Implemented low-level memory management solutions using explicit pointer arithmetic, dynamic heap allocation (malloc/calloc/free), and structured data layouts."
-    );
-    y -= 1;
-    drawBullet(
-      "Engineered linear data structures (linked lists, dynamic arrays) and algorithmic routines focused on pointer manipulation and time/space complexity optimization."
-    );
-    y -= 6;
-  }
-
-  // ==================== 4. CERTIFICATES ====================
-  drawSectionHeader("Certificates");
-
-  function drawCertItem(title, dateStr) {
-    const indent = 14;
-    page.drawCircle({
-      x: leftMargin + indent - 7,
-      y: y + 2.8,
-      size: 1.5,
-      color: dark,
-    });
-
-    let curX = leftMargin + indent;
-    page.drawText(title, { x: curX, y, size: 8.9, font: fontBold, color: dark });
-    curX += fontBold.widthOfTextAtSize(title, 8.9);
-
-    const sep = " | ";
-    page.drawText(sep, { x: curX, y, size: 8.9, font: fontRegular, color: dark });
-    curX += fontRegular.widthOfTextAtSize(sep, 8.9);
-
-    drawUnderlinedText(
-      "Certificate",
-      curX,
-      y,
-      8.9,
-      fontBold,
-      blue,
-      "https://github.com/Pushyanth02"
-    );
-
-    const dateW = fontRegular.widthOfTextAtSize(dateStr, 8.9);
-    page.drawText(dateStr, { x: rightMargin - dateW, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 14.5;
-  }
-
-  drawCertItem("Data Analytics Essentials by Cisco", "Feb 2026");
-  drawCertItem("Introduction to Cybersecurity by Infosys", "Mar 2026");
-  drawCertItem("Master Your Leadership Effectiveness Skills by Linkedin", "Nov 2025");
-
   y -= 4;
 
-  // ==================== 5. EDUCATION ====================
-  drawSectionHeader("Education");
+  // ==================== 2. TECHNICAL SKILLS ====================
+  drawSectionHeader("TECHNICAL SKILLS");
+  const skillsData = [
+    { label: "Languages:", val: "TypeScript, JavaScript, Python, C, C++, SQL" },
+    { label: "Frontend:", val: "Next.js, React, Tailwind CSS, Zustand, HTML5, CSS3" },
+    { label: "Client/Browser Systems:", val: "IndexedDB, Web Audio API, Server-Sent Events, Zod (schema validation)" },
+    { label: "Tools:", val: "Git, GitHub, GitHub Actions (CI/CD), Vercel, VS Code" },
+  ];
 
-  // Lovely Professional University
+  for (const s of skillsData) {
+    page.drawText(s.label, { x: leftMargin, y, size: 8.8, font: fontBold, color: dark });
+    const labelW = fontBold.widthOfTextAtSize(s.label, 8.8) + 4;
+    page.drawText(s.val, { x: leftMargin + labelW, y, size: 8.8, font: fontRegular, color: dark });
+    y -= 11.8;
+  }
+  y -= 4;
+
+  // ==================== 3. PROJECTS ====================
+  drawSectionHeader("PROJECTS");
+
+  const projects = [
+    {
+      title: "Lemniscate",
+      tech: "TypeScript, Next.js, IndexedDB, Zod, Web APIs",
+      githubUrl: "https://github.com/Pushyanth02/Lemniscate",
+      liveUrl: "https://lemniscate02.vercel.app/",
+      date: "Apr 2024 – Aug 2026",
+      bullets: [
+        "Built a local-first document processor supporting 7 file formats (PDF, EPUB, DOCX) using pdf.js and JSZip for entirely client-side parsing, with no data ever leaving the browser.",
+        "Consumed a token-streaming API via Server-Sent Events, rendering incremental UI updates in real time and validating every streamed payload against runtime Zod schemas to guarantee structural integrity.",
+        "Implemented an on-device extractive summarization pipeline and an IndexedDB caching layer with hash-based keys for persistent, offline-capable document storage.",
+      ],
+    },
+    {
+      title: "Dungeoncore Necromancer",
+      tech: "Next.js, React, TypeScript, Zustand",
+      githubUrl: "https://github.com/Pushyanth02/Dungeoncore-Necromancer",
+      liveUrl: "https://pushyanth02.github.io/Dungeoncore-Necromancer/",
+      date: "Jun 2026 – Aug 2026",
+      bullets: [
+        "Developed a responsive web reading platform featuring a unified command palette with client-side fuzzy search for low-latency query matching.",
+        "Engineered a procedural audio synthesis engine using the Web Audio API to generate real-time dynamic soundscapes, eliminating external audio assets and reducing payload size.",
+        "Shipped a static-exported reading platform meeting WCAG AA accessibility standards (focus trapping, ARIA live regions), deployed via GitHub Actions CI/CD to GitHub Pages.",
+      ],
+    },
+    {
+      title: "Archmage",
+      tech: "Next.js, TypeScript, Tailwind CSS",
+      githubUrl: "https://github.com/Pushyanth02/Archmage",
+      liveUrl: "https://pushyanth02.github.io/Archmage/",
+      date: "Jan 2026 – Aug 2026",
+      bullets: [
+        "Engineered a browser-based arcade roguelike featuring 50 structured waves, 5 biomes, dynamically shuffled tyrants, endless progression, and responsive real-time gameplay systems.",
+        "Designed deterministic gameplay mechanics in TypeScript, including seeded RNG, scaling difficulty curves, multi-element spell resonances, weighted reward cycling, and state-driven enemy/boss behaviour.",
+        "Implemented persistent meta-progression, accessibility controls, HUD systems, and synthesized dynamic audio using the Web Audio API, delivering a fully client-side gameplay experience without accounts or backend services.",
+      ],
+    },
+  ];
+
+  for (const proj of projects) {
+    let curX = leftMargin;
+
+    // Title Bold
+    page.drawText(proj.title, { x: curX, y, size: 9.2, font: fontBold, color: dark });
+    curX += fontBold.widthOfTextAtSize(proj.title, 9.2);
+
+    // Tech stack italic / regular
+    const sepStr = " | ";
+    page.drawText(sepStr, { x: curX, y, size: 8.8, font: fontRegular, color: dark });
+    curX += fontRegular.widthOfTextAtSize(sepStr, 8.8);
+
+    page.drawText(proj.tech, { x: curX, y, size: 8.8, font: fontItalic, color: dark });
+    curX += fontItalic.widthOfTextAtSize(proj.tech, 8.8);
+
+    page.drawText(sepStr, { x: curX, y, size: 8.8, font: fontRegular, color: dark });
+    curX += fontRegular.widthOfTextAtSize(sepStr, 8.8);
+
+    // GitHub link
+    const ghW = drawUnderlinedLink("GitHub", curX, y, 8.8, fontBold, blue, proj.githubUrl);
+    curX += ghW;
+
+    page.drawText(sepStr, { x: curX, y, size: 8.8, font: fontRegular, color: dark });
+    curX += fontRegular.widthOfTextAtSize(sepStr, 8.8);
+
+    // Live link
+    drawUnderlinedLink("Live", curX, y, 8.8, fontBold, blue, proj.liveUrl);
+
+    // Date on right
+    const dateW = fontRegular.widthOfTextAtSize(proj.date, 8.8);
+    page.drawText(proj.date, { x: rightMargin - dateW, y, size: 8.8, font: fontRegular, color: dark });
+    y -= 12;
+
+    // Bullets
+    for (const b of proj.bullets) {
+      drawBullet(b);
+    }
+    y -= 3;
+  }
+
+  // ==================== 4. EDUCATION ====================
+  drawSectionHeader("EDUCATION");
+
+  // LPU
   {
-    const indent = 14;
-    page.drawCircle({
-      x: leftMargin + indent - 7,
-      y: y + 2.8,
-      size: 1.5,
+    page.drawText("Lovely Professional University", {
+      x: leftMargin,
+      y,
+      size: 9.2,
+      font: fontBold,
       color: dark,
     });
-
-    const uniName = "Lovely Professional University";
-    page.drawText(uniName, { x: leftMargin + indent, y, size: 9.3, font: fontBold, color: dark });
     const loc1 = "Phagwara, Punjab";
-    const loc1W = fontRegular.widthOfTextAtSize(loc1, 8.9);
-    page.drawText(loc1, { x: rightMargin - loc1W, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 12.5;
+    const loc1W = fontRegular.widthOfTextAtSize(loc1, 8.8);
+    page.drawText(loc1, { x: rightMargin - loc1W, y, size: 8.8, font: fontRegular, color: dark });
+    y -= 11.5;
 
-    const degree = "Bachelor of Technology - Computer Science and Engineering";
-    page.drawText(degree, { x: leftMargin + indent, y, size: 8.9, font: fontRegular, color: dark });
-    const date1 = "Aug 2025 - May 2029";
-    const date1W = fontRegular.widthOfTextAtSize(date1, 8.9);
-    page.drawText(date1, { x: rightMargin - date1W, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 12.5;
-
-    page.drawText("CGPA: 7.98", { x: leftMargin + indent, y, size: 8.9, font: fontBold, color: dark });
-    y -= 16;
+    const deg1 = "Bachelor of Technology in Computer Science and Engineering | CGPA: 7.98";
+    page.drawText(deg1, { x: leftMargin, y, size: 8.8, font: fontItalic, color: dark });
+    const date1 = "Aug 2025 – May 2029";
+    const date1W = fontRegular.widthOfTextAtSize(date1, 8.8);
+    page.drawText(date1, { x: rightMargin - date1W, y, size: 8.8, font: fontRegular, color: dark });
+    y -= 14;
   }
 
-  // Christ Academy Junior College
+  // Christ Academy
   {
-    const indent = 14;
-    page.drawCircle({
-      x: leftMargin + indent - 7,
-      y: y + 2.8,
-      size: 1.5,
+    page.drawText("Christ Academy Junior College", {
+      x: leftMargin,
+      y,
+      size: 9.2,
+      font: fontBold,
       color: dark,
     });
-
-    const collegeName = "Christ Academy Junior College";
-    page.drawText(collegeName, { x: leftMargin + indent, y, size: 9.3, font: fontBold, color: dark });
     const loc2 = "Bangalore, Karnataka";
-    const loc2W = fontRegular.widthOfTextAtSize(loc2, 8.9);
-    page.drawText(loc2, { x: rightMargin - loc2W, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 12.5;
+    const loc2W = fontRegular.widthOfTextAtSize(loc2, 8.8);
+    page.drawText(loc2, { x: rightMargin - loc2W, y, size: 8.8, font: fontRegular, color: dark });
+    y -= 11.5;
 
-    const course = "Pre-University Course (PUC/12th)";
-    page.drawText(course, { x: leftMargin + indent, y, size: 8.9, font: fontRegular, color: dark });
+    const deg2 = "Pre-University Course (12th Grade) – Science & Mathematics | Percentage: 86.0%";
+    page.drawText(deg2, { x: leftMargin, y, size: 8.8, font: fontItalic, color: dark });
     const date2 = "May 2023 – Mar 2025";
-    const date2W = fontRegular.widthOfTextAtSize(date2, 8.9);
-    page.drawText(date2, { x: rightMargin - date2W, y, size: 8.9, font: fontRegular, color: dark });
-    y -= 12.5;
-
-    page.drawText("Percentage: 86%", { x: leftMargin + indent, y, size: 8.9, font: fontBold, color: dark });
-    y -= 16;
+    const date2W = fontRegular.widthOfTextAtSize(date2, 8.8);
+    page.drawText(date2, { x: rightMargin - date2W, y, size: 8.8, font: fontRegular, color: dark });
+    y -= 12;
   }
 
-  // New Horizon High School
-  {
-    const indent = 14;
-    page.drawCircle({
-      x: leftMargin + indent - 7,
-      y: y + 2.8,
-      size: 1.5,
-      color: dark,
-    });
+  // ==================== 5. CERTIFICATIONS & TECHNICAL TRAINING ====================
+  drawSectionHeader("CERTIFICATIONS & TECHNICAL TRAINING");
 
-    const schoolName = "New Horizon High School";
-    page.drawText(schoolName, { x: leftMargin + indent, y, size: 9.3, font: fontBold, color: dark });
-    const loc3 = "Bangalore, Karnataka";
-    const loc3W = fontRegular.widthOfTextAtSize(loc3, 8.9);
-    page.drawText(loc3, { x: rightMargin - loc3W, y, size: 8.9, font: fontRegular, color: dark });
+  const certsList = [
+    {
+      title: "Computer Programming in C — iamneo",
+      certText: "Certificate",
+      certUrl: "https://github.com/Pushyanth02",
+      date: "Jan 2026 – May 2026",
+    },
+    {
+      title: "Data Analytics Essentials — Cisco",
+      certText: "Certificate",
+      certUrl: "https://github.com/Pushyanth02",
+      date: "Feb 2026",
+    },
+    {
+      title: "GitHub Foundations — Datacamp & GitHub",
+      certText: "Certificate",
+      certUrl: "https://github.com/Pushyanth02",
+      date: "Mar 2026",
+    },
+  ];
+
+  for (const c of certsList) {
+    page.drawText("•", { x: leftMargin + 2, y, size: 8.8, font: fontRegular, color: dark });
+    let curX = leftMargin + 12;
+
+    page.drawText(c.title, { x: curX, y, size: 8.8, font: fontRegular, color: dark });
+    curX += fontRegular.widthOfTextAtSize(c.title, 8.8);
+
+    const midStr = " | ";
+    page.drawText(midStr, { x: curX, y, size: 8.8, font: fontRegular, color: dark });
+    curX += fontRegular.widthOfTextAtSize(midStr, 8.8);
+
+    const cW = drawUnderlinedLink(c.certText, curX, y, 8.8, fontBold, blue, c.certUrl);
+    curX += cW;
+
+    const dotStr = " · " + c.date;
+    page.drawText(dotStr, { x: curX, y, size: 8.8, font: fontRegular, color: dark });
+
     y -= 12.5;
-
-    const score = "Percentage: 92%";
-    page.drawText(score, { x: leftMargin + indent, y, size: 8.9, font: fontBold, color: dark });
-    const date3 = "May 2022 – Mar 2023";
-    const date3W = fontRegular.widthOfTextAtSize(date3, 8.9);
-    page.drawText(date3, { x: rightMargin - date3W, y, size: 8.9, font: fontRegular, color: dark });
   }
 
   const pdfBytes = await pdfDoc.save();
@@ -523,6 +390,7 @@ async function createResume() {
 
   fs.writeFileSync(outPath1, pdfBytes);
   fs.writeFileSync(outPath2, pdfBytes);
-  console.log("Generated:", outPath1, outPath2, `Final y: ${y.toFixed(2)} (bottom margin: ${y.toFixed(2)}pt)`);
+  console.log("Generated:", outPath1, outPath2, `Final y: ${y.toFixed(2)} (bottom space remaining: ${y.toFixed(2)}pt)`);
 }
+
 createResume().catch(console.error);

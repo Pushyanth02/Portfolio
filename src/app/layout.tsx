@@ -31,15 +31,17 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const bp = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://pushyanth02.github.io/Portfolio/"),
-  title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
+  title: "Pushyanth ∞ · Frontend-focused Software Engineer",
   description:
-    "Pushyanth (Pushyanth02) · CS/DSA student & builder creating AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
+    "Pushyanth (Pushyanth02) · CS undergrad & frontend-focused software engineer building local-first, client-side applications. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
   keywords: [
     "Pushyanth",
     "Pushyanth02",
-    "full-stack developer",
+    "frontend software engineer",
     "systems builder",
     "software engineer",
     "Lemniscate",
@@ -62,26 +64,26 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
     },
   },
-  manifest: "/Portfolio/site.webmanifest",
+  manifest: `${bp}/site.webmanifest`,
   icons: {
     icon: [
-      { url: "/Portfolio/favicon.ico", sizes: "any" },
-      { url: "/Portfolio/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/Portfolio/favicon.svg", type: "image/svg+xml" },
+      { url: `${bp}/favicon.ico`, sizes: "any" },
+      { url: `${bp}/icon-192.png`, sizes: "192x192", type: "image/png" },
+      { url: `${bp}/favicon.svg`, type: "image/svg+xml" },
     ],
-    shortcut: ["/Portfolio/favicon.ico"],
-    apple: [{ url: "/Portfolio/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: [`${bp}/favicon.ico`],
+    apple: [{ url: `${bp}/apple-touch-icon.png`, sizes: "180x180", type: "image/png" }],
   },
   openGraph: {
-    title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
+    title: "Pushyanth ∞ · Frontend-focused Software Engineer",
     description:
-      "CS/DSA student & builder creating AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
+      "CS undergrad & frontend-focused software engineer building local-first, client-side applications. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
     type: "website",
     siteName: "Pushyanth",
     locale: "en_US",
     images: [
       {
-        url: `${process.env.NEXT_PUBLIC_BASE_PATH ?? "/Portfolio"}/art/doodle.webp`,
+        url: `${bp}/art/doodle.webp`,
         width: 1024,
         height: 1024,
         alt: "Pushyanth Portfolio Mascot",
@@ -90,10 +92,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pushyanth ∞ · Full-Stack Developer & Systems Builder",
+    title: "Pushyanth ∞ · Frontend-focused Software Engineer",
     description:
-      "AI-powered, deterministic, self-hosted, explainable software. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
-    images: [`${process.env.NEXT_PUBLIC_BASE_PATH ?? "/Portfolio"}/art/doodle.webp`],
+      "Frontend-focused software engineer building local-first, client-side applications. Archmage, Lemniscate, Dungeoncore Necromancer, and certificates.",
+    images: [`${bp}/art/doodle.webp`],
   },
 };
 
@@ -105,7 +107,7 @@ const jsonLd = {
   name: "Pushyanth",
   alternateName: "Pushyanth02",
   url: "https://pushyanth02.github.io/Portfolio/",
-  jobTitle: "Full-Stack Developer & Systems Builder",
+  jobTitle: "Frontend-focused Software Engineer",
   copyrightYear: year,
   copyrightHolder: { "@type": "Person", name: "Pushyanth" },
   license: "https://pushyanth02.github.io/Portfolio/ — All Rights Reserved",

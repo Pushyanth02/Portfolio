@@ -29,8 +29,8 @@ export const Tech = memo(function Tech() {
           className="tech-sub reveal"
           style={{ "--d": ".1s" } as React.CSSProperties}
         >
-          Pulled straight off the resume: languages, frameworks, backend &amp;
-          the platform tooling that gets ideas from <b>init</b> to{" "}
+          Pulled straight off the resume: languages, frontend, browser
+          systems &amp; the tooling that gets ideas from <b>init</b> to{" "}
           <b>deploy</b>. Hands-on, project-proven, zero padding.
         </p>
 

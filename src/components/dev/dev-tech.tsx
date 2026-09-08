@@ -47,7 +47,7 @@ export const DevTech = memo(function DevTech() {
           className="bench-sub reveal"
           style={{ "--d": ".1s" } as React.CSSProperties}
         >
-          Languages, frameworks, backend &amp; platform tooling: every entry
+          Languages, frontend, browser systems &amp; tooling: every entry
           in the file below is project-proven. The grid behind this window
           reacts to your clicks; try it.
         </p>

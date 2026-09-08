@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   // GitHub Pages serves from pushyanth02.github.io/Portfolio/
   // In dev (Freebuff preview), NEXT_PUBLIC_BASE_PATH is empty so the app
   // serves from root and the preview proxy can reach it without a prefix.
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "/Portfolio",
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
   images: {
     unoptimized: true, // static export — no image optimization server
     formats: ["image/avif", "image/webp"],

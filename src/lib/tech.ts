@@ -4,11 +4,9 @@ import type { IconName } from "@/components/site/icons";
  * Technologies — extracted verbatim from the latest resume
  * (public/Pushyanth_Reddy_Resume.pdf → TECHNICAL SKILLS), grouped for the
  * dedicated "Technologies" section that replaces the old AI Workbench.
- * The resume's five skill lines map onto four visible groups: its
- * "Frontend & UI" line (incl. Zustand + UI/UX accessibility) lives in
- * frameworks, and "Backend & Databases" (Node + SQL + client-side stores)
- * lives in backend. The resume's soft skills stay in the about prose —
- * a technologies section shouldn't list personality.
+ * Four categories: Languages, Frontend, Client/Browser Systems, and Tools.
+ * Soft skills are intentionally excluded — the technologies section lists
+ * only project-proven technical capabilities.
  */
 export type TechCategory = {
   id: string;
@@ -22,25 +20,25 @@ export const TECHNOLOGIES: TechCategory[] = [
     id: "languages",
     label: "Languages",
     hint: "typed · strict · daily",
-    items: ["TypeScript", "JavaScript", "Python", "C", "C++", "HTML5", "CSS3", "SQL"],
+    items: ["TypeScript", "JavaScript", "Python", "C", "C++", "SQL"],
   },
   {
-    id: "frameworks",
-    label: "Frontend & UI",
+    id: "frontend",
+    label: "Frontend",
     hint: "the interface core",
-    items: ["Next.js", "React", "Tailwind CSS", "Zustand", "UI/UX Accessibility"],
+    items: ["Next.js", "React", "Tailwind CSS", "Zustand", "HTML5", "CSS3"],
   },
   {
-    id: "backend",
-    label: "Backend & Data",
-    hint: "api · sql · persistence",
-    items: ["Node.js", "PostgreSQL", "MySQL", "SQLite", "IndexedDB"],
+    id: "browser",
+    label: "Client/Browser Systems",
+    hint: "storage · audio · streaming",
+    items: ["IndexedDB", "Web Audio API", "Server-Sent Events", "Zod (schema validation)"],
   },
   {
-    id: "platform",
-    label: "Tools & Platforms",
+    id: "tools",
+    label: "Tools",
     hint: "ship · automate · deploy",
-    items: ["Git", "GitHub", "GitHub Actions", "Docker", "Vercel", "VS Code"],
+    items: ["Git", "GitHub", "GitHub Actions (CI/CD)", "Vercel", "VS Code"],
   },
 ];
 

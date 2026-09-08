@@ -180,7 +180,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   Vulavala Pushyanth Reddy
                 </h3>
                 <p className="rh-sub">
-                  CS Undergrad · Full-Stack Developer · Bangalore, India
+                  CS Undergrad · Frontend-focused Software Engineer · Bangalore, India
                 </p>
               </div>
             </div>
@@ -293,7 +293,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                 <article className="clean-doc">
                   {/* Top Intro — one contact line, exactly as the resume prints it */}
                   <header className="cd-head">
-                    <h2>Vulavala Pushyanth Reddy</h2>
+                    <h2>PUSHYANTH REDDY</h2>
                     <div className="cd-contacts">
                       <a href="tel:+916363121593">+91-6363121593</a>
                       <a href="mailto:pushyanth2008@gmail.com">
@@ -304,14 +304,21 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        linkedin.com/in/pushyanth ↗
+                        LinkedIn ↗
                       </a>
                       <a
                         href="https://github.com/Pushyanth02"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        github.com/pushyanth ↗
+                        GitHub ↗
+                      </a>
+                      <a
+                        href="https://pushyanth02.github.io/Portfolio/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Portfolio ↗
                       </a>
                     </div>
                   </header>
@@ -320,13 +327,13 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                   <section className="cd-section">
                     <h4>PROFESSIONAL SUMMARY</h4>
                     <p className="cd-sum">
-                      Computer Science undergraduate and Full-Stack Developer
-                      with strong expertise in TypeScript, Next.js, React, and
-                      modern browser APIs. Experienced in building local-first
-                      web applications, client-side data parsing pipelines, and
-                      deterministic state management engines. Grounded in
-                      C/C++ memory management, linear data structures, and
-                      relational database systems.
+                      Frontend-focused Software Engineer building local-first,
+                      client-side applications in TypeScript, Next.js, and React —
+                      including multi-format document parsing, real-time streaming
+                      UIs, and offline-capable state architectures. Comfortable
+                      with C/C++ fundamentals and relational databases; currently
+                      extending into backend API development and LLM-integrated
+                      systems.
                     </p>
                   </section>
 
@@ -336,30 +343,26 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     <div className="cd-skills">
                       <div className="cd-row">
                         <b>Languages:</b> TypeScript, JavaScript, Python, C,
-                        C++, HTML5, CSS3, SQL
+                        C++, SQL
                       </div>
                       <div className="cd-row">
-                        <b>Frontend &amp; UI:</b> Next.js, React, Tailwind CSS,
-                        Zustand, UI/UX Accessibility
+                        <b>Frontend:</b> Next.js, React, Tailwind CSS, Zustand,
+                        HTML5, CSS3
                       </div>
                       <div className="cd-row">
-                        <b>Backend &amp; Databases:</b> Node.js, PostgreSQL,
-                        MySQL, SQLite, IndexedDB
+                        <b>Client/Browser Systems:</b> IndexedDB, Web Audio API,
+                        Server-Sent Events, Zod (schema validation)
                       </div>
                       <div className="cd-row">
-                        <b>Developer Tools:</b> Git, GitHub, GitHub Actions
-                        (CI/CD), Docker, Vercel, VS Code
-                      </div>
-                      <div className="cd-row">
-                        <b>Soft Skills:</b> Problem Solving, Critical Thinking,
-                        Creativity, Adaptability, Time Management
+                        <b>Tools:</b> Git, GitHub, GitHub Actions (CI/CD), Vercel,
+                        VS Code
                       </div>
                     </div>
                   </section>
 
                   {/* Technical Projects */}
                   <section className="cd-section">
-                    <h4>TECHNICAL PROJECTS</h4>
+                    <h4>PROJECTS</h4>
 
                     <div className="cd-item">
                       <div className="cd-item-head">
@@ -373,7 +376,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                           </a>
                           <span className="cd-tech">
                             {" "}
-                            | TypeScript · Next.js · IndexedDB · Zod · Web APIs
+                            | TypeScript, Next.js, IndexedDB, Zod, Web APIs
                           </span>
                           <a className="cd-git" href="https://lemniscate02.vercel.app/" target="_blank" rel="noopener noreferrer">Live ↗</a>
                         </h5>
@@ -381,22 +384,20 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       </div>
                       <ul>
                         <li>
-                          Built a local-first document processing application
-                          supporting 7 file formats (PDF, EPUB, DOCX) using
-                          pdf.js and JSZip for client-side parsing with zero
-                          server data exposure.
+                          Built a local-first document processor supporting 7 file
+                          formats (PDF, EPUB, DOCX) using pdf.js and JSZip for entirely
+                          client-side parsing, with no data ever leaving the browser.
                         </li>
                         <li>
-                          Integrated an AI streaming interface using
-                          Server-Sent Events (SSE) for real-time token
-                          rendering, validated via runtime Zod schemas to
-                          guarantee structured data integrity.
+                          Consumed a token-streaming API via Server-Sent Events,
+                          rendering incremental UI updates in real time and validating
+                          every streamed payload against runtime Zod schemas to guarantee
+                          structural integrity.
                         </li>
                         <li>
-                          Implemented an on-device extractive text
-                          summarization pipeline, integrating IndexedDB with
-                          hash-based keying for persistent client-side
-                          document caching.
+                          Implemented an on-device extractive summarization pipeline and
+                          an IndexedDB caching layer with hash-based keys for persistent,
+                          offline-capable document storage.
                         </li>
                       </ul>
                     </div>
@@ -413,7 +414,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                           </a>
                           <span className="cd-tech">
                             {" "}
-                            | Next.js · React · TypeScript · Zustand
+                            | Next.js, React, TypeScript, Zustand
                           </span>
                           <a className="cd-git" href="https://pushyanth02.github.io/Dungeoncore-Necromancer/" target="_blank" rel="noopener noreferrer">Live ↗</a>
                         </h5>
@@ -421,20 +422,17 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       </div>
                       <ul>
                         <li>
-                          Developed a responsive web reading platform featuring
-                          a unified command palette with client-side fuzzy
-                          search for low-latency query matching.
+                          Developed a responsive web reading platform featuring a unified
+                          command palette with client-side fuzzy search for low-latency query matching.
                         </li>
                         <li>
-                          Engineered a procedural audio synthesis engine using
-                          the Web Audio API to generate real-time dynamic
-                          soundscapes, eliminating external audio assets and
-                          reducing payload size.
+                          Engineered a procedural audio synthesis engine using the Web Audio API
+                          to generate real-time dynamic soundscapes, eliminating external audio
+                          assets and reducing payload size.
                         </li>
                         <li>
-                          Deployed a static-exported web application adhering
-                          to WCAG AA accessibility standards (keyboard focus
-                          trapping, ARIA live regions) via GitHub Actions
+                          Shipped a static-exported reading platform meeting WCAG AA accessibility
+                          standards (focus trapping, ARIA live regions), deployed via GitHub Actions
                           CI/CD to GitHub Pages.
                         </li>
                       </ul>
@@ -452,7 +450,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                           </a>
                           <span className="cd-tech">
                             {" "}
-                            | Next.js · TypeScript · Tailwind CSS
+                            | Next.js, TypeScript, Tailwind CSS
                           </span>
                           <a className="cd-git" href="https://pushyanth02.github.io/Archmage/" target="_blank" rel="noopener noreferrer">Live ↗</a>
                         </h5>
@@ -460,22 +458,19 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                       </div>
                       <ul>
                         <li>
-                          Engineered a browser-based arcade roguelike
-                          featuring 50 structured waves, 5 biomes, dynamically
-                          shuffled tyrants, endless progression, and responsive
-                          real-time gameplay systems.
+                          Engineered a browser-based arcade roguelike featuring 50 structured
+                          waves, 5 biomes, dynamically shuffled tyrants, endless progression,
+                          and responsive real-time gameplay systems.
                         </li>
                         <li>
-                          Designed deterministic gameplay mechanics in
-                          TypeScript, including seeded RNG, scaling difficulty
-                          curves, multi-element spell resonances, weighted
-                          reward cycling, and state-driven enemy/boss behavior.
+                          Designed deterministic gameplay mechanics in TypeScript, including
+                          seeded RNG, scaling difficulty curves, multi-element spell resonances,
+                          weighted reward cycling, and state-driven enemy/boss behaviour.
                         </li>
                         <li>
-                          Implemented persistent meta-progression,
-                          accessibility controls, HUD systems, and synthesized
-                          dynamic audio using Web Audio API, delivering a fully
-                          client-side gameplay experience without accounts or
+                          Implemented persistent meta-progression, accessibility controls, HUD
+                          systems, and synthesized dynamic audio using the Web Audio API,
+                          delivering a fully client-side gameplay experience without accounts or
                           backend services.
                         </li>
                       </ul>
@@ -504,7 +499,7 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                           <span className="cd-date">May 2023 – Mar 2025</span>
                         </div>
                         <p>
-                          Pre-University Course (PUC / 12th) — Science &amp;
+                          Pre-University Course (12th Grade) – Science &amp;
                           Mathematics
                         </p>
                         <span className="cd-score">Percentage: 86.0% · Bangalore, Karnataka</span>
@@ -517,15 +512,15 @@ export function ResumeModal({ isOpen, onClose }: ResumeModalProps) {
                     <h4>CERTIFICATIONS &amp; TECHNICAL TRAINING</h4>
                     <ul className="cd-cert-list">
                       <li>
-                        <b>Computer Programming in C – iamneo Certification</b>{" "}
+                        <b>Computer Programming in C — iamneo</b>{" "}
                         <span className="cd-date-tag">Jan 2026 – May 2026</span>
                       </li>
                       <li>
-                        <b>Data Analytics Essentials – Cisco</b>{" "}
+                        <b>Data Analytics Essentials — Cisco</b>{" "}
                         <span className="cd-date-tag">Feb 2026</span>
                       </li>
                       <li>
-                        <b>Introduction to Cybersecurity – Infosys</b>{" "}
+                        <b>GitHub Foundations — Datacamp &amp; GitHub</b>{" "}
                         <span className="cd-date-tag">Mar 2026</span>
                       </li>
                     </ul>
